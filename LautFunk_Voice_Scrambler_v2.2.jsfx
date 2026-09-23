@@ -1,0 +1,583 @@
+desc:LautFunk Voice Scrambler v2
+// Version 2.2. Stereo frequency inversion with a 255-tap Hilbert transformer.
+// 127 samples latency. Simple/Clean is approximately reversible; Split/Radio is creative.
+// First 14 parameter slots and filename remain compatible with v2.1 projects.
+// UI: drag knobs; Shift=fine; wheel; double-click knob=reset; click value=type.
+// Enter commits numerical input, Escape cancels. PTT is momentary, slider20 automatable.
+// Test source is a -24 dBFS sine. Clean Decode retains both carrier settings.
+// Voice inversion is not secure encryption.
+options:gfx_hz=30
+in_pin:Left
+in_pin:Right
+out_pin:Left
+out_pin:Right
+slider1:0<0,2,1{SCRAMBLE,DESCRAMBLE,BYPASS}>-Operation
+slider2:0<0,1,1{Simple inversion,Split-band inversion}>-Method
+slider3:3300<1800,6000,10>-Inversion frequency (Hz)
+slider4:300<80,600,10>-Voice low cut (Hz)
+slider5:3000<1200,5000,10>-Voice high cut (Hz)
+slider6:1650<700,3000,10>-Split frequency (Hz)
+slider7:0<0,1,1{Clean,Old radio}>-Character
+slider8:-60<-90,-20,1>-Radio noise (dB; -90=off)
+slider9:0<0,18,0.1>-Carrier drift depth (Hz)
+slider10:0.35<0.05,2,0.01>-Carrier drift rate (Hz)
+slider11:0<0,12,0.1>-Radio drive (dB)
+slider12:100<0,100,1>-Wet mix (%)
+slider13:0<-24,12,0.1>-Output gain (dB)
+slider14:0<0,4,1{Custom,KGB Cold War,Field Radio 1970,NSA Numbers,Deep Scramble}>-Preset
+slider15:0<-50,50,0.1>-Carrier fine tune (Hz)
+slider16:0<0,1,1{Off,On}>-Level match
+slider17:0<0,2,1{Off,Automatic,PTT}>-Squelch mode
+slider18:-45<-90,-10,1>-Squelch threshold (dB)
+slider19:160<20,600,1>-Squelch hold (ms)
+slider20:0<0,1,1{Receive,Transmit}>-PTT transmit
+slider21:-42<-70,-20,1>-Radio burst level (dB; -70=off)
+slider22:0<0,1,1{Off,On}>-Test tone
+slider23:1000<100,5000,1>-Probe frequency (Hz)
+
+@init
+twopi=2*$pi;
+hilbert=2048;
+lpq1=8192; lpq2=8197; hpq1=8202; hpq2=8207;
+lpt1=8240; lpt2=8245; hpt1=8250; hpt2=8255;
+cache=9000;
+spec_in_l=16384; spec_in_r=17408; spec_out_l=18432; spec_out_r=19456;
+fft_in_l=20480; fft_in_r=22528; fft_out_l=24576; fft_out_r=26624;
+fft_window=28672;
+tap=0;
+loop(255,
+  m=tap-127;
+  hilbert[tap]=(m!=0 && (abs(m)%2)==1) ? 2/($pi*m)*(0.54+0.46*cos($pi*m/127)) : 0;
+  tap+=1;
+);
+tap=0;
+loop(1024,fft_window[tap]=0.5-0.5*cos(twopi*tap/1023);tap+=1;);
+write_pos=spec_pos=0;
+preset_seen=-1; smoother_ready=0; ui_dirty=0;
+ui_last_mouse=0; ui_drag=0; ui_edit=0; ui_pressed_ptt=0;
+ui_last_knob=0; ui_last_click=-1; ui_frame=0;
+phase=phase_lo=phase_hi=drift_phase=tone_phase=0;
+gate_cmd=gate_env=1; gate_old=1; burst_env=0;
+level_gain=1; coeff_tick=0;
+
+function apply_preset(p) (
+  p>0 ? (
+    slider15=0; slider16=0; slider17=0; slider18=-45;
+    slider19=160; slider20=0; slider21=-42;
+  );
+  p==1 ? (
+    slider2=0;slider3=3300;slider4=300;slider5=3000;slider6=1650;
+    slider7=0;slider8=-90;slider9=0;slider10=0.35;slider11=0;slider12=100;slider13=0;
+  );
+  p==2 ? (
+    slider2=0;slider3=3400;slider4=350;slider5=3050;slider6=1700;
+    slider7=1;slider8=-62;slider9=2;slider10=0.25;slider11=3;slider12=100;slider13=0;
+    slider17=1;slider18=-48;
+  );
+  p==3 ? (
+    slider2=0;slider3=3600;slider4=350;slider5=3250;slider6=1800;
+    slider7=1;slider8=-54;slider9=4;slider10=0.4;slider11=5;slider12=100;slider13=0;
+  );
+  p==4 ? (
+    slider2=1;slider3=3300;slider4=300;slider5=3000;slider6=1650;
+    slider7=0;slider8=-90;slider9=0;slider10=0.35;slider11=0;slider12=100;slider13=0;
+  );
+);
+
+function clean_decode() (
+  slider1=1;slider7=0;slider8=-90;slider9=0;slider11=0;slider12=100;
+  slider14=0;slider16=0;slider17=0;slider20=0;slider22=0;
+);
+// Numerically stable tanh equivalent using JSFX built-ins.
+function softclip(x) local(e) (
+  e=exp(-2*abs(x));
+  sign(x)*(1-e)/(1+e);
+);
+
+function crossover_coeff(base, f, q, hp) local(w c alpha a0 b0) (
+  f=min(f,srate*0.40);
+  w=twopi*f/srate; c=cos(w); alpha=sin(w)/(2*q); a0=1+alpha;
+  b0=hp ? (1+c)/2 : (1-c)/2;
+  base[0]=b0/a0;
+  base[1]=(hp ? -2*b0 : 2*b0)/a0;
+  base[2]=b0/a0;
+  base[3]=-2*c/a0;
+  base[4]=(1-alpha)/a0;
+);
+
+function biquad(x, base) instance(z1 z2) local(y) (
+  y=base[0]*x+z1;
+  z1=base[1]*x-base[3]*y+z2;
+  z2=base[2]*x-base[4]*y;
+  y;
+);
+
+
+function configure() local(i) (
+  lowcut=slider4;
+  highcut=max(lowcut+200,slider5);
+  splitf=min(max(slider6,lowcut+100),highcut-100);
+  t_carrier=slider3+slider15;
+  t_lowcarrier=lowcut+splitf+slider15;
+  t_highcarrier=splitf+highcut+slider15;
+  t_hp=1-exp(-twopi*lowcut/srate);
+  t_lp=1-exp(-twopi*highcut/srate);
+  t_rhp=1-exp(-twopi*max(220,lowcut)/srate);
+  t_rlp=1-exp(-twopi*min(2900,highcut)/srate);
+  crossover_coeff(lpt1,splitf,0.541196100146197,0);
+  crossover_coeff(lpt2,splitf,1.306562964876377,0);
+  crossover_coeff(hpt1,splitf,0.541196100146197,1);
+  crossover_coeff(hpt2,splitf,1.306562964876377,1);
+  t_noise=slider8<=-90 ? 0 : 10^(slider8/20);
+  t_burst=slider21<=-70 ? 0 : 10^(slider21/20);
+  t_drive=10^(slider11/20); t_mix=slider12/100; t_gain=10^(slider13/20);
+  t_method=slider2; t_radio=slider7; t_match=slider16;
+  t_drift=slider9; t_driftrate=slider10;
+  t_tone=slider22; t_tonefreq=slider23;
+  valid_rate=srate>2*(max(t_carrier,t_highcarrier)+highcut+slider9);
+  t_active=slider1!=2 && valid_rate;
+  sq_threshold=10^(slider18/20); sq_hold=srate*slider19/1000;
+  smooth=1-exp(-1/(0.020*srate));
+  smooth_coeff=1-exp(-16/(0.020*srate));
+  detector_attack=1-exp(-1/(0.003*srate));
+  detector_release=1-exp(-1/(0.030*srate));
+  gate_attack=1-exp(-1/(0.004*srate));
+  gate_release=1-exp(-1/(0.012*srate));
+  burst_decay=exp(-1/(0.012*srate));
+  rms_alpha=1-exp(-1/(0.350*srate));
+  match_alpha=1-exp(-1/(0.200*srate));
+  meter_decay=exp(-1/(0.650*srate));
+  !smoother_ready ? (
+    s_carrier=t_carrier;s_lowcarrier=t_lowcarrier;s_highcarrier=t_highcarrier;
+    s_hp=t_hp;s_lp=t_lp;s_rhp=t_rhp;s_rlp=t_rlp;
+    s_noise=t_noise;s_burst=t_burst;s_drive=t_drive;s_mix=t_mix;s_gain=t_gain;
+    s_method=t_method;s_radio=t_radio;s_match=t_match;s_active=t_active;
+    s_drift=t_drift;s_driftrate=t_driftrate;s_tone=t_tone;s_tonefreq=t_tonefreq;
+    memcpy(lpq1,lpt1,20);
+    gate_cmd=slider17==0 ? 1 : slider17==2 ? slider20 : 0;
+    gate_env=gate_old=gate_cmd;
+    smoother_ready=1;
+  );
+  i=1;loop(23,cache[i]=slider(i);i+=1;);
+);
+
+function ingest_parameters() local(i changed) (
+  slider14!=preset_seen ? (
+    slider14>0 ? (apply_preset(slider14);sliderchange(2097150););
+    preset_seen=slider14;
+  ) : slider14>0 ? (
+    i=2;changed=0;
+    loop(20,
+      i!=14 && i!=20 && slider(i)!=cache[i] ? changed=1;
+      i+=1;
+    );
+    changed ? (slider14=0;preset_seen=0;sliderchange(slider14););
+  );
+  configure();
+);
+
+// Given the newest sample at position write_pos, return the quadrature
+// component and delayed real component of one channel and one band.
+function analytic(base, sample) local(t idx q delidx) (
+  (base+write_pos)[] = sample;
+  q = 0;
+  t = 0;
+  loop(128,
+    idx = write_pos-t;
+    idx < 0 ? idx += 255;
+    q += (base+idx)[] * hilbert[t];
+    t += 2;
+  );
+  delidx = write_pos-127;
+  delidx < 0 ? delidx += 255;
+  analytic_q = q;
+  (base+delidx)[];
+);
+
+@slider
+pdc_delay=127;pdc_bot_ch=0;pdc_top_ch=2;
+ingest_parameters();
+
+@block
+ui_dirty ? (ui_dirty=0;ingest_parameters(););
+ui_clear_clips ? (clip_in=clip_out=0;ui_clear_clips=0;);
+
+@sample
+raw_l=spl0;raw_r=spl1;
+s_carrier+=smooth*(t_carrier-s_carrier);
+s_lowcarrier+=smooth*(t_lowcarrier-s_lowcarrier);
+s_highcarrier+=smooth*(t_highcarrier-s_highcarrier);
+s_hp+=smooth*(t_hp-s_hp);s_lp+=smooth*(t_lp-s_lp);
+s_rhp+=smooth*(t_rhp-s_rhp);s_rlp+=smooth*(t_rlp-s_rlp);
+s_noise+=smooth*(t_noise-s_noise);s_burst+=smooth*(t_burst-s_burst);
+s_drive+=smooth*(t_drive-s_drive);s_mix+=smooth*(t_mix-s_mix);s_gain+=smooth*(t_gain-s_gain);
+s_method+=smooth*(t_method-s_method);s_radio+=smooth*(t_radio-s_radio);
+s_match+=smooth*(t_match-s_match);s_active+=smooth*(t_active-s_active);
+s_drift+=smooth*(t_drift-s_drift);s_driftrate+=smooth*(t_driftrate-s_driftrate);
+s_tone+=smooth*(t_tone-s_tone);s_tonefreq+=smooth*(t_tonefreq-s_tonefreq);
+coeff_tick+=1;
+coeff_tick>=16 ? (
+  coeff_tick=0;ci=0;
+  loop(20,lpq1[ci]+=smooth_coeff*(lpt1[ci]-lpq1[ci]);ci+=1;);
+);
+tone_phase+=twopi*s_tonefreq/srate;tone_phase>=twopi ? tone_phase-=twopi;
+test_sample=0.0630957344480193*sin(tone_phase);
+in_l=raw_l*(1-s_tone)+test_sample*s_tone;
+in_r=raw_r*(1-s_tone)+test_sample*s_tone;
+(1536+write_pos)[]=in_l;(1792+write_pos)[]=in_r;
+dry_idx=write_pos-127;dry_idx<0 ? dry_idx+=255;
+dry_l=(1536+dry_idx)[];dry_r=(1792+dry_idx)[];
+pre_hp_l+=s_hp*(in_l-pre_hp_l);pre_hp_r+=s_hp*(in_r-pre_hp_r);
+pre_lp_l+=s_lp*(in_l-pre_hp_l-pre_lp_l);pre_lp_r+=s_lp*(in_r-pre_hp_r-pre_lp_r);
+voice_l=pre_lp_l;voice_r=pre_lp_r;
+// Keep both paths warm, including their crossover state, for smooth method changes.
+lo_l=ll1.biquad(voice_l,lpq1);lo_l=ll2.biquad(lo_l,lpq2);
+lo_l=ll3.biquad(lo_l,lpq1);lo_l=ll4.biquad(lo_l,lpq2);
+lo_r=lr1.biquad(voice_r,lpq1);lo_r=lr2.biquad(lo_r,lpq2);
+lo_r=lr3.biquad(lo_r,lpq1);lo_r=lr4.biquad(lo_r,lpq2);
+hi_l=hl1.biquad(voice_l,hpq1);hi_l=hl2.biquad(hi_l,hpq2);
+hi_l=hl3.biquad(hi_l,hpq1);hi_l=hl4.biquad(hi_l,hpq2);
+hi_r=hr1.biquad(voice_r,hpq1);hi_r=hr2.biquad(hi_r,hpq2);
+hi_r=hr3.biquad(hi_r,hpq1);hi_r=hr4.biquad(hi_r,hpq2);
+write_pos[]=voice_l;(256+write_pos)[]=voice_r;
+(512+write_pos)[]=lo_l;(768+write_pos)[]=lo_r;
+(1024+write_pos)[]=hi_l;(1280+write_pos)[]=hi_r;
+drift_phase+=twopi*s_driftrate/srate;drift_phase>=twopi ? drift_phase-=twopi;
+drift=s_radio*s_drift*sin(drift_phase);
+phase+=twopi*(s_carrier+drift)/srate;phase>=twopi ? phase-=twopi;
+phase_lo+=twopi*(s_lowcarrier+drift)/srate;phase_lo>=twopi ? phase_lo-=twopi;
+phase_hi+=twopi*(s_highcarrier+drift)/srate;phase_hi>=twopi ? phase_hi-=twopi;
+simple_l=simple_r=split_l=split_r=0;
+s_method<0.999999 ? (
+  real_l=analytic(0,voice_l);quad_l=analytic_q;
+  real_r=analytic(256,voice_r);quad_r=analytic_q;
+  cs=cos(phase);sn=sin(phase);
+  simple_l=real_l*cs+quad_l*sn;simple_r=real_r*cs+quad_r*sn;
+);
+s_method>0.000001 ? (
+  cl=cos(phase_lo);sl=sin(phase_lo);ch=cos(phase_hi);sh=sin(phase_hi);
+  rl=analytic(512,lo_l);ql=analytic_q;rr=analytic(768,lo_r);qr=analytic_q;
+  split_l=rl*cl+ql*sl;split_r=rr*cl+qr*sl;
+  rl=analytic(1024,hi_l);ql=analytic_q;rr=analytic(1280,hi_r);qr=analytic_q;
+  split_l+=rl*ch+ql*sh;split_r+=rr*ch+qr*sh;
+);
+fx_l=simple_l*(1-s_method)+split_l*s_method;
+fx_r=simple_r*(1-s_method)+split_r*s_method;
+radio_hp_l+=s_rhp*(fx_l-radio_hp_l);radio_hp_r+=s_rhp*(fx_r-radio_hp_r);
+radio_lp_l+=s_rlp*(fx_l-radio_hp_l-radio_lp_l);
+radio_lp_r+=s_rlp*(fx_r-radio_hp_r-radio_lp_r);
+// Noise is band-limited before both the receiver hiss and squelch bursts.
+noise_l=rand(2)-1;noise_r=rand(2)-1;
+noise_hp_l+=s_rhp*(noise_l-noise_hp_l);noise_hp_r+=s_rhp*(noise_r-noise_hp_r);
+noise_lp_l+=s_rlp*(noise_l-noise_hp_l-noise_lp_l);
+noise_lp_r+=s_rlp*(noise_r-noise_hp_r-noise_lp_r);
+radio_l=softclip(radio_lp_l*s_drive)+noise_lp_l*s_noise;
+radio_r=softclip(radio_lp_r*s_drive)+noise_lp_r*s_noise;
+fx_l=fx_l*(1-s_radio)+radio_l*s_radio;
+fx_r=fx_r*(1-s_radio)+radio_r*s_radio;
+// Slow, bounded RMS comparison; never chase the noise floor in pauses.
+rms_in+=rms_alpha*(0.5*(dry_l*dry_l+dry_r*dry_r)-rms_in);
+rms_fx+=rms_alpha*(0.5*(fx_l*fx_l+fx_r*fx_r)-rms_fx);
+level_target=rms_in>0.0000001 && rms_fx>0.000000001 ? min(4,max(0.25,sqrt(rms_in/rms_fx))) : 1;
+level_gain+=match_alpha*(level_target-level_gain);
+level_apply=1+s_match*(level_gain-1);
+fx_l*=level_apply;fx_r*=level_apply;
+// Stereo-linked gate with 6 dB hysteresis, hold, and smoothed opening/closing.
+detect=max(abs(dry_l),abs(dry_r));
+sq_env+=(detect>sq_env ? detector_attack : detector_release)*(detect-sq_env);
+slider17==0 ? gate_cmd=1 : slider17==2 ? gate_cmd=slider20 : (
+  sq_env>=sq_threshold ? (gate_cmd=1;sq_remaining=sq_hold;) : (
+    sq_env>=sq_threshold*0.501187 ? sq_remaining=sq_hold : sq_remaining=max(0,sq_remaining-1);
+    sq_remaining<=0 ? gate_cmd=0;
+  );
+);
+gate_cmd!=gate_old ? (
+  slider17!=0 ? burst_env=1;
+  gate_old=gate_cmd;
+);
+gate_env+=(gate_cmd>gate_env ? gate_attack : gate_release)*(gate_cmd-gate_env);
+burst_env*=burst_decay;
+burst_amp=s_radio*s_burst*burst_env;
+processed_l=((dry_l*(1-s_mix)+fx_l*s_mix)*gate_env+noise_lp_l*burst_amp)*s_gain;
+processed_r=((dry_r*(1-s_mix)+fx_r*s_mix)*gate_env+noise_lp_r*burst_amp)*s_gain;
+spl0=dry_l*(1-s_active)+processed_l*s_active;
+spl1=dry_r*(1-s_active)+processed_r*s_active;
+write_pos=(write_pos+1)%255;
+peak_input=max(abs(in_l),abs(in_r));peak_output=max(abs(spl0),abs(spl1));
+meter_in=max(peak_input,meter_in*meter_decay);meter_out=max(peak_output,meter_out*meter_decay);
+clip_in=peak_input>=1 ? srate*1.5 : max(0,clip_in-1);
+clip_out=peak_output>=1 ? srate*1.5 : max(0,clip_out-1);
+audio_counter+=1;
+spec_in_l[spec_pos]=in_l;spec_in_r[spec_pos]=in_r;
+spec_out_l[spec_pos]=spl0;spec_out_r[spec_pos]=spl1;
+spec_pos=(spec_pos+1)%1024;
+
+@gfx 1080 860
+function color(c) (gfx_set(((c>>16)&255)/255,((c>>8)&255)/255,(c&255)/255,1););
+function label(x,y,str,c,size) (
+  color(c);gfx_setfont(1,"Arial",size);gfx_x=x;gfx_y=y;gfx_drawstr(str);
+);
+function box(x,y,w,h,c) (color(c);gfx_rect(x,y,w,h););
+function inside(x,y,w,h) (ui_mx>=x && ui_mx<x+w && ui_my>=y && ui_my<y+h;);
+function button(x,y,w,h,str,active) local(hover) (
+  hover=inside(x,y,w,h);
+  box(x,y,w,h,active ? $x176354 : hover ? $x243746 : $x152737);
+  color(active ? $x57e8bd : $x344959);gfx_roundrect(x,y,w,h,5);
+  color($xe8f0f3);gfx_setfont(1,"Arial",12);gfx_x=x;gfx_y=y;
+  gfx_drawstr(str,1|4,x+w,y+h);
+  hover && ui_click;
+);
+function ui_put(id,v,endtouch) local(mask) (
+  slider(id)=v;mask=2^(id-1);sliderchange(mask);slider_automate(mask,endtouch);ui_dirty=1;
+);
+function commit_edit() local(v ok) (
+  ok=match("%f",#ui_text,v);
+  ok ? (
+    v=min(ui_editmax,max(ui_editmin,floor(v/ui_editstep+0.5)*ui_editstep));
+    ui_put(ui_edit,v,1);ui_edit=0;
+  );
+  ok;
+);
+function edit_start(id,lo,hi,step) (
+  ui_edit=id;ui_editmin=lo;ui_editmax=hi;ui_editstep=step;ui_replace=1;
+  step<0.1 ? sprintf(#ui_text,"%.2f",slider(id)) :
+  step<1 ? sprintf(#ui_text,"%.1f",slider(id)) : sprintf(#ui_text,"%d",slider(id));
+);
+function valuebox(id,x,y,w,h,lo,hi,step,unit) local(v) (
+  box(x,y,w,h,ui_edit==id ? $x224a50 : $x0b1722);
+  color(ui_edit==id ? $x65e9c3 : $x30414f);gfx_roundrect(x,y,w,h,4);
+  ui_edit==id ? sprintf(#value_text,"%s_",#ui_text) : (
+    step<0.1 ? sprintf(#value_text,"%.2f %s",slider(id),unit) :
+    step<1 ? sprintf(#value_text,"%.1f %s",slider(id),unit) :
+    sprintf(#value_text,"%d %s",slider(id),unit);
+  );
+  color($xe5f4ef);gfx_setfont(1,"Arial",14);gfx_x=x;gfx_y=y;
+  gfx_drawstr(#value_text,1|4,x+w,y+h);
+  inside(x,y,w,h) ? (
+    ui_click ? (ui_edit_x=x;ui_edit_y=y;ui_edit_w=w;ui_edit_h=h;edit_start(id,lo,hi,step););
+    ui_wheel!=0 && ui_edit==0 ? (
+      v=min(hi,max(lo,slider(id)+ui_wheel*step));ui_put(id,v,1);ui_wheel=0;
+    );
+  );
+);
+function knob(id,x,y,name,lo,hi,step,def,unit,dim) local(cx cy a v tick ang norm hover) (
+  cx=x+82;cy=y+69;
+  box(x,y,164,154,$x101f2d);
+  label(x+13,y+11,name,dim ? $x72858c : $x99b8bd,12);
+  color($x08121b);gfx_circle(cx,cy,35,1,1);
+  color($x334653);gfx_circle(cx,cy,35,0,1);
+  norm=min(1,max(0,(slider(id)-lo)/(hi-lo)));
+  tick=0;
+  loop(33,
+    ang=2.35619449+tick/32*4.71238898;
+    color(tick/32<=norm ? (dim ? $x537c77 : $x50d9b6) : $x2c404b);
+    gfx_line(cx+cos(ang)*40,cy+sin(ang)*40,cx+cos(ang)*44,cy+sin(ang)*44,1);
+    tick+=1;
+  );
+  ang=2.35619449+norm*4.71238898;
+  color($xe6fff5);gfx_line(cx+cos(ang)*12,cy+sin(ang)*12,cx+cos(ang)*29,cy+sin(ang)*29,1);
+  hover=inside(x+18,y+30,128,82);
+  hover ? (
+    #ui_hint="Drag knob / Shift: fine / double-click: reset / click value: type";
+    ui_click ? (
+      ui_last_knob==id && ui_now-ui_last_click<0.30 ? (
+        ui_put(id,def,1);ui_drag=0;ui_last_knob=0;
+      ) : (
+        ui_drag=id;ui_dragvalue=slider(id);ui_dragmin=lo;ui_dragmax=hi;ui_dragstep=step;
+        ui_drag_y=ui_my;ui_drag_x=ui_mx;ui_last_knob=id;ui_last_click=ui_now;
+      );
+    );
+    ui_wheel!=0 ? (
+      v=min(hi,max(lo,slider(id)+ui_wheel*step));ui_put(id,v,1);ui_wheel=0;
+    );
+  );
+  valuebox(id,x+19,y+119,126,25,lo,hi,step,unit);
+);
+function meter(x,y,name,level,clipped) local(db fill) (
+  db=20*log10(max(0.0000316228,level));fill=min(1,max(0,(db+60)/60));
+  label(x,y-1,name,$x8eacb7,11);box(x+33,y,282,11,$x08111b);
+  box(x+33,y,282*min(fill,0.9),11,$x49cbb2);
+  fill>0.9 ? box(x+33+282*0.9,y,282*(fill-0.9),11,$xf5b567);
+  sprintf(#dbtxt,"%+.1f",db);label(x+322,y-2,#dbtxt,$xc6d9dc,11);
+  box(x+371,y-2,35,15,clipped ? $xd5524f : $x20303a);
+  label(x+376,y-1,"CLIP",clipped ? $xffffff : $x688087,9);
+  inside(x+371,y-2,35,15) && ui_click ? ui_clear_clips=1;
+);
+
+// Render to a fixed design canvas and scale the completed interface to fit.
+ui_scale=min(gfx_w/1080,gfx_h/860);
+ui_ox=(gfx_w-1080*ui_scale)/2;ui_oy=(gfx_h-860*ui_scale)/2;
+ui_mx=(mouse_x-ui_ox)/max(0.01,ui_scale);ui_my=(mouse_y-ui_oy)/max(0.01,ui_scale);
+ui_now=time_precise();
+ui_click=(mouse_cap&1) && !(ui_last_mouse&1);
+ui_release=!(mouse_cap&1) && (ui_last_mouse&1);
+ui_wheel=mouse_wheel/120;mouse_wheel=0;
+#ui_hint="LautFunk  /  Voice inversion effect  /  127 samples latency";
+ui_edit>0 && ui_click && !inside(ui_edit_x,ui_edit_y,ui_edit_w,ui_edit_h) ? (
+  !commit_edit() ? ui_edit=0;
+);
+ui_key=gfx_getchar();
+while(ui_key>0) (
+  ui_edit>0 ? (
+    ui_key==13 ? commit_edit() : ui_key==27 ? ui_edit=0 :
+    ui_key==1 ? ui_replace=1 :
+    ui_key==8 || ui_key==127 ? (
+      ui_replace ? #ui_text="" : str_setlen(#ui_text,max(0,strlen(#ui_text)-1));ui_replace=0;
+    ) : (ui_key>=48 && ui_key<=57) || ui_key==45 || ui_key==43 || ui_key==46 || ui_key==44 ? (
+      ui_replace ? (#ui_text="";ui_replace=0;);
+      strlen(#ui_text)<14 ? sprintf(#ui_text,"%s%c",#ui_text,ui_key==44 ? 46 : ui_key);
+    );
+  );
+  ui_key=gfx_getchar();
+);
+ui_drag>0 ? (
+  mouse_cap&1 ? (
+    ui_dragvalue+=((ui_drag_y-ui_my)+(ui_mx-ui_drag_x)*0.15)*(ui_dragmax-ui_dragmin)/180*((mouse_cap&8) ? 0.1 : 1);
+    ui_dragvalue=min(ui_dragmax,max(ui_dragmin,ui_dragvalue));
+    ui_v=min(ui_dragmax,max(ui_dragmin,floor(ui_dragvalue/ui_dragstep+0.5)*ui_dragstep));
+    ui_v!=slider(ui_drag) ? ui_put(ui_drag,ui_v,0);
+    ui_drag_y=ui_my;ui_drag_x=ui_mx;
+  ) : (slider_automate(2^(ui_drag-1),1);ui_drag=0;);
+);
+ui_pressed_ptt && (!(mouse_cap&1) || !(gfx_getchar(65536)&2)) ? (
+  ui_put(20,0,1);ui_pressed_ptt=0;
+);
+gfx_setimgdim(0,1080,860);gfx_dest=0;gfx_mode=0;
+box(0,0,1080,860,$x08121c);box(0,0,6,860,$x46d8b0);
+label(25,18,"LAUTFUNK",$xeafff7,29);
+label(212,24,"VOICE SCRAMBLER",$x74a4ad,18);
+label(27,57,"V2.2   /   FREQUENCY INVERSION   /   RADIO LAB",$x6d919e,11);
+// Display meters also decay while the audio engine is stopped.
+ui_audio_seen!=audio_counter ? (
+  ui_audio_seen=audio_counter;ui_audio_time=ui_now;
+  ui_meter_in=meter_in;ui_meter_out=meter_out;
+) : ui_now-ui_audio_time>0.1 ? (ui_meter_in*=0.92;ui_meter_out*=0.92;);
+meter(645,25,"IN",ui_meter_in,clip_in>0 && ui_now-ui_audio_time<1.5);
+meter(645,49,"OUT",ui_meter_out,clip_out>0 && ui_now-ui_audio_time<1.5);
+
+slider14==0 ? #preset_name="CUSTOM" : slider14==1 ? #preset_name="KGB COLD WAR" :
+slider14==2 ? #preset_name="FIELD RADIO 1970" : slider14==3 ? #preset_name="NSA NUMBERS" : #preset_name="DEEP SCRAMBLE";
+button(24,88,208,36,#preset_name,0) ? (
+  gfx_x=ui_ox+24*ui_scale;gfx_y=ui_oy+125*ui_scale;
+  ui_p=gfx_showmenu("Custom|KGB Cold War|Field Radio 1970|NSA Numbers|Deep Scramble");
+  ui_p>0 ? (
+    slider14=ui_p-1;slider14>0 ? apply_preset(slider14);
+    sliderchange(8388607);slider_automate(8388607,1);ui_dirty=1;
+  );
+);
+slider1==0 ? #op_name="SCRAMBLE" : slider1==1 ? #op_name="DESCRAMBLE" : #op_name="BYPASS";
+button(244,88,162,36,#op_name,slider1==2) ? (
+  gfx_x=ui_ox+244*ui_scale;gfx_y=ui_oy+125*ui_scale;ui_p=gfx_showmenu("Scramble|Descramble|Bypass");
+  ui_p>0 ? ui_put(1,ui_p-1,1);
+);
+button(418,88,172,36,slider2==0 ? "SIMPLE INVERSION" : "SPLIT BAND",slider2==1) ? ui_put(2,1-slider2,1);
+button(602,88,152,36,slider7==0 ? "CLEAN" : "OLD RADIO",slider7==1) ? ui_put(7,1-slider7,1);
+button(766,88,142,36,"CLEAN DECODE",0) ? (
+  clean_decode();sliderchange(8388607);slider_automate(8388607,1);ui_dirty=1;
+);
+button(920,88,136,36,"LEVEL MATCH",slider16==1) ? ui_put(16,1-slider16,1);
+
+knob(3,24,143,"CARRIER",1800,6000,10,3300,"Hz",slider2==1);
+knob(15,198,143,"FINE TUNE",-50,50,0.1,0,"Hz",0);
+knob(4,372,143,"VOICE LOW",80,600,10,300,"Hz",0);
+knob(5,546,143,"VOICE HIGH",1200,5000,10,3000,"Hz",0);
+knob(6,720,143,"BAND SPLIT",700,3000,10,1650,"Hz",slider2==0);
+knob(12,894,143,"WET MIX",0,100,1,100,"%",0);
+knob(11,24,316,"RADIO DRIVE",0,12,0.1,0,"dB",slider7==0);
+knob(8,198,316,"RADIO NOISE",-90,-20,1,-60,"dB",slider7==0);
+knob(9,372,316,"CARRIER DRIFT",0,18,0.1,0,"Hz",slider7==0);
+knob(10,546,316,"DRIFT RATE",0.05,2,0.01,0.35,"Hz",slider7==0);
+knob(13,720,316,"OUTPUT",-24,12,0.1,0,"dB",0);
+knob(18,894,316,"SQUELCH LEVEL",-90,-10,1,-45,"dB",slider17!=1);
+
+box(24,490,1032,90,$x10232e);
+label(36,499,"RECEIVER",$x7faaa8,10);
+slider17==0 ? #sq_name="SQUELCH OFF" : slider17==1 ? #sq_name="AUTO SQUELCH" : #sq_name="PTT MODE";
+button(36,520,174,34,#sq_name,slider17>0) ? (
+  gfx_x=ui_ox+36*ui_scale;gfx_y=ui_oy+554*ui_scale;ui_p=gfx_showmenu("Squelch off|Automatic|PTT mode");
+  ui_p>0 ? ui_put(17,ui_p-1,1);
+);
+label(224,499,"HOLD",$x7faaa8,10);valuebox(19,224,523,96,28,20,600,1,"ms");
+label(336,499,"RADIO BURST",$x7faaa8,10);valuebox(21,336,523,112,28,-70,-20,1,"dB");
+button(464,514,164,42,ui_pressed_ptt || (slider17==2 && slider20==1) ? "TRANSMITTING" : "HOLD TO TALK",slider17==2 && slider20==1) ? (
+  ui_put(17,2,1);ui_put(20,1,0);ui_pressed_ptt=1;
+);
+label(648,499,"PROBE FREQUENCY",$x7faaa8,10);valuebox(23,648,523,130,28,100,5000,1,"Hz");
+button(796,520,128,34,slider22==1 ? "TONE ON" : "TEST TONE",slider22==1) ? ui_put(22,1-slider22,1);
+label(800,558,"Sine / -24 dBFS",$x78939e,10);
+box(945,522,9,9,gate_cmd ? $x58ddb2 : $x42616b);
+label(963,519,gate_cmd ? "OPEN" : "CLOSED",$xc1dbd9,11);
+sprintf(#match_text,"MATCH %+.1f dB",20*log10(max(0.01,1+slider16*(level_gain-1))));
+label(940,544,#match_text,$x78939e,9);
+
+box(24,594,1032,40,$x132c35);
+ui_low=slider4;ui_high=max(slider4+200,slider5);
+ui_split=min(max(slider6,ui_low+100),ui_high-100);
+ui_mapcarrier=slider2==0 ? slider3+slider15 : slider23<=ui_split ? ui_low+ui_split+slider15 : ui_split+ui_high+slider15;
+ui_mapped=abs(ui_mapcarrier-slider23);
+sprintf(#map_text,"%.1f Hz   >   %.1f Hz",slider23,ui_mapped);
+label(38,607,"FREQUENCY MAP",$x7ea9ae,11);label(192,601,#map_text,$xe6fff4,23);
+ui_outside=slider23<ui_low || slider23>ui_high;
+slider2==0 ? sprintf(#map_note,"Carrier %.1f Hz%s",slider3+slider15,ui_outside ? " / outside voice band" : "") :
+  sprintf(#map_note,"Carriers %.1f / %.1f Hz",ui_low+ui_split+slider15,ui_split+ui_high+slider15);
+label(644,607,#map_note,ui_outside ? $xefb87b : $x8eacb7,12);
+
+// 1024-point stereo spectrum; channel magnitudes never cancel each other.
+ui_frame+=1;
+ui_frame>=3 ? (
+  ui_frame=0;j=0;
+  loop(1024,
+    k=(spec_pos+j)%1024;w=fft_window[j];
+    fft_in_l[j*2]=spec_in_l[k]*w;fft_in_l[j*2+1]=0;
+    fft_in_r[j*2]=spec_in_r[k]*w;fft_in_r[j*2+1]=0;
+    fft_out_l[j*2]=spec_out_l[k]*w;fft_out_l[j*2+1]=0;
+    fft_out_r[j*2]=spec_out_r[k]*w;fft_out_r[j*2+1]=0;
+    j+=1;
+  );
+  fft(fft_in_l,1024);fft_permute(fft_in_l,1024);
+  fft(fft_in_r,1024);fft_permute(fft_in_r,1024);
+  fft(fft_out_l,1024);fft_permute(fft_out_l,1024);
+  fft(fft_out_r,1024);fft_permute(fft_out_r,1024);
+);
+px=62;py=670;pw=975;ph=115;maxfreq=min(6500,srate*0.48);
+box(24,646,1032,174,$x0c1b27);
+label(38,652,"SPECTRUM",$x799fab,10);label(770,652,"INPUT",$x56d7d0,10);label(828,652,"OUTPUT",$xffb66c,10);
+label(900,652,"L/R PEAK / dBFS",$x6c8998,10);
+i=0;
+loop(4,
+  gy=py+i*ph/3;color($x203440);gfx_line(px,gy,px+pw,gy);
+  sprintf(#dbtick,"%d",-i*26);label(34,gy-5,#dbtick,$x5c7d8b,10);i+=1;
+);
+i=0;
+loop(5,
+  tickhz=i==0 ? 100 : i==1 ? 300 : i==2 ? 1000 : i==3 ? 3000 : maxfreq;
+  gx=px+log(tickhz/100)/log(maxfreq/100)*pw;
+  color($x203440);gfx_line(gx,py,gx,py+ph);
+  sprintf(#freqtxt,"%d Hz",tickhz);gfx_setfont(1,"Arial",10);gfx_measurestr(#freqtxt,tw,th);
+  label(max(px,min(px+pw-tw,gx-tw/2)),py+ph+9,#freqtxt,$x74929e,10);i+=1;
+);
+j=0;
+loop(320,
+  hz=100*(maxfreq/100)^(j/319);b=min(511,max(1,floor(hz*1024/srate)));
+  mi=sqrt(max(fft_in_l[b*2]^2+fft_in_l[b*2+1]^2,fft_in_r[b*2]^2+fft_in_r[b*2+1]^2))/256;
+  mo=sqrt(max(fft_out_l[b*2]^2+fft_out_l[b*2+1]^2,fft_out_r[b*2]^2+fft_out_r[b*2+1]^2))/256;
+  di=max(-78,min(0,20*log10(max(mi,0.00001))));do_=max(-78,min(0,20*log10(max(mo,0.00001))));
+  x=px+j*pw/319;yi=py+ph-(di+78)/78*ph;yo=py+ph-(do_+78)/78*ph;
+  j>0 ? (
+    color($x56d7d0);gfx_line(last_x,last_yi,x,yi,1);
+    color($xffb66c);gfx_line(last_x,last_yo,x,yo,1);
+  );
+  last_x=x;last_yi=yi;last_yo=yo;j+=1;
+);
+slider23>=100 && slider23<=maxfreq ? (
+  gx=px+log(slider23/100)/log(maxfreq/100)*pw;color($x56d7d0);gfx_line(gx,py,gx,py+ph,1);
+);
+ui_mapped>=100 && ui_mapped<=maxfreq ? (
+  gx=px+log(ui_mapped/100)/log(maxfreq/100)*pw;color($xffb66c);gfx_line(gx,py,gx,py+ph,1);
+);
+!valid_rate ? #ui_hint="Sample rate too low for these settings: delayed dry signal is passed through.";
+ui_edit>0 ? #ui_hint="Type a number / Enter: apply / Escape: cancel / comma or decimal point accepted";
+label(26,837,#ui_hint,$x7c99a6,11);
+gfx_dest=-1;box(0,0,gfx_w,gfx_h,$x050b12);
+gfx_x=ui_ox;gfx_y=ui_oy;gfx_blit(0,ui_scale,0);
+ui_last_mouse=mouse_cap;

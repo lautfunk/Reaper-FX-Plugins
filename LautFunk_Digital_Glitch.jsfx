@@ -1,0 +1,605 @@
+desc:LautFunk Digital Glitch
+// v1.2.0 | Standalone stereo JSFX. No imports or external assets.
+// Event-only pitch modulation: Drift, Steps, Crash and Chaos (random mode).
+// Pitch controls are in PITCH. Range: +/-0..24 semitones, speed: 0.1..30 Hz.
+// Sync rounds modulation to complete movements within each glitch (Steps:
+// at least two cells). Crash is one sweep; speed adjusts its curvature.
+// Mode/range/speed/sync latch at event start; Pitch On/Off responds immediately.
+// Pitch has its own PRNG: toggling it does not change the glitch schedule.
+// A stereo-linked, two-head variable-delay pitch shifter processes the wet
+// result. Its 30 ms grains can smear the first part of a short glitch.
+// No host latency is reported; the dry path is never delayed or pitch shifted.
+// More action: 0..1200/min in 0.01 steps, 20..10000 ms, Dauerfeuer mode.
+// Click a main knob's number to type an exact value (comma or decimal point).
+// Wet now controls the full effect mix independently of normal intensity.
+// Intensity 0..5% smoothly fades to dry; above 5% only damage is changed.
+// Old parameter numbers/units are retained. Existing instances keep their
+// saved values: click a new preset after updating to hear the stronger setup.
+// Random digital damage in short events; original audio between events.
+// Installation: REAPER > Options > Show REAPER resource path > Effects.
+// Copy this file into Effects/LautFunk, rescan FX, search "LautFunk Digital".
+// Four main knobs: drag vertically, wheel, Shift=fine, double-click=default.
+// Details exposes event selection, speech gate, fades, seed and output.
+// Rate is an approximate target per active minute; event time and minimum
+// gap impose a maximum. Speech detection is amplitude-based, not semantic.
+// Fixed seed repeats with identical source, settings and playback start.
+// Different start/seek positions do NOT recreate previous event history.
+// Manual automation: parameter 20, rising edge 0 -> 1. Return to 0 to rearm.
+// Manual triggers ignore the speech threshold and minimum gap, but never
+// overlap an active event. No pending trigger is queued through an event.
+// Wet=0 or intensity=0 preserves input at unity output gain.
+// Wet peak guard acts ONLY on processed signal, BEFORE output gain.
+// It is not a final-output/true-peak limiter. Dry audio is not clipped.
+// Presets apply only on selection changes; saved custom edits survive reload.
+options:gfx_hz=30
+in_pin:Left
+in_pin:Right
+out_pin:Left
+out_pin:Right
+slider1:0<0,3,1{Eigene Einstellung,Schlechte Verbindung,Digitaler Schluckauf,Systemabsturz}>-Preset
+slider2:90<0,100,0.1>-Wet / Dry (%)
+slider3:180<0,1200,0.01>-Haeufigkeit (Ziel / aktive Minute; 0=manuell)
+slider4:450<20,10000,1>-Dauer (ms)
+slider5:85<0,100,0.1>-Intensitaet (%)
+slider6:45<0,100,1>-Variation (%)
+slider7:0<0,10,0.001>-Mindestpause nach Glitch (s)
+slider8:1<0,1,1{Immer,Nur bei Signal}>-Automatik ausloesen
+slider9:-42<-80,-10,1>-Signalschwelle (dBFS)
+slider10:150<0,500,10>-Signal-Nachhaltezeit (ms)
+slider11:1<0,1,1{Aus,An}>-Stutter
+slider12:1<0,1,1{Aus,An}>-Buffer Freeze
+slider13:1<0,1,1{Aus,An}>-Bitcrush Burst
+slider14:1<0,1,1{Aus,An}>-Sample-Rate Glitch
+slider15:1<0,1,1{Aus,An}>-Packet Dropout
+slider16:0<-24,6,0.1>-Ausgang (dB)
+slider17:4<0.5,20,0.5>-Uebergang (ms)
+slider18:1977<1,99999,1>-Zufallsstartwert (Seed)
+slider19:1<0,1,1{Neu bei Start,Fester Seed}>-Zufallsmodus
+slider20:0<0,1,1{Bereit,Ausloesen}>-Glitch jetzt (steigende Flanke)
+slider21:0<0,1,1{Effekt aktiv,Bypass}>-Bypass
+slider22:1<0,1,1{Aus,An}>-Wet-Peakschutz (-1 dBFS vor Ausgang)
+slider23:0<0,2,1{Zufaellig,Luecken,Wiederholen}>-Packet-Art
+slider24:0<0,1,1{Zufallsabstand,Dauerfeuer}>-Dauerfeuer (keine Zufallspause; Haeufigkeit 0=manuell)
+slider25:1<0,1,1{Aus,An}>-Pitch-Modulation
+slider26:7<0,24,0.1>-Pitch-Bereich (+/- Halbtoene)
+slider27:6<0.1,30,0.1>-Pitch-Tempo (Hz; bei Crash: Verlauf)
+slider28:3<0,3,1{Digital Drift,Pitch Steps,Pitch Crash,Chaos Pitch}>-Pitch-Verlauf
+slider29:1<0,1,1{Freies Tempo,An Glitch-Dauer anpassen}>-Pitch an Glitch-Dauer
+
+@init
+ext_noinit=1;
+pdc_delay=0;
+engine_srate=srate;
+buf_size=ceil(srate*0.2)+32;
+buf_l=1024; buf_r=buf_l+buf_size;
+freeze_l=buf_r+buf_size;freeze_r=freeze_l+buf_size;
+pitch_window=max(32,floor(srate*0.030));
+pitch_size=pitch_window+8;
+pitch_l=freeze_r+buf_size;pitch_r=pitch_l+pitch_size;
+enabled=0;
+preset_seen=slider1;
+preset_armed=0;
+ui_dirty=1; ui_fire=0; fire_seen=0;
+ui_drag=0; ui_last_mouse=0; ui_last_click=-10;
+ui_edit=0;#ui_text="";ui_replace=1;
+ui_advanced=0;ui_pitch_panel=0;ui_tip=0;
+old_play=0; expected_position=-1000000;
+rate_seen=-1; duration_seen=-1; gap_seen=-1; continuous_seen=-1;
+seed_seen=slider18; mode_seen=slider19;
+ready=0;
+
+function random01() local(n) (
+  n=rng*16807;
+  rng=n-floor(n/2147483647)*2147483647;
+  rng/2147483647;
+);
+
+function pitch_random() local(n) (
+  n=pitch_rng*16807;
+  pitch_rng=n-floor(n/2147483647)*2147483647;
+  pitch_rng/2147483647;
+);
+
+function pitch_target() local(v) (
+  v=2*pitch_random()-1;
+  abs(v-pitch_from)<0.35 ? v=pitch_from>=0 ? -0.4-0.6*pitch_random() : 0.4+0.6*pitch_random();
+  v;
+);
+
+function pitch_at_delay(base, delay) local(pos idx frac) (
+  pos=pitch_write-delay+pitch_size;
+  pos>=pitch_size ? pos-=pitch_size;
+  idx=floor(pos);frac=pos-idx;
+  base[idx]+(base[(idx+1)%pitch_size]-base[idx])*frac;
+);
+
+function pitch_motion() local(cycles cell frac target q u) (
+  cycles=event_pos*event_pitch_rate/srate;
+  cell=floor(cycles);frac=cycles-cell;
+  cell!=pitch_cell ? (
+    pitch_from=pitch_to;pitch_to=pitch_target();pitch_cell=cell;
+  );
+  event_pitch_mode==0 ? target=event_pitch_depth*(pitch_from+(pitch_to-pitch_from)*(0.5-0.5*cos($pi*frac)));
+  event_pitch_mode==1 ? (
+    q=min(1,max(0.1,event_pitch_depth));
+    target=max(-event_pitch_depth,min(event_pitch_depth,floor(event_pitch_depth*pitch_from/q+0.5)*q));
+  );
+  event_pitch_mode==2 ? (
+    u=event_pos/max(1,event_len-1);
+    target=event_pitch_depth*(pitch_crash_start+(pitch_crash_end-pitch_crash_start)*u^pitch_curve);
+  );
+  pitch_st+=(target-pitch_st)*pitch_smooth;
+  pitch_ratio_tick-=1;
+  pitch_ratio_tick<=0 ? (
+    pitch_ratio=2^(pitch_st/12);pitch_ratio_tick=8;
+  );
+);
+
+function next_wait() local(idle u) (
+  // At high rates, events may touch; no forced 50 ms idle floor.
+  // Bound rare long gaps to 3x mean. Divide by E[min(Exp(1),3)]
+  // to preserve the requested mean idle time.
+  idle=max(0,60/max(0.01,slider3)-slider7-slider4*0.001);
+  u=random01();
+  slider24 ? 0 : min(3,-log(max(0.000000001,u)))*idle*srate/0.9502129316;
+);
+
+function reset_engine() (
+  rng=slider19 ? max(1,floor(slider18)) : 1+floor(rand(2147483645));
+  write_pos=valid_samples=0;
+  active=0; event_pos=0; cooldown=0;
+  detector=signal_hold=0;
+  wait_samples=next_wait();
+  wet_prev_l=wet_prev_r=dc_l=dc_r=0;
+  manual_old=slider20;
+  fire_seen=ui_fire;
+  peak_in=peak_out=0;
+  samples_run=0;
+  mix_s=slider2/100;gain_s=slider21 ? 1 : 10^(slider16/20);bypass_s=1-slider21;
+  pitch_write=pitch_valid=0;pitch_st=0;pitch_ratio=1;pitch_blend=0;
+);
+
+function apply_preset(p) (
+  p>0 ? (
+    slider8=1;slider9=-48;slider10=150;slider16=0;slider17=3;
+    slider11=1;slider12=1;slider13=1;slider14=1;slider15=1;
+    slider22=1;slider23=0;slider24=0;
+    slider25=1;slider26=7;slider27=6;slider28=3;slider29=1;
+  );
+  p==1 ? (
+    slider2=90;slider3=150;slider4=550;slider5=90;slider6=45;
+    slider7=0.03;slider12=0;slider13=0;
+    slider26=5;slider27=9;slider28=1;
+  );
+  p==2 ? (
+    slider2=90;slider3=180;slider4=450;slider5=85;slider6=45;
+    slider7=0;
+  );
+  p==3 ? (
+    slider2=100;slider3=600;slider4=1200;slider5=100;slider6=60;
+    slider7=0;slider24=1;
+    slider26=12;slider27=12;
+  );
+);
+
+function configure() local(i) (
+  // REAPER can restore slider values after the first @init. Treat those
+  // as saved state; arm preset selection only once processing/UI begins.
+  !preset_armed ? preset_seen=slider1;
+  slider1!=preset_seen ? (
+    apply_preset(slider1);preset_seen=slider1;sliderchange(-1);
+  );
+  target_mix=min(1,max(0,slider2/100));
+  target_gain=slider21 ? 1 : 10^(slider16/20);
+  smooth=1-exp(-1/(0.012*srate));
+  pitch_smooth=1-exp(-1/(0.001*srate));
+  pitch_switch_smooth=1-exp(-1/(0.003*srate));
+  attack=1-exp(-1/(0.002*srate));
+  release=1-exp(-1/(0.035*srate));
+  dc_coeff=exp(-2*$pi*20/srate);
+  meter_decay=exp(-1/(0.45*srate));
+  threshold=10^(slider9/20);
+  hold_samples=slider10*0.001*srate;
+  enabled_count=0;i=0;
+  loop(5,
+    slider(11+i)>=0.5 ? (enabled[enabled_count]=i;enabled_count+=1;);
+    i+=1;
+  );
+  (slider18!=seed_seen || slider19!=mode_seen) ? (
+    rng=slider19 ? max(1,floor(slider18)) : 1+floor(rand(2147483645));
+    wait_samples=next_wait();seed_seen=slider18;mode_seen=slider19;
+  );
+  (slider3!=rate_seen || slider4!=duration_seen || slider7!=gap_seen || slider24!=continuous_seen) ? (
+    wait_samples=next_wait();cooldown=min(cooldown,slider7*srate);
+    rate_seen=slider3;duration_seen=slider4;gap_seen=slider7;continuous_seen=slider24;
+  );
+  (!ready || !samples_run) ? (
+    mix_s=target_mix;gain_s=target_gain;bypass_s=1-slider21;
+    ready=1;
+  );
+  ui_dirty=0;
+);
+
+function start_event() local(v secs requested first) (
+  event_type=enabled[min(enabled_count-1,floor(random01()*enabled_count))];
+  v=slider6/100;
+  secs=min(10,max(0.02,slider4*0.001*(1+(2*random01()-1)*v)));
+  event_len=max(2,floor(secs*srate));
+  strength=min(1,max(0,slider5/100*(1+(2*random01()-1)*v*0.5)));
+  edge=max(1,min(floor(slider17*0.001*srate),floor(event_len/3)));
+  // Copy a short history segment once. The frozen copy remains intact even
+  // during a 10-second event; history can keep recording in a small ring.
+  requested=event_type==1 ? (0.002+(1-strength)*0.010) :
+    event_type==4 ? (0.012+random01()*0.025) : (0.012+(1-strength)*0.100+random01()*0.030);
+  segment_len=max(4,min(valid_samples,floor(requested*srate)));
+  segment_start=(write_pos-segment_len+buf_size)%buf_size;
+  first=min(segment_len,buf_size-segment_start);
+  memcpy(freeze_l,buf_l+segment_start,first);
+  memcpy(freeze_r,buf_r+segment_start,first);
+  first<segment_len ? (
+    memcpy(freeze_l+first,buf_l,segment_len-first);
+    memcpy(freeze_r+first,buf_r,segment_len-first);
+  );
+  splice=max(1,min(floor(srate*0.002),floor(segment_len/4)));
+  period=segment_len-splice;
+  // Signal-relative quantization keeps quiet voices audibly crunchy.
+  quantum=max(0.0001,max(detector*1.25,input_peak))/2^floor(12-10*strength);
+  decimate=event_type==2 ? max(1,floor(srate/(20000*(2000/20000)^strength))) :
+    max(2,floor(srate/(18000*(300/18000)^strength)));
+  hold_count=0;held_l=held_r=0;
+  packet_len=max(4,floor((0.020+random01()*0.035)*srate));
+  packet_loss=max(2,floor(packet_len*(0.25+0.60*strength)));
+  packet_edge=max(1,min(floor(srate*0.002),floor(packet_loss/3)));
+  packet_repeat=slider23==0 ? random01()>=0.5 : slider23==2;
+  wet_prev_l=wet_prev_r=dc_l=dc_r=0;
+  event_pos=0;active=1;event_count+=1;
+  // Snapshot pitch settings, but keep On/Off live. An independent generator
+  // leaves all existing event timing, effect selection and variation intact.
+  pitch_rng=rng;
+  event_pitch_mode=slider28==3 ? floor(pitch_random()*3) : slider28;
+  event_pitch_depth=min(24,max(0,slider26));
+  event_pitch_rate=slider29 ? max(event_pitch_mode==1 ? 2 : 1,floor(secs*slider27+0.5))/secs : slider27;
+  pitch_from=2*pitch_random()-1;pitch_to=pitch_target();pitch_cell=0;
+  pitch_crash_start=(pitch_random()<0.5 ? -1 : 1)*(0.4+0.6*pitch_random());
+  pitch_crash_end=-sign(pitch_crash_start)*(0.4+0.6*pitch_random());
+  pitch_curve=max(0.25,min(4,6/max(0.1,slider27)));
+  pitch_st=event_pitch_depth*(event_pitch_mode==2 ? pitch_crash_start : pitch_from);
+  pitch_ratio_tick=0;pitch_ratio=2^(pitch_st/12);
+  grain_phase=0.25;
+  pitch_blend=slider25 && event_pitch_depth>0;
+);
+
+function loop_sample(base, p) local(a b t) (
+  a=base[p];
+  p<splice ? (
+    b=base[period+p];
+    t=0.5-0.5*cos($pi*p/splice);
+    a=b+(a-b)*t;
+  );
+  a;
+);
+
+reset_engine();
+configure();
+
+@slider
+configure();
+
+@serialize
+file_var(0,ui_advanced);
+file_var(0,ui_pitch_panel);
+
+@block
+// Some offline paths change sample rate after @init. Refresh every buffer
+// and time coefficient together rather than using a stale grain length.
+engine_srate!=srate ? (
+  engine_srate=srate;
+  buf_size=ceil(srate*0.2)+32;
+  buf_l=1024;buf_r=buf_l+buf_size;
+  freeze_l=buf_r+buf_size;freeze_r=freeze_l+buf_size;
+  pitch_window=max(32,floor(srate*0.030));pitch_size=pitch_window+8;
+  pitch_l=freeze_r+buf_size;pitch_r=pitch_l+pitch_size;
+  reset_engine();configure();
+);
+ui_dirty ? configure();
+preset_armed=1;
+playing=(play_state&1)!=0;
+// Discard stale history after seeks, loops, and transport transitions.
+((playing!=old_play) || (playing && abs(play_position-expected_position)>max(0.002,2/srate))) ? reset_engine();
+old_play=playing;
+expected_position=play_position+samplesblock/srate;
+manual_request=(slider20>=0.5 && manual_old<0.5) || (ui_fire!=fire_seen);
+manual_old=slider20;fire_seen=ui_fire;
+
+@sample
+samples_run+=1;
+in_l=spl0;in_r=spl1;
+input_peak=max(abs(in_l),abs(in_r));
+detector+=(input_peak-detector)*(input_peak>detector ? attack : release);
+detector>=threshold ? signal_hold=hold_samples : signal_hold=max(0,signal_hold-1);
+signal_ok=!slider8 || (detector>=threshold || signal_hold>0);
+mix_s+=(target_mix-mix_s)*smooth;
+gain_s+=(target_gain-gain_s)*smooth;
+bypass_s+=((1-slider21)-bypass_s)*smooth;
+cooldown=max(0,cooldown-1);
+
+can_start=enabled_count>0 && valid_samples>=max(4,floor(0.04*srate)) && !slider21;
+manual_request ? (
+  (!active && can_start) ? start_event();
+  manual_request=0;
+);
+(!active && cooldown<=0 && can_start && slider3>0 && signal_ok) ? (
+  wait_samples-=1;
+  wait_samples<=0 ? start_event();
+);
+
+wet_l=in_l;wet_r=in_r;event_env=0;
+active ? (
+  event_env=0.5-0.5*cos($pi*min(1,min(event_pos/edge,(event_len-1-event_pos)/edge)));
+  (event_type==0 || event_type==1) ? (
+    phase=event_pos%period;
+    wet_l=loop_sample(freeze_l,phase);wet_r=loop_sample(freeze_r,phase);
+  );
+  event_type==2 ? (
+    // Quantize towards zero: silence stays silent and no peak is added.
+    hold_count<=0 ? (
+      held_l=sign(in_l)*floor(abs(in_l)/quantum)*quantum;
+      held_r=sign(in_r)*floor(abs(in_r)/quantum)*quantum;
+      hold_count=decimate;
+    );
+    hold_count-=1;wet_l=held_l;wet_r=held_r;
+  );
+  event_type==3 ? (
+    hold_count<=0 ? (held_l=in_l;held_r=in_r;hold_count=decimate;);
+    hold_count-=1;wet_l=held_l;wet_r=held_r;
+  );
+  event_type==4 ? (
+    packet_pos=event_pos%packet_len;
+    loss=packet_pos<packet_loss ?
+      0.5-0.5*cos($pi*min(1,min(packet_pos/packet_edge,(packet_loss-1-packet_pos)/packet_edge))) : 0;
+    phase=event_pos%period;
+    repl_l=packet_repeat ? loop_sample(freeze_l,phase) : 0;
+    repl_r=packet_repeat ? loop_sample(freeze_r,phase) : 0;
+    wet_l=in_l+(repl_l-in_l)*loss;wet_r=in_r+(repl_r-in_r)*loss;
+  );
+  // Remove DC from repeated/held waveforms, not from the original signal.
+  (event_type==0 || event_type==1 || event_type==3) ? (
+    dc_l=wet_l-wet_prev_l+dc_coeff*dc_l;wet_prev_l=wet_l;wet_l=dc_l;
+    dc_r=wet_r-wet_prev_r+dc_coeff*dc_r;wet_prev_r=wet_r;wet_r=dc_r;
+  );
+  // Keep a rolling history of the unshifted wet result. Pitch is applied
+  // before event gating, so delayed grains never leak beyond the event.
+  pitch_l[pitch_write]=wet_l;pitch_r[pitch_write]=wet_r;
+  pitch_motion();
+  pitch_blend+=((slider25 && event_pitch_depth>0)-pitch_blend)*pitch_switch_smooth;
+  (pitch_blend>0.000001 && pitch_valid>=pitch_window+3) ? (
+    grain_phase+=(1-pitch_ratio)/pitch_window;
+    grain_phase-=floor(grain_phase);
+    grain_second=grain_phase+0.5;grain_second-=floor(grain_second);
+    grain_weight=0.5-0.5*cos(2*$pi*grain_phase);
+    pitch_delay_a=2+grain_phase*pitch_window;
+    pitch_delay_b=2+grain_second*pitch_window;
+    shifted_l=pitch_at_delay(pitch_l,pitch_delay_a)*grain_weight+pitch_at_delay(pitch_l,pitch_delay_b)*(1-grain_weight);
+    shifted_r=pitch_at_delay(pitch_r,pitch_delay_a)*grain_weight+pitch_at_delay(pitch_r,pitch_delay_b)*(1-grain_weight);
+    wet_l+=(shifted_l-wet_l)*pitch_blend;wet_r+=(shifted_r-wet_r)*pitch_blend;
+  );
+  slider22 ? (
+    wet_l=max(-0.891250938,min(0.891250938,wet_l));
+    wet_r=max(-0.891250938,min(0.891250938,wet_r));
+  );
+  amount=event_env*mix_s*min(1,strength*20)*bypass_s;
+  spl0=(in_l+(wet_l-in_l)*amount)*gain_s;
+  spl1=(in_r+(wet_r-in_r)*amount)*gain_s;
+  event_pos+=1;
+  event_pos>=event_len ? (
+    active=0;cooldown=floor(slider7*srate);wait_samples=next_wait();
+  );
+) : (
+  spl0=in_l*gain_s;spl1=in_r*gain_s;
+  pitch_l[pitch_write]=in_l;pitch_r[pitch_write]=in_r;
+  pitch_st=0;
+);
+pitch_write=(pitch_write+1)%pitch_size;
+pitch_valid=min(pitch_size-1,pitch_valid+1);
+buf_l[write_pos]=in_l;buf_r[write_pos]=in_r;
+write_pos=(write_pos+1)%buf_size;
+valid_samples=min(buf_size-1,valid_samples+1);
+peak_in=max(input_peak,peak_in*meter_decay);
+peak_out=max(max(abs(spl0),abs(spl1)),peak_out*meter_decay);
+
+@gfx 940 680
+preset_armed=1;
+function color(r,g,b) (gfx_set(r,g,b,1););
+function rect(x,y,w,h) (gfx_rect(x*scale,y*scale,w*scale,h*scale););
+function label(x,y,size,str) (
+  gfx_setfont(1,"Arial",max(9,floor(size*scale)));
+  gfx_x=x*scale;gfx_y=y*scale;gfx_drawstr(str);
+);
+function hit(x,y,w,h) (mx>=x && mx<x+w && my>=y && my<y+h;);
+function setparam(id,v) (
+  id==1 ? (
+    apply_preset(v);preset_seen=v;sliderchange(-1);
+  ) : (
+    ((id>=2 && id<=17) || id>=22) ? (slider1=0;preset_seen=0;sliderchange(slider1););
+  );
+  slider(id)=v;ui_dirty=1;sliderchange(2^(id-1));slider_automate(2^(id-1));
+);
+function button(x,y,w,h,str,on) local(hover) (
+  hover=hit(x,y,w,h);
+  on ? color(0.10,0.42,0.37) : hover ? color(0.18,0.24,0.30) : color(0.10,0.14,0.20);
+  rect(x,y,w,h);color(0.90,0.95,0.96);label(x+10,y+9,14,str);
+  hover && clicked;
+);
+function toggle(x,y,w,str,id) (
+  button(x,y,w,36,str,slider(id)>=0.5) ? setparam(id,1-slider(id));
+);
+function knob(x,y,id,lo,hi,step,def,str,unit,curve) local(norm a r xx yy n v wheelstep) (
+  norm=(slider(id)-lo)/(hi-lo);norm=max(0,min(1,norm));
+  curve ? norm=sqrt(norm);
+  color(0.095,0.13,0.19);rect(x-94,y-68,188,190);
+  color(0.75,0.82,0.87);label(x-77,y-53,15,str);
+  color(0.18,0.24,0.30);gfx_circle(x*scale,(y+15)*scale,44*scale,1);
+  a=(-225+norm*270)*$pi/180;
+  xx=x+35*cos(a);yy=y+15+35*sin(a);
+  color(0.24,0.95,0.76);gfx_line(x*scale,(y+15)*scale,xx*scale,yy*scale,1);
+  color(0.92,0.97,0.98);
+  ui_edit==id ? (
+    color(0.10,0.30,0.28);rect(x-80,y+65,164,35);
+    color(0.95,1,0.98);sprintf(#val,"%s_",#ui_text);
+  ) : (
+    id==3 ? sprintf(#val,"%.2f %s",slider(id),unit) :
+    id==4 ? sprintf(#val,"%.0f %s",slider(id),unit) : sprintf(#val,"%.1f %s",slider(id),unit);
+  );
+  label(x-76,y+72,id==3 ? 18 : 21,#val);
+  hit(x-94,y-68,188,190) ? (
+    clicked ? (
+      hit(x-80,y+65,164,40) ? (
+        ui_edit=id;ui_edit_lo=lo;ui_edit_hi=hi;ui_edit_step=step;
+        ui_replace=1;sprintf(#ui_text,"%.2f",slider(id));
+      ) : (
+        (time_precise()-ui_last_click<0.3 && ui_last_id==id) ? setparam(id,def) : (
+          ui_drag=id;ui_start_y=my;ui_start_norm=norm;
+        );
+      );
+      ui_last_click=time_precise();ui_last_id=id;
+    );
+    wheel!=0 ? (
+      wheelstep=id==3 ? (fine ? 0.01 : 1) : id==4 ? (fine ? 1 : 10) : (fine ? 0.1 : 1);
+      v=min(hi,max(lo,slider(id)+wheel*wheelstep));
+      setparam(id,v);
+    );
+  );
+  ui_drag==id && down ? (
+    n=min(1,max(0,ui_start_norm+(ui_start_y-my)/(fine ? 1500 : 220)));
+    curve ? n*=n;
+    v=lo+n*(hi-lo);v=floor(v/step+0.5)*step;
+    setparam(id,min(hi,max(lo,v)));
+  );
+);
+function fader(x,y,w,id,lo,hi,step,str,unit) local(n v) (
+  color(0.73,0.80,0.86);label(x,y,13,str);
+  id==7 ? sprintf(#fval,"%.3f %s",slider(id),unit) : sprintf(#fval,"%.1f %s",slider(id),unit);
+  color(0.90,0.96,0.97);label(x+w-91,y,13,#fval);
+  color(0.16,0.22,0.29);rect(x,y+27,w,7);
+  n=max(0,min(1,(slider(id)-lo)/(hi-lo)));
+  color(0.24,0.85,0.73);rect(x,y+27,w*n,7);
+  rect(x+w*n-3,y+22,6,17);
+  hit(x-5,y+17,w+10,26) ? (
+    clicked ? ui_drag=id;
+    wheel!=0 ? setparam(id,min(hi,max(lo,slider(id)+wheel*step)));
+  );
+  ui_drag==id && down ? (
+    v=lo+min(1,max(0,(mx-x)/w))*(hi-lo);
+    setparam(id,min(hi,max(lo,floor(v/step+0.5)*step)));
+  );
+);
+
+scale=max(0.4,min(gfx_w/940,gfx_h/680));
+mx=mouse_x/scale;my=mouse_y/scale;
+down=(mouse_cap&1)!=0;clicked=down && !(ui_last_mouse&1);
+fine=(mouse_cap&8)!=0;wheel=mouse_wheel/120;mouse_wheel=0;
+!down ? ui_drag=0;
+clicked ? ui_edit=0;
+ui_key=gfx_getchar();
+while(ui_key>0) (
+  ui_edit>0 ? (
+    ui_key==27 ? ui_edit=0;
+    ui_key==13 ? (
+      match("%f",#ui_text,ui_value) ? (
+        ui_value=floor(ui_value/ui_edit_step+0.5)*ui_edit_step;
+        setparam(ui_edit,min(ui_edit_hi,max(ui_edit_lo,ui_value)));
+        ui_edit=0;
+      );
+    );
+    (ui_key==8 || ui_key==127) ? (
+      ui_replace ? #ui_text="" : str_setlen(#ui_text,max(0,strlen(#ui_text)-1));
+      ui_replace=0;
+    );
+    ((ui_key>=48 && ui_key<=57) || ui_key==46 || ui_key==44) ? (
+      ui_replace ? #ui_text="";ui_replace=0;
+      ui_key==44 ? ui_key=46;
+      strlen(#ui_text)<12 ? strcat(#ui_text,sprintf(#ui_char,"%c",ui_key));
+    );
+  );
+  ui_key=gfx_getchar();
+);
+color(0.035,0.055,0.09);gfx_rect(0,0,gfx_w,gfx_h);
+color(0.24,0.95,0.76);label(28,20,25,"LAUTFUNK / DIGITAL GLITCH");
+color(0.55,0.65,0.73);label(29,53,13,"v1.2  |  Modulierter Pitch pro Glitch  |  Drift / Steps / Crash / Chaos");
+button(588,22,96,36,"PITCH",ui_pitch_panel) ? (ui_pitch_panel=!ui_pitch_panel;ui_advanced=0;);
+button(696,22,108,36,"DETAILS",ui_advanced) ? (ui_advanced=!ui_advanced;ui_pitch_panel=0;);
+toggle(816,22,96,"BYPASS",21);
+button(28,88,215,36,"Schlechte Verbindung",slider1==1) ? setparam(1,1);
+button(251,88,222,36,"Digitaler Schluckauf",slider1==2) ? setparam(1,2);
+button(481,88,184,36,"Systemabsturz",slider1==3) ? setparam(1,3);
+button(677,88,235,36,"GLITCH JETZT",active) ? ui_fire+=1;
+
+knob(130,211,2,0,100,0.1,90,"WET / DRY","%",0);
+knob(354,211,3,0,1200,0.01,180,"HAEUFIGKEIT","/ min",1);
+knob(578,211,4,20,10000,1,450,"DAUER","ms",1);
+knob(802,211,5,0,100,0.1,85,"INTENSITAET","%",0);
+color(0.55,0.65,0.73);
+label(30,343,12,ui_edit ? "Wert eingeben  |  Komma oder Punkt  |  Enter: uebernehmen  |  Esc: abbrechen" :
+  "Zahl anklicken: direkte Eingabe  |  Shift + Mausrad: 0.01/min bzw. 1 ms  |  Doppelklick am Knopf: Standard");
+color(0.09,0.12,0.18);rect(28,374,884,44);
+active ? (
+  event_type==0 ? #status="STUTTER" : event_type==1 ? #status="BUFFER FREEZE" :
+  event_type==2 ? #status="BITCRUSH" : event_type==3 ? #status="SAMPLE-RATE GLITCH" : #status="PACKET DROPOUT";
+  color(0.24,0.95,0.76);
+) : (
+  #status=slider21 ? "BYPASS" : enabled_count==0 ? "KEINE ART AKTIV" : slider3==0 ? "MANUELL BEREIT" :
+    !signal_ok ? "WARTE AUF SIGNAL" : slider24 ? "DAUERFEUER BEREIT" : "AUTOMATIK BEREIT";
+  color(0.72,0.81,0.87);
+);
+label(43,388,14,#status);
+color(0.63,0.73,0.80);
+sprintf(#meters,"IN %5.1f dBFS     OUT %5.1f dBFS",20*log10(max(0.000001,peak_in)),20*log10(max(0.000001,peak_out)));
+label(522,388,14,#meters);
+
+ui_pitch_panel ? (
+  toggle(30,438,180,"PITCH AKTIV",25);
+  toggle(225,438,235,"AN GLITCH-DAUER",29);
+  color(0.75,0.88,0.88);
+  sprintf(#pitch_live,"Aktuell: %+.2f Halbtoene",active && slider25 ? pitch_st : 0);
+  label(493,449,16,#pitch_live);
+  button(30,493,213,36,"Digital Drift",slider28==0) ? setparam(28,0);
+  button(253,493,213,36,"Pitch Steps",slider28==1) ? setparam(28,1);
+  button(476,493,213,36,"Pitch Crash",slider28==2) ? setparam(28,2);
+  button(699,493,213,36,"Chaos Pitch",slider28==3) ? setparam(28,3);
+  fader(30,551,415,26,0,24,0.1,"Bereich +/-","HT");
+  fader(495,551,415,27,0.1,30,0.1,"Tempo / Crash-Verlauf","Hz");
+  color(0.60,0.70,0.78);
+  label(30,611,13,"Chaos waehlt pro Glitch einen neuen Verlauf. Crash: ein Bogen, Tempo bestimmt die Kruemmung.");
+  label(30,636,12,"An/Aus wirkt sofort. Bereich, Tempo und Verlauf gelten ab dem naechsten Glitch. Bereich 0 = ohne Pitch.");
+) : ui_advanced ? (
+  fader(30,438,260,6,0,100,1,"Variation","%");
+  fader(340,438,260,7,0,10,0.001,"Mindestpause","s");
+  fader(650,438,260,16,-24,6,0.1,"Ausgang","dB");
+  fader(30,496,260,9,-80,-10,1,"Signalschwelle","dBFS");
+  fader(340,496,260,10,0,500,10,"Signal halten","ms");
+  fader(650,496,260,17,0.5,20,0.5,"Uebergang","ms");
+  toggle(30,559,173,"Nur bei Signal",8);
+  toggle(215,559,173,"Wet-Peakschutz",22);
+  toggle(400,559,154,"Fester Seed",19);
+  sprintf(#seed,"Seed: %d  [+]",slider18);
+  button(566,559,166,36,#seed,0) ? setparam(18,slider18>=99999 ? 1 : slider18+1);
+  #pkt=slider23==0 ? "Packet: Zufall" : slider23==1 ? "Packet: Luecken" : "Packet: Repeat";
+  button(744,559,166,36,#pkt,0) ? setparam(23,(slider23+1)%3);
+  color(0.60,0.70,0.78);label(30,614,13,"Fester Seed: gleicher Ablauf bei gleichem Audio, Startpunkt und gleichen Einstellungen.");
+  label(30,637,12,"Seed per Mausrad aendern; exakte Werte und Automation auch ueber REAPER > Param.");
+  hit(566,559,166,36) && wheel!=0 ? setparam(18,min(99999,max(1,slider18+wheel*(fine ? 1 : 100))));
+) : (
+  color(0.62,0.73,0.81);label(30,439,13,"ZUFALLSPOOL  /  Aktive Stoerungsarten");
+  toggle(30,469,168,"Stutter",11);
+  toggle(208,469,168,"Buffer Freeze",12);
+  toggle(386,469,168,"Bitcrush Burst",13);
+  toggle(564,469,168,"Sample-Rate",14);
+  toggle(742,469,168,"Packet Dropout",15);
+  toggle(30,526,185,"DAUERFEUER",24);
+  color(0.83,0.89,0.93);label(231,536,14,"Direkt der naechste Glitch. Mindestpause 0 fuer maximale Dichte.");
+  color(0.60,0.70,0.78);label(30,574,13,"Wet / Dry mischt waehrend eines Ereignisses Original und Stoerung.");
+  label(30,596,13,"Dauer 20-10000 ms. Haeufigkeit 0 = manuell. Lange Glitches begrenzen die Anzahl der Ereignisse.");
+  label(30,620,13,"Glitch jetzt: sofort ausloesen; Automation ueber Parameter 20 (0 -> 1, danach wieder 0).");
+  label(30,644,12,"PITCH: Tonhoehenmodulation  |  DETAILS: Variation, Sprechpausen, Mindestpause, Seed und Ausgang.");
+);
+ui_last_mouse=mouse_cap;
