@@ -604,3 +604,106 @@ Die Plugins entstanden ursprünglich für Audio-, Podcast- und Sounddesign-Produ
 Der Schwerpunkt liegt nicht auf perfekter Simulation historischer Hardware, sondern darauf, charakteristische Klangideen als flexibel einsetzbare kreative Werkzeuge innerhalb von REAPER bereitzustellen.
 
 **Kaputt darf hier ausdrücklich gut klingen.**
+
+# LautFunk FartSynth 61 v1.0
+
+**Ein Instrument, zwei Tastenbelegungen:** Alle zwölf Charaktere gemeinsam auf 61 Tasten oder die vollständige bisherige Variantenbelegung eines einzelnen Charakters. v1.0 startet direkt mit **ALLE 12**. Die bestätigte Klangerzeugung aus v0.9 bleibt erhalten.
+
+## Installation
+
+1. In REAPER **Options → Show REAPER resource path in explorer/finder** öffnen.
+2. **LautFunk_FartSynth_61_v1.0.jsfx** nach **Effects/LautFunk/** kopieren. Den Unterordner bei Bedarf anlegen.
+3. FX-Liste aktualisieren bzw. REAPER neu starten und **LautFunk FartSynth 61 v1.0** laden.
+4. MIDI-Spur scharf schalten und Monitoring einschalten. Auch die Bildschirmtastatur benötigt eine laufende Audioverarbeitung.
+
+Die einzelne JSFX-Datei genügt. Source-Ordner, Hörprobe und Dokumentation werden nicht in REAPER installiert. v0.9 kann für bestehende Projekte daneben bleiben.
+
+## ALLE 12 — die gesamte Bandbreite
+
+MIDI **36–95** bildet zwölf Gruppen aus jeweils **fünf aufeinanderfolgenden Halbtontasten**, einschließlich der schwarzen Tasten. Die Gruppenfarben stehen an den Charakterfeldern und an der Bildschirmtastatur. Jedes Charakterfeld zeigt seinen MIDI-Bereich.
+
+| Gruppe | Charakter | MIDI | Beginn in der Hörfolge |
+| --- | --- | --- | --- |
+| 01 | Referenz | 36–40 | 0.00 s |
+| 02 | Tiefer | 41–45 | 6.65 s |
+| 03 | Wechselmuster | 46–50 | 14.20 s |
+| 04 | Runder Plopp | 51–55 | 20.85 s |
+| 05 | Lockeres Flattern | 56–60 | 26.63 s |
+| 06 | Feuchtes Blubbern | 61–65 | 32.65 s |
+| 07 | Arm-Raspel | 66–70 | 38.39 s |
+| 08 | Trocken / Kurz | 71–75 | 51.26 s |
+| 09 | Blechern | 76–80 | 54.87 s |
+| 10 | Tiefes Poltern | 81–85 | 58.28 s |
+| 11 | Hohes Schnarren | 86–90 | 63.95 s |
+| 12 | Dreifach-Brrap | 91–95 | 75.67 s |
+| ? | Zufall aus allen Gruppen | 96 | 83.85 s |
+
+Die fünf Positionen haben in jeder Gruppe dieselbe Bedeutung:
+
+| Position | Variante | Wirkung |
+| --- | --- | --- |
+| 1 | Original | Grundform des Charakters mit den eingestellten Variationen |
+| 2 | Kurz | Stark verkürzt, enger geformt und mit weniger Resttextur |
+| 3 | Tief | Breitere Details und längerer, langsamerer Ablauf |
+| 4 | Schnell | Kompakter, schneller und enger geformt |
+| 5 | Wild | Bewegter Lautstärkeverlauf, längerer Ablauf und stärkerer Geräusch-/Schwingungsanteil |
+
+**MIDI 96 ist die zusätzliche Zufallstaste.** Sie mischt alle 60 Charakter-/Variantenkombinationen durch. Jede kommt einmal vor, bevor neu gemischt wird; auch zwischen zwei Durchläufen gibt es keine direkte Wiederholung derselben Kombination. Jeder Anschlag erhält weiterhin die eingestellten Klangvariationen. Die Mischfolge startet bei einer Neuinitialisierung erneut.
+
+Oben erscheint beim Spielen der tatsächlich ausgelöste Charakter samt Variante. Über einer Bildschirmtaste zeigt die Fußzeile deren genaue Belegung.
+
+## EIN CHARAKTER — die bisherige volle Variantenbelegung
+
+**Einen Charakter anklicken** schaltet direkt zur Einzelauswahl. Dieser Charakter belegt dann wie in v0.9 alle 61 Tasten mit den 17 bisherigen Familien. MIDI 96 gehört hier wieder zu „Bathroom Monster“.
+
+Mit **ALLE 12** geht es zurück zur Gesamtbelegung. **EIN CHARAKTER** ruft die zuletzt gewählte Einzelauswahl wieder auf. Spielen im Gesamtmodus überschreibt diese Auswahl nicht.
+
+| MIDI | Familie | MIDI | Familie |
+| --- | --- | --- | --- |
+| 36–39 | Reference | 68–70 | Loose Bass |
+| 40–42 | Loose Flap | 71–74 | Drooping |
+| 43–46 | Dry Pop | 75–77 | Rising |
+| 47–49 | Long Flutter | 78–81 | False Start |
+| 50–53 | Stutter | 82–84 | Unstable |
+| 54–56 | Air Leak | 85–88 | Double Burst |
+| 57–60 | Wet Gurgle | 89–92 | Triple Burst |
+| 61–63 | Fast Rattle | 93–96 | Bathroom Monster |
+| 64–67 | Tight Squeak | | |
+
+Modus- und Charakterwechsel gelten für neue Anschläge. Bereits laufende Stimmen behalten ihre Zuordnung und reagieren weiterhin auf ihre ursprüngliche Note-Off-Nachricht und das Haltepedal. Modus und Charakter werden mit den Parametern im Projekt bzw. Preset gespeichert. Die grauen Standardregler bleiben ausgeblendet; alle **17 Parameter** sind automatisierbar. Die bisherigen 16 Parameternummern bleiben erhalten, „Keyboard Mode“ ist Parameter 17.
+
+## Regler und Spielweise
+
+| Regler | Wirkung |
+| --- | --- |
+| Pressure | Stärke; verändert bei neuen Anschlägen zusätzlich die Detailbreite |
+| Pulse Rate | Geschwindigkeit und damit auch Tonhöhe der gesamten Geste |
+| Timing Variation | Zusammenhängende zeitliche Verschiebungen ab dem nächsten Anschlag |
+| Air Supply | Zeitliche Dehnung ab dem nächsten Anschlag |
+| Air Texture | Resttextur; 0 schaltet sie aus |
+| Tail Sputter | Dehnung oder Stauchung später Details im Ausklang |
+| Humanize | Zusammenhängende Form- und Lautstärkevariationen ab dem nächsten Anschlag |
+| Closure Ring | Pegel der kurzen schwingenden Bausteine |
+| Body / Sharpness | Gegenläufige Veränderung der Detailbreite ab dem nächsten Anschlag |
+| Alternation | Zusätzliche paarweise Zeitverschiebung |
+| Output dB | Geglätteter Ausgangspegel |
+| Voices | 1–12 Stimmen; eine Änderung stoppt laufende Stimmen |
+| Release ms | Zeitkonstante des Ausklangs nach dem Loslassen |
+| Bend depth | Einfluss des Pitchbend-Reglers |
+
+Tail Sputter und Alternation wirken auf noch nicht vorbereitete Klangbausteine. Velocity steuert die Stärke, CC1 die Zeitvariation, CC11 die Detailbreite, Pitchbend die Geschwindigkeit und Aftertouch die Stärke. CC64 hält Noten bis zum Loslassen des Pedals; die Klanggeste bleibt endlich. CC120/123 stoppt die Stimmen. Controller wirken gemeinsam über MIDI-Kanäle. MIDI-Ereignisse werden am Audioblock verarbeitet. Die Ausgabe ist mono auf beiden Ausgangskanälen.
+
+Zum vollständigen Abspielen eine Taste halten, bis der Klang zu Ende ist. Kurzes Antippen startet früher die Release-Phase. Für weniger Schwankungen **Timing Variation** und **Humanize** reduzieren.
+
+## Hörfolge und Prüfung
+
+**LautFunk_FartSynth_61_v1.0_61_Tasten.wav** spielt alle 61 Tasten im Modus ALLE 12 der Reihe nach: MIDI 36 bis 96, jeweils mit Werkseinstellungen und Velocity 104. Dauer: ungefähr **85 Sekunden**. Die Ausgabe stammt aus der tatsächlichen JSFX-Engine in ysfx. Es wurde nur die Stille am Ende jedes Tons gekürzt und eine Pause eingesetzt; keine individuelle Pegelanpassung oder Klangbearbeitung. Genaue Zeitmarken stehen in `LautFunk_FartSynth_61_v1.0_Hoerfolge.json`.
+
+Geprüft wurden alle 61 Zuordnungen des Gesamtmodus, alle 732 Charakter-/Tastenkombinationen des Einzelmodus, vier vollständige Zufallsdurchläufe, laufende Stimmen und Pedal bei Moduswechseln, Parameterspeicherung und GUI-Klicks. Alle 61 Tasten lieferten bei 48 kHz endliche Audiosignale ohne Ereignispuffer-Überlauf. **28 native Audioregressionen des Einzelmodus sind bitgenau identisch mit v0.9.** Klangbank, Ereignisvorbereitung und Sample-Verarbeitung wurden zusätzlich auf unveränderten Quelltext geprüft.
+
+REAPER selbst wurde hier nicht ausgeführt. Die Grafik wurde offscreen ausgeführt und visuell kontrolliert; dafür nutzte der ysfx-Prüfhost bei drei Automationsmeldungen eine ältere API-Form und seine verfügbare Ersatzschrift. Die ausgelieferte Datei verwendet weiterhin die REAPER-Gestenmeldungen. Der Prüfbericht beschreibt diese Grenze.
+
+Die Engine verwendet Analysedaten deiner Referenzaufnahmen und berechnet analytische Klangbausteine samt neu erzeugter Resttextur. Sie lädt keine WAV-/MP3-Aufnahmen, bleibt aber **referenzgebundene parametrische Resynthese**. Dichte Klänge mit vielen gleichzeitigen Stimmen können viel Rechenleistung benötigen; bei Bedarf weniger Stimmen oder einen größeren Audiopuffer wählen. Die Werkseinstellung bleibt bei acht Stimmen.
+
+Der Source-Ordner enthält den reproduzierbaren Builder und die Prüfprogramme. Für die normale Nutzung ist nur die JSFX-Datei nötig.
+
