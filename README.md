@@ -1,13 +1,25 @@
 # LautFunk REAPER FX Plugins
 
-Eine Sammlung kreativer **JSFX-Audioeffekte für REAPER**, entwickelt für Podcasts, Hörspiele, Sounddesign, elektronische Musik und experimentelle Audiobearbeitung.
+Kreative **JSFX-Plugins für REAPER** – entwickelt für Podcasts, Hörspiele, Sounddesign, elektronische Musik und experimentelle Audiobearbeitung.
+
+Die LautFunk-Plugins sind keine klassischen Mixing-Werkzeuge, die möglichst unauffällig arbeiten sollen. Sie sind dafür gebaut, Audio gezielt zu verändern, zu verfremden, zu zerstören oder vollkommen neue Klänge zu erzeugen.
+
+**Kaputt darf hier ausdrücklich gut klingen.**
+
+## Enthaltene Plugins
 
 Aktuell enthält das Projekt:
 
-* **LautFunk Digital Glitch** – digitale Fehler, Stutter, Buffer-Freezes, Dropouts und Pitch-Chaos
-* **LautFunk Voice Scrambler** – Frequenzinversion und Funk-Verfremdung im Stil klassischer Sprachverschleierung
+- **LautFunk Digital Glitch**  
+  Erzeugt digitale Fehler, Stutter, Buffer-Freezes, Dropouts, Bitcrushing und chaotische Pitch-Effekte.
 
-Die Plugins laufen direkt als **JSFX in REAPER** und benötigen keine zusätzliche VST-Installation.
+- **LautFunk Voice Scrambler**  
+  Verfremdet Sprache mithilfe von Frequenzinversion, Split-Band-Scrambling, Funkrauschen und weiteren Radioeffekten.
+
+- **LautFunk FartSynth 61**  
+  Ein vollständig synthetischer MIDI-Synthesizer mit 61 spielbaren Tasten und zwölf unterschiedlichen Klangcharakteren.
+
+Alle Plugins laufen direkt als **JSFX in REAPER**. Eine zusätzliche VST-, VST3- oder CLAP-Installation ist nicht erforderlich.
 
 ---
 
@@ -15,96 +27,101 @@ Die Plugins laufen direkt als **JSFX in REAPER** und benötigen keine zusätzlic
 
 ## Digitale Fehler als kreativer Audioeffekt
 
-**LautFunk Digital Glitch** ist ein kreativer Glitch-Effekt für REAPER, der Stimmen, Musik und andere Audiosignale gezielt wie fehlerhafte digitale Übertragungen, beschädigte Audiopuffer oder instabile Computersysteme klingen lässt.
+**LautFunk Digital Glitch** erzeugt kontrolliertes digitales Chaos.
 
-Anders als ein klassischer Verzerrer liegt der Effekt nicht permanent über dem gesamten Signal.
+Stimmen, Musik und andere Audiosignale können damit so klingen, als würden sie über eine beschädigte Datenverbindung übertragen, aus einem fehlerhaften Audiopuffer abgespielt oder von einem instabilen Computersystem verarbeitet.
 
-Stattdessen erzeugt das Plugin einzelne **Glitch-Ereignisse**, die zufällig oder abhängig von den eingestellten Parametern auftreten.
+Der Effekt liegt dabei nicht permanent über dem gesamten Signal.
 
-Zwischen diesen Ereignissen bleibt das Originalsignal sauber.
+Stattdessen entstehen einzelne **Glitch-Ereignisse**, die abhängig von den gewählten Einstellungen ausgelöst werden. Zwischen diesen Ereignissen bleibt das ursprüngliche Signal erhalten.
 
-Über den **Wet/Dry-Regler** lässt sich bestimmen, wie stark das bearbeitete Signal während eines Glitches gegenüber dem Originalsignal in den Vordergrund tritt.
+Über den **Wet/Dry-Regler** lässt sich bestimmen, wie stark der Effekt während eines Glitches gegenüber dem Originalsignal hervortritt.
 
 ## Glitch-Arten
 
-Das Plugin kombiniert unterschiedliche digitale Fehlerarten.
-
 ### Stutter
 
-Kurze Ausschnitte des Audiosignals werden wiederholt.
+Kurze Abschnitte des Audiosignals werden mehrfach wiederholt.
 
-Das Ergebnis erinnert an einen digitalen Schluckauf oder einen hängen gebliebenen Audiopuffer.
+Dadurch entstehen Effekte, die an einen digitalen Schluckauf oder einen hängen gebliebenen Audiopuffer erinnern.
 
 ### Buffer Freeze
 
-Ein kleiner Ausschnitt des Audiosignals wird eingefroren und für die Dauer des Glitches wiederholt.
+Ein kleiner Ausschnitt des Signals wird eingefroren und während des Glitches wiederholt.
 
-Dadurch entstehen Sounds, wie man sie von abgestürzten Audiotreibern oder beschädigten Streams kennt.
+Das Ergebnis erinnert beispielsweise an:
+
+- abgestürzte Audiotreiber
+- beschädigte Streams
+- eingefrorene Audiopuffer
+- instabile digitale Übertragungen
 
 ### Bitcrush Burst
 
-Während des Glitches wird die Auflösung des Signals reduziert.
+Während eines Glitch-Ereignisses wird die digitale Auflösung des Signals reduziert.
 
-Das Audiosignal wird:
+Dadurch kann das Audio:
 
-* körniger
-* rauer
-* digital verzerrt
-* zunehmend zerstört
+- körniger
+- rauer
+- digital verzerrt
+- zunehmend zerstört
+
+klingen.
 
 ### Sample-Rate Glitch
 
 Die effektive Abtastrate wird während eines Glitches verändert.
 
-Dadurch entstehen kurzzeitig:
+Dadurch entstehen unter anderem:
 
-* roboterhafte Stimmen
-* digitale Artefakte
-* Aliasing
-* raue Lo-Fi-Strukturen
+- roboterhafte Stimmen
+- digitale Artefakte
+- Aliasing
+- Lo-Fi-Strukturen
+- ungewöhnliche digitale Verzerrungen
 
 ### Packet Dropout
 
-Teile des Signals verschwinden oder werden durch bereits vorhandene Audiostücke ersetzt.
+Teile des Signals verschwinden oder werden durch bereits vorhandene Audioabschnitte ersetzt.
 
-Der Effekt erinnert an:
+Der Effekt kann an:
 
-* schlechte Internetverbindungen
-* VoIP-Aussetzer
-* beschädigte Streams
-* verlorene Datenpakete
+- schlechte Internetverbindungen
+- VoIP-Aussetzer
+- beschädigte Streams
+- verlorene Datenpakete
+- fehlerhafte Funkübertragungen
 
----
+erinnern.
 
 ## Glitch-Häufigkeit
 
-Die Häufigkeit der Effekte lässt sich sehr fein einstellen.
+Die Häufigkeit der Glitch-Ereignisse lässt sich über einen sehr großen Bereich einstellen.
 
-Von einzelnen seltenen Störungen bis zu nahezu permanentem digitalen Chaos ist alles möglich.
+Möglich sind einzelne, selten auftretende Fehler ebenso wie nahezu permanentes digitales Chaos.
 
 Die maximale Rate beträgt:
 
 **bis zu 1.200 Glitch-Ereignisse pro Minute**
 
-Bei extremen Einstellungen kann praktisch unmittelbar nach einem Glitch das nächste Ereignis beginnen.
-
----
+Bei extremen Einstellungen kann praktisch unmittelbar nach einem Glitch bereits das nächste Ereignis beginnen.
 
 ## Glitch-Dauer
 
-Auch die Dauer eines einzelnen Fehlers lässt sich über einen sehr großen Bereich einstellen.
+Die Dauer eines einzelnen Glitches kann ebenfalls sehr weit eingestellt werden:
 
 **20 Millisekunden bis 10 Sekunden**
 
-Damit sind sowohl winzige digitale Klicks und Stotterer als auch lange Systemabstürze möglich.
+Damit sind sowohl winzige digitale Klicks und Stottereffekte als auch lange, drastische Systemfehler möglich.
 
 ---
 
-# Pitch-Modulation
+## Pitch-Modulation
 
-Zusätzlich besitzt LautFunk Digital Glitch eine Tonhöhenmodulation, die ausschließlich während eines Glitch-Ereignisses auf das Effektsignal angewendet wird.
+Zusätzlich besitzt LautFunk Digital Glitch eine eigene Tonhöhenmodulation.
 
-Dadurch kann sich ein Glitch nicht nur rhythmisch oder klanglich verändern, sondern auch in der Tonhöhe regelrecht „zerfallen“.
+Diese wird ausschließlich während eines aktiven Glitch-Ereignisses auf das Effektsignal angewendet.
 
 Der Pitch-Bereich reicht bis:
 
@@ -112,78 +129,69 @@ Der Pitch-Bereich reicht bis:
 
 also bis zu zwei Oktaven nach oben oder unten.
 
-## Digital Drift
+### Digital Drift
 
-Die Tonhöhe bewegt sich während eines Glitches kontinuierlich.
+Die Tonhöhe bewegt sich während des Glitches kontinuierlich.
 
-Dadurch entstehen instabile digitale Bewegungen, die an fehlerhafte Taktgeber, beschädigte Bandmaschinen oder abstürzende Audioprozessoren erinnern.
+Dadurch entstehen instabile Bewegungen, die beispielsweise an fehlerhafte Taktgeber, beschädigte Bandmaschinen oder abstürzende Audioprozessoren erinnern können.
 
-## Pitch Steps
+### Pitch Steps
 
 Die Tonhöhe verändert sich in einzelnen Stufen.
 
-Das erzeugt harte digitale Sprünge und kann besonders bei Stimmen sehr auffällige Effekte erzeugen.
+Dadurch entstehen harte digitale Sprünge, die besonders bei Sprache und Vocals deutlich hörbar werden.
 
-## Pitch Crash
+### Pitch Crash
 
-Die Tonhöhe:
+Die Tonhöhe kann während eines Glitches drastisch:
 
-* stürzt nach unten
+- nach unten abstürzen
+- nach oben schießen
 
-oder
+Der Modus eignet sich besonders für extreme Übergänge oder simulierte Systemfehler.
 
-* schießt nach oben.
-
-Ideal für dramatische Systemfehler und extreme Übergänge.
-
-## Chaos Pitch
+### Chaos Pitch
 
 Für jedes Glitch-Ereignis wird automatisch ein anderer Pitch-Verlauf ausgewählt.
 
-Dadurch entstehen weniger vorhersehbare und organischere Störungen.
+Dadurch entstehen weniger vorhersehbare und abwechslungsreichere Störungen.
 
----
-
-## An Glitch-Dauer
+### Anpassung an die Glitch-Dauer
 
 Mit der Option **„An Glitch-Dauer“** wird die Geschwindigkeit der Pitch-Bewegung automatisch an die aktuelle Länge des Glitches angepasst.
 
-Dadurch bleibt die Modulation auch bei sehr kurzen Glitches deutlich hörbar.
+So bleibt die Modulation auch bei sehr kurzen Ereignissen deutlich wahrnehmbar.
 
 ---
 
-# Einsatzmöglichkeiten
+## Einsatzmöglichkeiten
 
-LautFunk Digital Glitch wurde insbesondere für kreative Podcast- und Sounddesign-Anwendungen entwickelt.
+LautFunk Digital Glitch eignet sich unter anderem für:
 
-Beispiele:
+- Podcasts
+- Hörspiele
+- Rückblenden
+- verfremdete Zitate
+- digitale Unterbrechungen
+- technische Einbrüche
+- satirische Reaktionen
+- Übergänge zwischen Themen
+- Übergänge zwischen Podcast-Rubriken
+- kaputte Telefonverbindungen
+- instabile Funkübertragungen
+- beschädigte Streams
+- Roboterstimmen
+- Science-Fiction-Effekte
+- Systemabstürze
+- experimentelle Vocals
+- elektronische Musik
+- Industrial
+- IDM
+- Glitch
+- Noise
+- Sounddesign
 
-* verfremdete Zitate
-* Rückblenden
-* digitale Unterbrechungen
-* technische „Einbrüche“
-* satirische Reaktionen
-* Übergänge zwischen Themen
-* Übergänge zwischen Podcast-Rubriken
-* kaputte Telefonverbindungen
-* instabile Funkübertragungen
-* beschädigte Streams
-* Roboterstimmen
-* Science-Fiction-Effekte
-* dramatische Systemabstürze
-* experimentelle Vocals
-* elektronische Musik
-* Industrial
-* IDM
-* Glitch
-* Noise
-* Sounddesign
-
----
-
-# Presets
-
-Drei Presets ermöglichen einen schnellen Einstieg.
+## Presets
 
 ### Schlechte Verbindung
 
@@ -191,10 +199,10 @@ Kurze und deutlich hörbare Übertragungsfehler.
 
 Geeignet für:
 
-* Telefonstimmen
-* Streams
-* Funk
-* VoIP-Simulationen
+- Telefonstimmen
+- Streams
+- Funk
+- VoIP-Simulationen
 
 ### Digitaler Schluckauf
 
@@ -214,168 +222,170 @@ Lange Störungen, hohe Ereignisdichte und Chaos-Pitch verwandeln das Signal in e
 
 ## Stimmen zwischen Geheimfunk und Science-Fiction
 
-Der **LautFunk Voice Scrambler** ist ein Effekt für REAPER, der Sprache in metallische, fremdartige und schwer verständliche Funksignale verwandelt.
+Der **LautFunk Voice Scrambler** ist ein kreativer Spracheffekt für REAPER.
 
-Er wurde für:
+Er verwandelt Stimmen in metallische, ungewöhnliche und teilweise schwer verständliche Funksignale.
 
-* Podcasts
-* Hörspiele
-* elektronische Musik
-* Sounddesign
-* experimentelle Sprachbearbeitung
+Entwickelt wurde er insbesondere für:
 
-entwickelt.
+- Podcasts
+- Hörspiele
+- elektronische Musik
+- Sounddesign
+- experimentelle Sprachbearbeitung
 
-Klanglich erinnert der Effekt an:
+Klanglich kann der Effekt unter anderem an:
 
-* abgefangene Funkübertragungen
-* alte Feldfunkgeräte
-* Geheimfunk
-* analoge Sprachverschleierung
-* Science-Fiction-Kommunikation
+- abgefangene Funkübertragungen
+- alte Feldfunkgeräte
+- Geheimfunk
+- analoge Sprachverschleierung
+- Science-Fiction-Kommunikation
+
+erinnern.
 
 ---
 
-# Frequenzinversion
+## Frequenzinversion
 
 Das Herzstück des Voice Scramblers ist die **Frequenzinversion**.
 
-Dabei werden die Frequenzbestandteile der Stimme innerhalb eines bestimmten Bereichs gespiegelt.
+Dabei werden Frequenzanteile des Eingangssignals relativ zu einer eingestellten Trägerfrequenz gespiegelt.
 
-Vereinfacht gesagt:
+Vereinfacht gesagt werden tiefer liegende Frequenzanteile nach oben und höher liegende Anteile nach unten verschoben.
 
-**Tiefe Frequenzen werden zu hohen Frequenzen und hohe Frequenzen zu tiefen Frequenzen.**
-
-Bei einer eingestellten Trägerfrequenz von beispielsweise:
+Bei einer Trägerfrequenz von beispielsweise:
 
 **3.300 Hz**
 
-wird ein Signalanteil bei:
+wird ein Frequenzanteil bei:
 
 **1.000 Hz**
 
-auf ungefähr:
+ungefähr auf:
 
 **2.300 Hz**
 
 abgebildet.
 
-Dadurch verändert sich die gesamte Klangstruktur einer Stimme.
+Dadurch verändert sich die gesamte spektrale Struktur einer Stimme.
 
-Sprache klingt anschließend fremdartig, metallisch und teilweise schwer verständlich.
-
----
-
-# Zwei Scrambler-Verfahren
-
-## Standard Inversion
-
-Die klassische Frequenzinversion bearbeitet das Sprachsignal als zusammenhängenden Frequenzbereich.
-
-Sie erzeugt den typischen Klang klassischer analoger Sprachverschleierung.
-
-## Split-Band Scrambling
-
-Das Signal wird in mehrere Frequenzbereiche aufgeteilt und getrennt bearbeitet.
-
-Dadurch entstehen deutlich komplexere und schwerer erkennbare Sprachstrukturen.
+Sprache klingt anschließend fremdartig, metallisch und je nach Einstellung deutlich schwerer verständlich.
 
 ---
 
-# Old Radio
+## Zwei Scrambler-Verfahren
 
-Der integrierte **Old-Radio-Modus** simuliert zusätzlich den Charakter alter Funkgeräte.
+### Standard Inversion
 
-Dazu gehören unter anderem:
+Bei der klassischen Frequenzinversion wird das Sprachsignal als zusammenhängender Frequenzbereich bearbeitet.
 
-* begrenzter Frequenzbereich
-* Filterung
-* Sättigung
-* Rauschen
-* schwankende Trägerfrequenzen
-* Funkartefakte
+Das erzeugt den typischen Klang analoger Sprachverschleierung.
 
-Damit lässt sich aus der reinen Frequenzinversion eine komplette Funkübertragung gestalten.
+### Split-Band Scrambling
+
+Das Eingangssignal wird in mehrere Frequenzbereiche aufgeteilt.
+
+Diese Bänder können getrennt bearbeitet werden, wodurch komplexere und deutlich stärker verfremdete Sprachstrukturen entstehen.
 
 ---
 
-# Automatische Rauschsperre
+## Old Radio
 
-Eine integrierte Squelch-Funktion arbeitet ähnlich wie die Rauschsperre eines Funkgerätes.
+Der integrierte **Old-Radio-Modus** ergänzt die Frequenzinversion um typische Eigenschaften älterer Funkgeräte.
 
-In Sprechpausen kann das Signal automatisch geschlossen werden.
+Dazu gehören beispielsweise:
+
+- eingeschränkter Frequenzbereich
+- Filterung
+- Sättigung
+- Rauschen
+- schwankende Trägerfrequenzen
+- Funkartefakte
+
+Damit lässt sich aus einer einfachen Frequenzinversion eine wesentlich komplexere Funkübertragung gestalten.
+
+---
+
+## Automatische Rauschsperre
+
+Eine integrierte **Squelch-Funktion** arbeitet ähnlich wie die Rauschsperre eines Funkgerätes.
+
+Während Sprechpausen kann das Signal automatisch geschlossen werden.
 
 Einstellbar sind unter anderem:
 
-* Schwellwert
-* Haltezeit
-* Öffnungsverhalten
-* Schließverhalten
+- Schwellwert
+- Haltezeit
+- Öffnungsverhalten
+- Schließverhalten
 
-Zusätzliche kurze Rauschimpulse können beim Öffnen und Schließen erzeugt werden.
+Zusätzlich können beim Öffnen und Schließen kurze Rauschimpulse erzeugt werden.
 
-Dadurch entsteht ein deutlich authentischerer Funkgerätecharakter.
+Dadurch entsteht ein deutlich lebendigerer Funkgerätecharakter.
 
 ---
 
-# Hold to Talk
+## Hold to Talk
 
-Mit **Hold to Talk** kann die Audioübertragung ähnlich wie bei einer Sprechtaste eines Funkgerätes aktiviert werden.
+Mit **Hold to Talk** lässt sich die Audioübertragung ähnlich wie bei einer Sprechtaste eines Funkgerätes aktivieren.
 
-Die Funktion eignet sich besonders für Hörspiele, Funkdialoge und automatisierte Effekte innerhalb eines Projekts.
+Die Funktion eignet sich besonders für:
+
+- Hörspiele
+- Funkdialoge
+- Podcasts
+- automatisierte Effekte
+- Sounddesign
 
 Der Parameter kann innerhalb von REAPER automatisiert werden.
 
 ---
 
-# Klangsteuerung
+## Klangsteuerung
 
-Das Plugin bietet zahlreiche Einstellmöglichkeiten.
+Der Voice Scrambler bietet zahlreiche Einstellmöglichkeiten.
 
 Dazu gehören unter anderem:
 
-* Trägerfrequenz
-* Feinabstimmung
-* Filter
-* Effektanteil
-* Ausgangspegel
-* Rauschanteil
-* Funkcharakter
-* Pegelanpassung
+- Trägerfrequenz
+- Feinabstimmung
+- Filter
+- Effektanteil
+- Ausgangspegel
+- Rauschanteil
+- Funkcharakter
+- Pegelanpassung
 
-Die Trägerfrequenz kann besonders fein eingestellt werden.
-
-Eine Feinabstimmung bis in den Bereich von:
+Die Trägerfrequenz kann bis in den Bereich von:
 
 **0,1 Hz**
 
-ermöglicht sehr präzise Anpassungen.
+fein eingestellt werden.
 
-Parameteränderungen werden geglättet, damit während der Automation möglichst wenige unerwünschte Sprünge oder Klicks entstehen.
+Parameteränderungen werden geglättet, damit bei Automation möglichst wenige unerwünschte Sprünge oder Klicks entstehen.
 
 ---
 
-# Pegel und Analyse
+## Pegel und Analyse
 
-Zur Unterstützung beim Einstellen enthält der Voice Scrambler verschiedene Analysefunktionen.
+Zur Unterstützung beim Einstellen besitzt der Voice Scrambler verschiedene Analysefunktionen.
 
 Dazu gehören unter anderem:
 
-* Eingangspegel
-* Ausgangspegel
-* Übersteuerungsanzeige
-* Spektrumanzeige
-* Frequenzzuordnung
-* Testton
-* optionaler Pegelabgleich
+- Eingangspegel
+- Ausgangspegel
+- Übersteuerungsanzeige
+- Spektrumanzeige
+- Frequenzzuordnung
+- Testton
+- optionaler Pegelabgleich
 
 Der Pegelabgleich versucht Lautstärkeunterschiede zwischen Original- und Effektsignal näherungsweise auszugleichen.
 
 ---
 
-# Presets
-
-Vier Presets bieten unterschiedliche Ausgangspunkte.
+## Presets
 
 ### KGB Cold War
 
@@ -393,13 +403,15 @@ Experimenteller Numbers-Station- und Geheimdienst-Sound.
 
 Stärkere und komplexere Sprachverfremdung.
 
-Die Presetnamen beschreiben ausschließlich kreative Klangwelten und stellen **keine originalgetreuen Simulationen historischer Geräte oder realer Organisationen** dar.
+Die Namen der Presets beschreiben ausschließlich kreative Klangwelten.
+
+Sie stellen **keine originalgetreuen Simulationen realer Geräte, Organisationen oder historischer Übertragungssysteme** dar.
 
 ---
 
-# Clean Decode
+## Clean Decode
 
-Eine einfach frequenzinvertierte Stimme kann unter bestimmten Bedingungen durch eine erneute Frequenzinversion wieder näherungsweise verständlich gemacht werden.
+Eine ausschließlich frequenzinvertierte Stimme kann unter bestimmten Bedingungen durch eine erneute Frequenzinversion näherungsweise wieder verständlicher gemacht werden.
 
 Dafür besitzt das Plugin den Modus:
 
@@ -409,79 +421,310 @@ Dabei werden zusätzliche Funk- und Störeffekte deaktiviert, während Trägerfr
 
 Eine verlustfreie Wiederherstellung des ursprünglichen Signals ist jedoch nicht garantiert.
 
-Insbesondere folgende Bearbeitungen erschweren oder verhindern eine Rekonstruktion:
+Insbesondere folgende Bearbeitungen können eine Rekonstruktion erschweren oder vollständig verhindern:
 
-* Filter
-* Verzerrung
-* Rauschen
-* Split-Band-Verarbeitung
-* zusätzliche Effekte
-* verlustbehaftete Audiokompression
+- Filter
+- Verzerrung
+- Rauschen
+- Split-Band-Verarbeitung
+- zusätzliche Effekte
+- verlustbehaftete Audiokompression
 
 Der LautFunk Voice Scrambler ist deshalb **kein Verschlüsselungssystem und bietet keine sichere Kommunikation**.
 
-Er ist ausschließlich als kreativer Audioeffekt gedacht.
+Er wurde ausschließlich als kreativer Audioeffekt entwickelt.
+
+---
+
+# LautFunk FartSynth 61 v1.0
+
+## Parametrische Furzsynthese auf 61 MIDI-Tasten
+
+Der **LautFunk FartSynth 61** ist kein Sampleplayer.
+
+Die Klänge werden innerhalb der Synthese-Engine aus analytisch erzeugten Klangbausteinen und neu generierter Resttextur aufgebaut.
+
+Die Engine basiert auf Analysedaten von Referenzaufnahmen, lädt beim Spielen jedoch keine WAV- oder MP3-Dateien.
+
+Technisch handelt es sich deshalb um eine:
+
+**referenzgebundene parametrische Resynthese**
+
+Version 1.0 besitzt zwei unterschiedliche Spielmodi:
+
+1. **ALLE 12**  
+   Zwölf unterschiedliche Klangcharaktere werden gemeinsam über die Tastatur verteilt.
+
+2. **EIN CHARAKTER**  
+   Ein einzelner Klangcharakter erhält die vollständige Variantenbelegung über alle 61 Tasten.
+
+Beim Laden startet Version 1.0 automatisch im Modus:
+
+**ALLE 12**
+
+---
+
+# Modus „ALLE 12“
+
+MIDI **36 bis 95** wird in zwölf Gruppen aus jeweils fünf aufeinanderfolgenden Halbtönen aufgeteilt.
+
+Dabei werden selbstverständlich auch die schwarzen Tasten verwendet.
+
+Jede Gruppe repräsentiert einen eigenen Klangcharakter.
+
+| Gruppe | Charakter | MIDI |
+| --- | --- | --- |
+| 01 | Referenz | 36–40 |
+| 02 | Tiefer | 41–45 |
+| 03 | Wechselmuster | 46–50 |
+| 04 | Runder Plopp | 51–55 |
+| 05 | Lockeres Flattern | 56–60 |
+| 06 | Feuchtes Blubbern | 61–65 |
+| 07 | Arm-Raspel | 66–70 |
+| 08 | Trocken / Kurz | 71–75 |
+| 09 | Blechern | 76–80 |
+| 10 | Tiefes Poltern | 81–85 |
+| 11 | Hohes Schnarren | 86–90 |
+| 12 | Dreifach-Brrap | 91–95 |
+
+Die fünf Tasten jeder Gruppe besitzen dieselbe grundlegende Bedeutung:
+
+| Position | Variante | Wirkung |
+| --- | --- | --- |
+| 1 | Original | Grundform des jeweiligen Charakters |
+| 2 | Kurz | Stark verkürzt und enger geformt |
+| 3 | Tief | Breiter, langsamer und länger |
+| 4 | Schnell | Kompakter und schneller |
+| 5 | Wild | Bewegter, länger und mit stärkerem Geräusch- und Schwingungsanteil |
+
+---
+
+## Die 61. Taste: Zufallsmodus
+
+**MIDI 96** besitzt im Modus „ALLE 12“ eine besondere Funktion.
+
+Sie ist die:
+
+**Zufallstaste**
+
+Beim Spielen werden sämtliche **60 Charakter-/Variantenkombinationen** automatisch durchmischt.
+
+Dabei gilt:
+
+- jede Kombination erscheint einmal
+- anschließend wird neu gemischt
+- innerhalb eines Durchlaufs gibt es keine Wiederholung
+- zwischen zwei Durchläufen wird dieselbe Kombination nicht unmittelbar erneut gespielt
+
+Zusätzlich bleiben die normalen Klangvariationen und Humanize-Funktionen aktiv.
+
+Dadurch erzeugt auch die Zufallstaste nicht bei jedem Durchlauf exakt identische Ergebnisse.
+
+---
+
+# Modus „EIN CHARAKTER“
+
+Durch Anklicken eines Charakterfeldes wird automatisch in den Modus **EIN CHARAKTER** gewechselt.
+
+Der gewählte Charakter steht anschließend auf allen 61 Tasten zur Verfügung.
+
+Die Tastatur verwendet dabei die bereits aus Version 0.9 bekannte Variantenstruktur.
+
+| MIDI | Familie | MIDI | Familie |
+| --- | --- | --- | --- |
+| 36–39 | Reference | 68–70 | Loose Bass |
+| 40–42 | Loose Flap | 71–74 | Drooping |
+| 43–46 | Dry Pop | 75–77 | Rising |
+| 47–49 | Long Flutter | 78–81 | False Start |
+| 50–53 | Stutter | 82–84 | Unstable |
+| 54–56 | Air Leak | 85–88 | Double Burst |
+| 57–60 | Wet Gurgle | 89–92 | Triple Burst |
+| 61–63 | Fast Rattle | 93–96 | Bathroom Monster |
+| 64–67 | Tight Squeak |  |  |
+
+Über **ALLE 12** kann jederzeit wieder zur Gesamtbelegung gewechselt werden.
+
+Die Schaltfläche **EIN CHARAKTER** ruft anschließend die zuletzt gewählte Einzelauswahl wieder auf.
+
+Das Spielen im Gesamtmodus verändert diese gespeicherte Auswahl nicht.
+
+---
+
+# FartSynth-Regler
+
+| Regler | Funktion |
+| --- | --- |
+| Pressure | Stärke des Klangereignisses und Einfluss auf die Detailbreite |
+| Pulse Rate | Geschwindigkeit und damit auch Tonhöhe der gesamten Klanggeste |
+| Timing Variation | Zeitliche Variationen bei neuen Anschlägen |
+| Air Supply | Zeitliche Dehnung der Klanggeste |
+| Air Texture | Stärke der Resttextur; 0 deaktiviert sie |
+| Tail Sputter | Form und Geschwindigkeit später Klangdetails |
+| Humanize | Variationen von Form, Timing und Lautstärke |
+| Closure Ring | Pegel kurzer schwingender Klanganteile |
+| Body / Sharpness | Veränderung der Detailbreite und Klanghärte |
+| Alternation | Zusätzliche paarweise Zeitverschiebung |
+| Output dB | Geglätteter Ausgangspegel |
+| Voices | Anzahl gleichzeitig möglicher Stimmen von 1 bis 12 |
+| Release ms | Ausklang nach dem Loslassen einer Taste |
+| Bend Depth | Stärke des Pitchbend-Einflusses |
+
+Die grauen Standardregler von JSFX bleiben in der Benutzeroberfläche ausgeblendet.
+
+Alle **17 Parameter** des Plugins sind automatisierbar.
+
+Die Parameternummern der bisherigen Version wurden beibehalten. **Keyboard Mode** wurde als Parameter 17 ergänzt.
+
+---
+
+# MIDI-Steuerung des FartSynth
+
+Neben den Reglern lässt sich die Engine über verschiedene MIDI-Controller beeinflussen.
+
+- **Velocity** → Stärke
+- **CC1 / Modwheel** → Zeitvariation
+- **CC11 / Expression** → Detailbreite
+- **Pitchbend** → Geschwindigkeit beziehungsweise Pitch-Verlauf
+- **Aftertouch** → zusätzliche Stärke
+- **CC64** → Sustain/Haltepedal
+- **CC120 / CC123** → Stimmen stoppen
+
+Das Haltepedal hält eine Note, bis das Pedal wieder losgelassen wird.
+
+Die eigentliche Klanggeste bleibt trotzdem endlich und läuft nicht unbegrenzt weiter.
+
+Zum vollständigen Abspielen eines Klanges sollte eine Taste gehalten werden, bis die Klanggeste beendet ist.
+
+Kurzes Antippen startet entsprechend früher die Release-Phase.
+
+Für kontrolliertere Ergebnisse können insbesondere:
+
+- Timing Variation
+- Humanize
+
+reduziert werden.
+
+---
+
+# Stimmen und Moduswechsel
+
+Modus- und Charakterwechsel gelten ausschließlich für neu angeschlagene Noten.
+
+Bereits laufende Stimmen behalten ihre ursprüngliche Zuordnung.
+
+Dadurch funktionieren auch:
+
+- Note-Off
+- Sustain
+- Release
+
+korrekt weiter, wenn während eines gehaltenen Tons der Modus gewechselt wird.
+
+Modus und Charakterauswahl werden zusammen mit den Pluginparametern im REAPER-Projekt beziehungsweise Preset gespeichert.
+
+---
+
+# Hörfolge und technische Prüfung
+
+Zum FartSynth gehört die Testdatei:
+
+`LautFunk_FartSynth_61_v1.0_61_Tasten.wav`
+
+Sie spielt im Modus **ALLE 12** sämtliche 61 Tasten nacheinander ab:
+
+**MIDI 36 bis MIDI 96**
+
+Die Aufnahme wurde mit den Werkseinstellungen und Velocity 104 erzeugt.
+
+Die Audiodaten stammen direkt aus der tatsächlichen JSFX-Engine im **ysfx-Prüfhost**.
+
+Für die Hörfolge wurden lediglich:
+
+- Stille am Ende einzelner Töne gekürzt
+- Pausen zwischen den Klängen eingefügt
+
+Es erfolgte keine individuelle Klangbearbeitung oder Pegelanpassung.
+
+Zusätzliche genaue Zeitmarken befinden sich in:
+
+`LautFunk_FartSynth_61_v1.0_Hoerfolge.json`
+
+Geprüft wurden unter anderem:
+
+- alle 61 Zuordnungen des Gesamtmodus
+- alle 732 Charakter-/Tastenkombinationen des Einzelmodus
+- mehrere vollständige Zufallsdurchläufe
+- laufende Stimmen während Moduswechseln
+- Sustain-Pedal bei Moduswechseln
+- Parameterspeicherung
+- GUI-Klicks
+- Ereignisverarbeitung
+- Audiopuffer
+
+Alle 61 Tasten lieferten bei 48 kHz endliche Audiosignale ohne Ereignispuffer-Überlauf.
+
+Zusätzlich wurden **28 native Audioregressionen des Einzelmodus bitgenau mit Version 0.9 verglichen**.
+
+REAPER selbst war nicht Bestandteil dieser automatisierten Testumgebung.
+
+Die Benutzeroberfläche wurde offscreen ausgeführt und visuell kontrolliert.
+
+Für den normalen Einsatz ist ausschließlich die eigentliche JSFX-Datei erforderlich.
+
+Der zusätzliche Source-Ordner enthält den reproduzierbaren Builder und die Prüfprogramme.
 
 ---
 
 # Installation
 
-Beide Plugins sind **JSFX-Plugins für REAPER**.
+Alle LautFunk-Plugins sind **JSFX-Plugins für REAPER**.
 
 Eine klassische Installation wie bei VST-, VST3- oder CLAP-Plugins ist deshalb nicht notwendig.
 
-Die Dateien müssen lediglich in den **Effects-Ordner von REAPER** kopiert werden.
+Die Plugin-Dateien müssen lediglich in den REAPER-Ordner:
 
-## Empfohlener Weg
+`Effects`
 
-Der einfachste und sicherste Weg funktioniert auf allen Betriebssystemen direkt über REAPER.
+kopiert werden.
+
+## Empfohlene Methode
 
 In REAPER:
 
 **Options → Show REAPER resource path in explorer/finder**
 
-beziehungsweise in einer deutschen Oberfläche sinngemäß:
+beziehungsweise sinngemäß in einer deutschen Oberfläche:
 
 **Optionen → REAPER-Ressourcenpfad im Explorer/Finder anzeigen**
 
-REAPER öffnet anschließend seinen persönlichen Ressourcenordner.
+REAPER öffnet anschließend den persönlichen Ressourcenordner.
 
-Dort befindet sich der Ordner:
+Darin befindet sich:
 
 ```text
 Effects
 ```
 
-Die LautFunk-Plugin-Dateien werden in diesen Ordner kopiert.
-
-Zum Beispiel:
-
-```text
-REAPER/
-└── Effects/
-    ├── LautFunk Digital Glitch
-    └── LautFunk Voice Scrambler
-```
-
-Alternativ kann ein eigener Unterordner angelegt werden:
+Wir empfehlen, darin einen eigenen LautFunk-Unterordner anzulegen:
 
 ```text
 REAPER/
 └── Effects/
     └── LautFunk/
-        ├── LautFunk Digital Glitch
-        └── LautFunk Voice Scrambler
+        ├── LautFunk_Digital_Glitch
+        ├── LautFunk_Voice_Scrambler
+        └── LautFunk_FartSynth_61_v1.0.jsfx
 ```
 
-Diese Variante hält den FX-Browser übersichtlich und ist empfehlenswert.
+Diese Struktur hält den FX-Browser übersichtlich.
 
 ---
 
 # Typische Installationspfade
 
-Die tatsächlichen Pfade können abhängig von Betriebssystem, REAPER-Version und portabler Installation abweichen.
+Die tatsächlichen Pfade können abhängig von Betriebssystem, REAPER-Version und einer eventuell verwendeten portablen Installation abweichen.
 
-Deshalb ist die oben beschriebene Methode über den **REAPER Resource Path** grundsätzlich vorzuziehen.
+Der Weg über **Show REAPER resource path** ist deshalb grundsätzlich zu bevorzugen.
 
 ## Windows
 
@@ -491,13 +734,13 @@ Typischerweise:
 %APPDATA%\REAPER\Effects\
 ```
 
-Das entspricht meistens:
+beziehungsweise:
 
 ```text
 C:\Users\DEIN-BENUTZERNAME\AppData\Roaming\REAPER\Effects\
 ```
 
-Beispiel:
+Zum Beispiel:
 
 ```text
 C:\Users\DEIN-BENUTZERNAME\AppData\Roaming\REAPER\Effects\LautFunk\
@@ -519,16 +762,16 @@ Typischerweise:
 ~/.config/REAPER/Effects/
 ```
 
-Bei portablen REAPER-Installationen befindet sich der `Effects`-Ordner dagegen innerhalb des jeweiligen portablen REAPER-Ressourcenverzeichnisses.
+Bei einer portablen REAPER-Installation befindet sich der `Effects`-Ordner innerhalb des jeweiligen portablen REAPER-Ressourcenverzeichnisses.
 
 ---
 
-# Plugin in REAPER laden
+# Plugins in REAPER laden
 
 Nach dem Kopieren der Dateien:
 
-1. REAPER starten beziehungsweise zurück zu REAPER wechseln.
-2. Eine Audio- oder Mikrofonspur auswählen.
+1. REAPER starten beziehungsweise zu REAPER zurückkehren.
+2. Eine Audio- oder MIDI-Spur auswählen.
 3. Auf **FX** klicken.
 4. Im FX-Browser nach `LautFunk` suchen.
 5. Das gewünschte Plugin auswählen.
@@ -539,171 +782,84 @@ Zum Beispiel:
 LautFunk Digital Glitch
 ```
 
-oder:
-
 ```text
 LautFunk Voice Scrambler
 ```
 
-Falls das Plugin nicht sofort angezeigt wird, kann der FX-Browser geschlossen und erneut geöffnet oder REAPER neu gestartet werden.
-
----
-
-# Beispiel für die Ordnerstruktur
-
-Eine übersichtliche Installation könnte so aussehen:
+oder:
 
 ```text
-REAPER
-└── Effects
-    └── LautFunk
-        ├── LautFunk_Digital_Glitch
-        └── LautFunk_Voice_Scrambler
+LautFunk FartSynth 61
 ```
 
-Danach erscheinen die Effekte im REAPER-FX-Browser unter den verfügbaren JSFX.
+Falls ein Plugin nicht sofort angezeigt wird, kann der FX-Browser geschlossen und erneut geöffnet werden.
+
+Alternativ REAPER neu starten beziehungsweise die FX-Liste aktualisieren.
+
+Beim FartSynth muss zusätzlich:
+
+- eine MIDI-Spur scharf geschaltet
+- das Monitoring aktiviert
+
+werden.
+
+Auch die virtuelle Bildschirmtastatur benötigt eine laufende Audioverarbeitung.
 
 ---
 
 # Anforderungen
 
-* **REAPER**
-* Unterstützung für **JSFX / Jesusonic Effects**
-* Windows, macOS oder Linux
-* keine zusätzlichen VST-Abhängigkeiten
-* keine externe Runtime erforderlich
+- **REAPER**
+- Unterstützung für **JSFX / Jesusonic Effects**
+- Windows, macOS oder Linux
+- keine zusätzlichen VST-Abhängigkeiten
+- keine externe Runtime erforderlich
+
+Beim FartSynth können sehr dichte Klangereignisse mit vielen gleichzeitig aktiven Stimmen entsprechend mehr Rechenleistung benötigen.
+
+Falls erforderlich:
+
+- Stimmenanzahl reduzieren
+- Audiopuffer vergrößern
+
+Die Werkseinstellung des FartSynth verwendet acht Stimmen.
 
 ---
 
-# Wofür sind die Plugins gedacht?
+# Einsatzbereiche
 
-Die LautFunk FX Plugins sind keine klassischen Mixing-Plugins, die einen möglichst transparenten Klang erzeugen sollen.
+Die LautFunk Plugins wurden insbesondere für kreative Audioanwendungen entwickelt.
 
-Sie sind Werkzeuge für **bewusste Klangzerstörung und kreative Audiomanipulation**.
+Geeignet sind sie unter anderem für:
 
-Besonders geeignet für:
-
-* Podcasts
-* Hörspiele
-* Livestreams
-* YouTube-Produktionen
-* Radio- und Funk-Simulationen
-* elektronische Musik
-* Vocal-Effekte
-* Sounddesign
-* Intro- und Übergangseffekte
-* Comedy und Satire
-* experimentelle Audioproduktionen
+- Podcasts
+- Hörspiele
+- Livestreams
+- YouTube-Produktionen
+- Radio- und Funk-Simulationen
+- elektronische Musik
+- Vocal-Effekte
+- Sounddesign
+- Intro-Effekte
+- Übergänge
+- Comedy
+- Satire
+- experimentelle Audioproduktionen
 
 ---
 
-# LautFunk
+# Über LautFunk
 
 Die Plugins entstanden ursprünglich für Audio-, Podcast- und Sounddesign-Produktionen von **LautFunk**.
 
-Der Schwerpunkt liegt nicht auf perfekter Simulation historischer Hardware, sondern darauf, charakteristische Klangideen als flexibel einsetzbare kreative Werkzeuge innerhalb von REAPER bereitzustellen.
+Der Schwerpunkt liegt nicht darauf, historische Hardware oder reale Übertragungssysteme perfekt zu simulieren.
 
-**Kaputt darf hier ausdrücklich gut klingen.**
+Stattdessen werden charakteristische Klangideen aufgegriffen und als flexibel einsetzbare Werkzeuge für REAPER umgesetzt.
 
-# LautFunk FartSynth 61 v1.0
+Mal kontrolliert.
 
-**Ein Instrument, zwei Tastenbelegungen:** Alle zwölf Charaktere gemeinsam auf 61 Tasten oder die vollständige bisherige Variantenbelegung eines einzelnen Charakters. v1.0 startet direkt mit **ALLE 12**. Die bestätigte Klangerzeugung aus v0.9 bleibt erhalten.
+Mal experimentell.
 
-## Installation
+Und manchmal vollkommen absurd.
 
-1. In REAPER **Options → Show REAPER resource path in explorer/finder** öffnen.
-2. **LautFunk_FartSynth_61_v1.0.jsfx** nach **Effects/LautFunk/** kopieren. Den Unterordner bei Bedarf anlegen.
-3. FX-Liste aktualisieren bzw. REAPER neu starten und **LautFunk FartSynth 61 v1.0** laden.
-4. MIDI-Spur scharf schalten und Monitoring einschalten. Auch die Bildschirmtastatur benötigt eine laufende Audioverarbeitung.
-
-Die einzelne JSFX-Datei genügt. Source-Ordner, Hörprobe und Dokumentation werden nicht in REAPER installiert. v0.9 kann für bestehende Projekte daneben bleiben.
-
-## ALLE 12 — die gesamte Bandbreite
-
-MIDI **36–95** bildet zwölf Gruppen aus jeweils **fünf aufeinanderfolgenden Halbtontasten**, einschließlich der schwarzen Tasten. Die Gruppenfarben stehen an den Charakterfeldern und an der Bildschirmtastatur. Jedes Charakterfeld zeigt seinen MIDI-Bereich.
-
-| Gruppe | Charakter | MIDI | Beginn in der Hörfolge |
-| --- | --- | --- | --- |
-| 01 | Referenz | 36–40 | 0.00 s |
-| 02 | Tiefer | 41–45 | 6.65 s |
-| 03 | Wechselmuster | 46–50 | 14.20 s |
-| 04 | Runder Plopp | 51–55 | 20.85 s |
-| 05 | Lockeres Flattern | 56–60 | 26.63 s |
-| 06 | Feuchtes Blubbern | 61–65 | 32.65 s |
-| 07 | Arm-Raspel | 66–70 | 38.39 s |
-| 08 | Trocken / Kurz | 71–75 | 51.26 s |
-| 09 | Blechern | 76–80 | 54.87 s |
-| 10 | Tiefes Poltern | 81–85 | 58.28 s |
-| 11 | Hohes Schnarren | 86–90 | 63.95 s |
-| 12 | Dreifach-Brrap | 91–95 | 75.67 s |
-| ? | Zufall aus allen Gruppen | 96 | 83.85 s |
-
-Die fünf Positionen haben in jeder Gruppe dieselbe Bedeutung:
-
-| Position | Variante | Wirkung |
-| --- | --- | --- |
-| 1 | Original | Grundform des Charakters mit den eingestellten Variationen |
-| 2 | Kurz | Stark verkürzt, enger geformt und mit weniger Resttextur |
-| 3 | Tief | Breitere Details und längerer, langsamerer Ablauf |
-| 4 | Schnell | Kompakter, schneller und enger geformt |
-| 5 | Wild | Bewegter Lautstärkeverlauf, längerer Ablauf und stärkerer Geräusch-/Schwingungsanteil |
-
-**MIDI 96 ist die zusätzliche Zufallstaste.** Sie mischt alle 60 Charakter-/Variantenkombinationen durch. Jede kommt einmal vor, bevor neu gemischt wird; auch zwischen zwei Durchläufen gibt es keine direkte Wiederholung derselben Kombination. Jeder Anschlag erhält weiterhin die eingestellten Klangvariationen. Die Mischfolge startet bei einer Neuinitialisierung erneut.
-
-Oben erscheint beim Spielen der tatsächlich ausgelöste Charakter samt Variante. Über einer Bildschirmtaste zeigt die Fußzeile deren genaue Belegung.
-
-## EIN CHARAKTER — die bisherige volle Variantenbelegung
-
-**Einen Charakter anklicken** schaltet direkt zur Einzelauswahl. Dieser Charakter belegt dann wie in v0.9 alle 61 Tasten mit den 17 bisherigen Familien. MIDI 96 gehört hier wieder zu „Bathroom Monster“.
-
-Mit **ALLE 12** geht es zurück zur Gesamtbelegung. **EIN CHARAKTER** ruft die zuletzt gewählte Einzelauswahl wieder auf. Spielen im Gesamtmodus überschreibt diese Auswahl nicht.
-
-| MIDI | Familie | MIDI | Familie |
-| --- | --- | --- | --- |
-| 36–39 | Reference | 68–70 | Loose Bass |
-| 40–42 | Loose Flap | 71–74 | Drooping |
-| 43–46 | Dry Pop | 75–77 | Rising |
-| 47–49 | Long Flutter | 78–81 | False Start |
-| 50–53 | Stutter | 82–84 | Unstable |
-| 54–56 | Air Leak | 85–88 | Double Burst |
-| 57–60 | Wet Gurgle | 89–92 | Triple Burst |
-| 61–63 | Fast Rattle | 93–96 | Bathroom Monster |
-| 64–67 | Tight Squeak | | |
-
-Modus- und Charakterwechsel gelten für neue Anschläge. Bereits laufende Stimmen behalten ihre Zuordnung und reagieren weiterhin auf ihre ursprüngliche Note-Off-Nachricht und das Haltepedal. Modus und Charakter werden mit den Parametern im Projekt bzw. Preset gespeichert. Die grauen Standardregler bleiben ausgeblendet; alle **17 Parameter** sind automatisierbar. Die bisherigen 16 Parameternummern bleiben erhalten, „Keyboard Mode“ ist Parameter 17.
-
-## Regler und Spielweise
-
-| Regler | Wirkung |
-| --- | --- |
-| Pressure | Stärke; verändert bei neuen Anschlägen zusätzlich die Detailbreite |
-| Pulse Rate | Geschwindigkeit und damit auch Tonhöhe der gesamten Geste |
-| Timing Variation | Zusammenhängende zeitliche Verschiebungen ab dem nächsten Anschlag |
-| Air Supply | Zeitliche Dehnung ab dem nächsten Anschlag |
-| Air Texture | Resttextur; 0 schaltet sie aus |
-| Tail Sputter | Dehnung oder Stauchung später Details im Ausklang |
-| Humanize | Zusammenhängende Form- und Lautstärkevariationen ab dem nächsten Anschlag |
-| Closure Ring | Pegel der kurzen schwingenden Bausteine |
-| Body / Sharpness | Gegenläufige Veränderung der Detailbreite ab dem nächsten Anschlag |
-| Alternation | Zusätzliche paarweise Zeitverschiebung |
-| Output dB | Geglätteter Ausgangspegel |
-| Voices | 1–12 Stimmen; eine Änderung stoppt laufende Stimmen |
-| Release ms | Zeitkonstante des Ausklangs nach dem Loslassen |
-| Bend depth | Einfluss des Pitchbend-Reglers |
-
-Tail Sputter und Alternation wirken auf noch nicht vorbereitete Klangbausteine. Velocity steuert die Stärke, CC1 die Zeitvariation, CC11 die Detailbreite, Pitchbend die Geschwindigkeit und Aftertouch die Stärke. CC64 hält Noten bis zum Loslassen des Pedals; die Klanggeste bleibt endlich. CC120/123 stoppt die Stimmen. Controller wirken gemeinsam über MIDI-Kanäle. MIDI-Ereignisse werden am Audioblock verarbeitet. Die Ausgabe ist mono auf beiden Ausgangskanälen.
-
-Zum vollständigen Abspielen eine Taste halten, bis der Klang zu Ende ist. Kurzes Antippen startet früher die Release-Phase. Für weniger Schwankungen **Timing Variation** und **Humanize** reduzieren.
-
-## Hörfolge und Prüfung
-
-**LautFunk_FartSynth_61_v1.0_61_Tasten.wav** spielt alle 61 Tasten im Modus ALLE 12 der Reihe nach: MIDI 36 bis 96, jeweils mit Werkseinstellungen und Velocity 104. Dauer: ungefähr **85 Sekunden**. Die Ausgabe stammt aus der tatsächlichen JSFX-Engine in ysfx. Es wurde nur die Stille am Ende jedes Tons gekürzt und eine Pause eingesetzt; keine individuelle Pegelanpassung oder Klangbearbeitung. Genaue Zeitmarken stehen in `LautFunk_FartSynth_61_v1.0_Hoerfolge.json`.
-
-Geprüft wurden alle 61 Zuordnungen des Gesamtmodus, alle 732 Charakter-/Tastenkombinationen des Einzelmodus, vier vollständige Zufallsdurchläufe, laufende Stimmen und Pedal bei Moduswechseln, Parameterspeicherung und GUI-Klicks. Alle 61 Tasten lieferten bei 48 kHz endliche Audiosignale ohne Ereignispuffer-Überlauf. **28 native Audioregressionen des Einzelmodus sind bitgenau identisch mit v0.9.** Klangbank, Ereignisvorbereitung und Sample-Verarbeitung wurden zusätzlich auf unveränderten Quelltext geprüft.
-
-REAPER selbst wurde hier nicht ausgeführt. Die Grafik wurde offscreen ausgeführt und visuell kontrolliert; dafür nutzte der ysfx-Prüfhost bei drei Automationsmeldungen eine ältere API-Form und seine verfügbare Ersatzschrift. Die ausgelieferte Datei verwendet weiterhin die REAPER-Gestenmeldungen. Der Prüfbericht beschreibt diese Grenze.
-
-Die Engine verwendet Analysedaten deiner Referenzaufnahmen und berechnet analytische Klangbausteine samt neu erzeugter Resttextur. Sie lädt keine WAV-/MP3-Aufnahmen, bleibt aber **referenzgebundene parametrische Resynthese**. Dichte Klänge mit vielen gleichzeitigen Stimmen können viel Rechenleistung benötigen; bei Bedarf weniger Stimmen oder einen größeren Audiopuffer wählen. Die Werkseinstellung bleibt bei acht Stimmen.
-
-Der Source-Ordner enthält den reproduzierbaren Builder und die Prüfprogramme. Für die normale Nutzung ist nur die JSFX-Datei nötig.
-
+**Audio muss nicht immer sauber sein, um interessant zu klingen.**
