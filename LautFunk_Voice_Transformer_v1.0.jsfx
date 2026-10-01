@@ -1,0 +1,555 @@
+desc:LautFunk Voice Transformer v1.0
+tags:vocal voice pitch formant
+version:1.0
+author:LautFunk
+options:gfx_hz=30
+in_pin:Left
+in_pin:Right
+out_pin:Voice L
+out_pin:Voice R
+slider1:1<0,7,1{Neutral,Frau,Mann,Junge,Maedchen,Jugendlich,Alter Mann,Alte Frau}>-Zielprofil
+slider2:1<0,2,1{Tief,Mittel,Hoch}>-Ausgangslage (Resonanz-Startwert)
+slider3:180<70,350,1>-Basis der Ausgangsstimme (Hz)
+slider4:100<0,100,1>-Verwandlung (%)
+slider5:0<-12,12,0.1>-Tonhoehe fein (Halbtoene)
+slider6:0<-6,6,0.1>-Formanten fein (Halbtoene)
+slider7:0<-6,6,0.1>-Helligkeit (dB)
+slider8:0<-6,6,0.1>-Koerper (dB)
+slider9:0<0,30,1>-Luftigkeit (%)
+slider10:60<20,250,1>-Parameter-Glaettung (ms)
+slider11:65<0,100,1>-Artikulation (%)
+slider12:100<0,100,1>-Effektanteil (%)
+slider13:0<-18,18,0.1>-Eingang (dB)
+slider14:-3<-18,12,0.1>-Ausgang (dB)
+slider15:2<0,3,1{Live,Balanced,Studio,Detail}>-Qualitaet
+slider16:0<0,1,1{Aktiv,Original}>-Originalvergleich
+slider17:0<0,2,1{Links,Rechts,Mono L+R}>-Mikrofoneingang
+slider18:1<0,1,1{Aus,An}>-Spitzenbegrenzer
+slider19:65<0,100,1>-Alterscharakter (%)
+slider20:0<0,100,1>-Rauheit / Saettigung (%)
+slider21:0<0,100,1>-Stimmzittern (%)
+slider22:1<0,1,1{Manuell,Automatisch}>-Ausgangslage beim Einmessen
+
+@init
+// Streaming STFT with propagated identity-locked phase state.
+// The prior output phase of EVERY analysis bin is stored after phase locking.
+// Thus a moving spectral peak inherits its region's coherent previous phase
+// instead of jumping to an unrelated free-running bin accumulator.
+// No trained model, samples or DLLs.
+// A phase-locked spectral pitch shifter is combined with cepstral envelope
+// warping. This is NOT PSOLA or WORLD and does not reproduce an exact age.
+ext_noinit=1;ext_nodenorm=1;
+input_ring=0;output_ring=16384;window=32768;dry_ring=49152;
+fftbuf=65536;cepbuf=131072;synbuf=196608;
+magnitude=229376;phase=240000;previous_phase=251000;frequency=262144;
+envelope=273000;peak_map=284000;acc_phase=306000;window_acf=317000;
+scope_in=328000;scope_out=328256;control_ids=329000;cal_hist=330000;locked_phase=331000;
+control_ids[0]=4;control_ids[1]=5;control_ids[2]=6;control_ids[3]=12;
+control_ids[4]=7;control_ids[5]=8;control_ids[6]=9;control_ids[7]=11;
+control_ids[8]=13;control_ids[9]=14;control_ids[10]=10;control_ids[11]=3;
+control_ids[12]=19;control_ids[13]=20;control_ids[14]=21;
+two_pi=2*$pi;ln2=log(2);last_quality=-1;last_srate=0;
+cal_request=0;cal_remaining=0;cal_state=0;
+cal_serial=0;cal_generation=0;cal_ui_wait=0;cal_ui_status=0;
+cal_elapsed=0;cal_valid_seconds=0;cal_source_auto=1;
+trem_phase=0;trem_phase2=0;age_phase1=0;age_phase2=0;rough_smooth=0;age_smooth=0;trem_smooth=0;
+age_female_smooth=0;age_sample=0;age_female_sample=0;voice_sample=0;
+air_smooth=0;air_power=0;air_lo=0;air_hi=0;age_noise=0;
+in_gain=10^(slider13/20);out_gain=10^(slider14/20);
+mix_gain=slider12/100;bypass_gain=slider16;limit_gain=slider18;
+ui_drag=0;ui_lastmouse=0;ui_lastclick=-10;
+
+function wrap_phase(value) (value-two_pi*floor((value+$pi)/two_pi););
+function interp(buf,x,last) local(k,t) (
+  x=max(0,min(last,x));k=min(last-1,floor(x));t=x-k;
+  buf[k]+t*(buf[k+1]-buf[k]);
+);
+function setup_engine() local(k,q,target,w) (
+  target=(slider15<.5 ? 1024 : slider15<1.5 ? 2048 : slider15<2.5 ? 4096 : 8192)*srate/48000;
+  n=512;while(n<target*.75 && n<16384) (n*=2;);
+  // Respect the 200 ms DSP budget also at unusual low sample rates.
+  while(n/srate>.2 && n>512) (n/=2;);
+  half=n/2;hop=n/8;mask=n-1;latency=n;
+  pdc_delay=latency;pdc_bot_ch=0;pdc_top_ch=2;ext_tail_size=n*2;
+  memset(input_ring,0,65536);memset(previous_phase,0,half+1);
+  memset(locked_phase,0,half+1);memset(acc_phase,0,half+1);memset(scope_in,0,512);
+  k=0;loop(n,
+    w=.5-.5*cos(two_pi*k/n);window[k]=w;
+    cepbuf[2*k]=w;cepbuf[2*k+1]=0;k+=1;
+  );
+  // Correct the autocorrelation for the analysis window.
+  fft(cepbuf,n);fft_permute(cepbuf,n);k=0;
+  loop(n,q=2*k;cepbuf[q]=cepbuf[q]^2+cepbuf[q+1]^2;cepbuf[q+1]=0;k+=1;);
+  fft_ipermute(cepbuf,n);ifft(cepbuf,n);k=0;
+  loop(half+1,window_acf[k]=cepbuf[2*k]/max(.000000000001,cepbuf[0]);k+=1;);
+  ring_pos=0;hop_count=0;frame_count=0;previous_energy=0;
+  detected_hz=0;voice_confidence=0;voiced_smooth=0;
+  pitch_log=0;formant_log=0;bright_smooth=0;body_smooth=0;envelope_hz=180;
+  age_smooth=0;rough_smooth=0;trem_smooth=0;trem_phase=0;trem_phase2=0;age_phase1=0;age_phase2=0;
+  age_female_smooth=0;age_sample=0;age_female_sample=0;voice_sample=0;
+  air_smooth=0;air_power=0;air_lo=0;air_hi=0;age_noise=0;
+  air_lp_alpha=1-exp(-two_pi*min(6000,srate*.35)/srate);
+  air_hp_alpha=1-exp(-two_pi*700/srate);
+  air_env_alpha=1-exp(-1/(srate*.012));
+  age_noise_alpha=1-exp(-two_pi*9/srate);
+  last_quality=slider15;last_srate=srate;
+  cal_remaining=0;cal_state=0;
+  meter_decay=exp(-1/(srate*.25));limit_decay=exp(-1/(srate*.2));
+);
+function set_targets() local(p,base,source_size,target_size,target_hz,amount) (
+  p=max(0,min(7,floor(slider1+.5)));base=max(70,min(350,slider3));
+  source_size=slider2<.5 ? .90 : slider2<1.5 ? 1 : 1.07;
+  target_hz=base;target_size=source_size;
+  p==1 ? (target_hz=205;target_size=1.06;);
+  p==2 ? (target_hz=135;target_size=.90;);
+  p==3 ? (target_hz=270;target_size=1.27;);
+  p==4 ? (target_hz=295;target_size=1.32;);
+  p==5 ? (target_hz=230;target_size=1.15;);
+  p==6 ? (target_hz=140;target_size=.91;);
+  p==7 ? (target_hz=160;target_size=.95;);
+  amount=max(0,min(1,slider4/100));
+  target_pitch=max(-18,min(18,amount*(12*log(target_hz/base)/ln2+slider5)));
+  target_formant=max(-9,min(9,amount*(12*log(target_size/source_size)/ln2+slider6)));
+  target_age=(p==6 || p==7) ? slider19/100*amount : 0;
+  target_rough=slider20/100*amount;
+  target_trem=slider21/100*amount;
+  // Artistic character values, not a biological age predictor.
+  target_age_female=p==7 ? target_age : 0;
+  target_bright=slider7-.8*target_age-.7*target_age_female;
+  target_body=slider8-.7*target_age-1.1*target_age_female;
+  frame_smooth=1-exp(-hop/(srate*max(.02,slider10*.001)));
+  envelope_smooth=1-exp(-hop/(srate*.025));
+  sample_smooth=1-exp(-1/(srate*.01));
+  target_in=10^(slider13/20);target_out=10^(slider14/20);
+);
+
+function process_frame() local(k,q,idx,re,im,power,energy,diff,lag,minlag,maxlag,best,score,prev,next,delta,acf0,acf1,lifter,u,w,logmag,peak,left,right,j,source,bin,owner,frac,mag,envsource,envtarget,correction,angle,blend,dr,di,pr,pii,ratio,fratio,tilt,g,output,attack,ampnoise,noisephase) (
+  k=0;energy=0;
+  loop(n,
+    re=input_ring[(ring_pos+k)&mask]*window[k];fftbuf[2*k]=re;fftbuf[2*k+1]=0;
+    energy+=re*re;k+=1;
+  );
+  fft(fftbuf,n);fft_permute(fftbuf,n);
+  k=0;loop(half+1,
+    q=2*k;re=fftbuf[q];im=fftbuf[q+1];power=re*re+im*im;
+    magnitude[k]=sqrt(power);phase[k]=atan2(im,re);
+    diff=wrap_phase(phase[k]-previous_phase[k]-two_pi*k*hop/n);
+    frequency[k]=two_pi*k/n+diff/hop;previous_phase[k]=phase[k];
+    cepbuf[q]=power;cepbuf[q+1]=0;
+    (k>0 && k<half) ? (cepbuf[2*(n-k)]=power;cepbuf[2*(n-k)+1]=0;);
+    k+=1;
+  );
+  // F0 is used for the display/calibration and voicing confidence. Pitch
+  // shifting itself does not follow a quantized note or detector octave jump.
+  fft_ipermute(cepbuf,n);ifft(cepbuf,n);acf0=max(.000000000001,cepbuf[0]);
+  minlag=max(2,floor(srate/500));maxlag=min(half-2,ceil(srate/70));
+  lag=minlag;best=0;idx=0;
+  while(lag<=maxlag) (
+    acf1=cepbuf[2*lag]/(acf0*max(.12,window_acf[lag]));
+    prev=cepbuf[2*(lag-1)]/max(.12,window_acf[lag-1]);
+    next=cepbuf[2*(lag+1)]/max(.12,window_acf[lag+1]);
+    score=acf1*(1-.06*lag/maxlag);
+    (cepbuf[2*lag]/max(.12,window_acf[lag])>=prev && cepbuf[2*lag]/max(.12,window_acf[lag])>next && score>best) ? (best=score;idx=lag;);
+    lag+=1;
+  );
+  voice_confidence=energy/n>.0000001 ? max(0,min(1,best)) : 0;
+  (idx>0 && voice_confidence>.5) ? (
+    prev=cepbuf[2*(idx-1)];next=cepbuf[2*(idx+1)];
+    delta=.5*(prev-next)/(prev-2*cepbuf[2*idx]+next+.000000000001);
+    detected_hz=srate/(idx+max(-.5,min(.5,delta)));
+  ) : detected_hz=0;
+  voiced_smooth+=(1-exp(-hop/(srate*.025)))*(max(0,min(1,(voice_confidence-.25)/.4))-voiced_smooth);
+  // Calibration estimates F0. Source resonance category remains a heuristic.
+  cal_state==1 && cal_generation==atomic_get(cal_serial) ? (
+    cal_elapsed+=hop/srate;
+    (detected_hz>=70 && detected_hz<=350 && voice_confidence>.68) ? (
+      cal_bin=max(0,min(280,floor(detected_hz+.5)-70));
+      cal_hist[cal_bin]+=1;cal_valid+=1;cal_valid_seconds+=hop/srate;
+    );
+    cal_remaining=max(0,(8-cal_elapsed)*srate);
+    ((cal_elapsed>=3 && cal_valid_seconds>=2) || cal_elapsed>=8) ? (
+      cal_remaining=0;
+      cal_valid_seconds>=1 ? (
+        cal_acc=0;cal_bin=0;
+        while(cal_bin<280 && cal_acc+cal_hist[cal_bin]<cal_valid*.5) (
+          cal_acc+=cal_hist[cal_bin];cal_bin+=1;
+        );
+        cal_result=70+cal_bin;
+        // A cancelled/expired UI generation must never overwrite a newer one.
+        cal_generation==atomic_get(cal_serial) ? (
+          slider3=cal_result;cal_notify=4;
+          cal_source_auto && slider22>.5 ? (
+            slider2=slider3<155 ? 0 : slider3<220 ? 1 : 2;cal_notify+=2;
+          );
+          sliderchange(cal_notify);slider_automate(cal_notify);
+          cal_state=2;set_targets();
+        );
+      ) : cal_state=3;
+    );
+  );
+  // Cepstral low-pass liftering extracts a smooth log spectral envelope.
+  k=0;loop(half+1,
+    logmag=log(max(.00000001,magnitude[k]));cepbuf[2*k]=logmag;cepbuf[2*k+1]=0;
+    (k>0 && k<half) ? (cepbuf[2*(n-k)]=logmag;cepbuf[2*(n-k)+1]=0;);k+=1;
+  );
+  fft_ipermute(cepbuf,n);ifft(cepbuf,n);
+  lifter=max(8,min(n/8,srate*.0025));
+  detected_hz>0 && voice_confidence>.65 ? (
+    envelope_hz+=envelope_smooth*(detected_hz-envelope_hz);
+  );
+  lifter=min(lifter,srate/max(70,envelope_hz)*.45);
+  k=0;loop(n,
+    u=min(k,n-k);w=u<lifter*.7 ? 1 : u<lifter ? .5+.5*cos($pi*(u-lifter*.7)/(lifter*.3)) : 0;
+    cepbuf[2*k]*=w/n;cepbuf[2*k+1]*=w/n;k+=1;
+  );
+  fft(cepbuf,n);fft_permute(cepbuf,n);
+  k=0;loop(half+1,
+    frame_count==0 ? envelope[k]=cepbuf[2*k] : envelope[k]+=envelope_smooth*(cepbuf[2*k]-envelope[k]);
+    k+=1;
+  );
+  pitch_log+=frame_smooth*(target_pitch-pitch_log);
+  formant_log+=frame_smooth*(target_formant-formant_log);
+  bright_smooth+=frame_smooth*(target_bright-bright_smooth);
+  body_smooth+=frame_smooth*(target_body-body_smooth);
+  age_smooth+=frame_smooth*(target_age-age_smooth);
+  age_female_smooth+=frame_smooth*(target_age_female-age_female_smooth);
+  rough_smooth+=frame_smooth*(target_rough-rough_smooth);
+  trem_smooth+=frame_smooth*(target_trem-trem_smooth);
+  trem_phase=wrap_phase(trem_phase+two_pi*4.7*hop/srate);
+  trem_phase2=wrap_phase(trem_phase2+two_pi*3.4357*hop/srate);
+
+  trem_st=.35*trem_smooth*voiced_smooth*(sin(trem_phase)+.22*sin(trem_phase2));
+  ratio=2^((pitch_log+trem_st)/12);fratio=2^(formant_log/12);
+  effective_pitch=pitch_log;effective_formant=formant_log;
+  // Assign each analysis bin to its nearest spectral peak for phase locking.
+  left=0;k=1;
+  while(k<half) (
+    (magnitude[k]>=magnitude[k-1] && magnitude[k]>magnitude[k+1]) ? (
+      right=k;j=left;while(j<=(left+right)/2) (peak_map[j]=left;j+=1;);
+      while(j<=right) (peak_map[j]=right;j+=1;);left=right;
+    );k+=1;
+  );
+  j=left;while(j<=half) (peak_map[j]=left;j+=1;);
+  attack=frame_count==0 || (energy>previous_energy*5 && energy/n>.00001);
+  k=0;loop(half+1,
+    (attack || abs(pitch_log+trem_st)<.00001) ? acc_phase[k]=phase[k] : acc_phase[k]=wrap_phase(locked_phase[k]+frequency[k]*hop*ratio);
+    k+=1;
+  );
+  // Commit identity-locked phases after all accumulators have advanced.
+  // This separate pass is essential when a peak moves across FFT bins.
+  k=0;loop(half+1,
+    owner=peak_map[k];locked_phase[k]=wrap_phase(acc_phase[owner]+phase[k]-phase[owner]);k+=1;
+  );
+  previous_energy=energy;frame_count+=1;
+  blend=(1-voiced_smooth)*slider11/100;
+  memset(synbuf,0,n*2);
+  k=1;while(k<half) (
+    source=k/ratio;bin=min(half,max(0,floor(source+.5)));owner=peak_map[bin];
+    mag=source<half ? interp(magnitude,source,half) : 0;
+    envsource=interp(envelope,source,half);envtarget=interp(envelope,k/fratio,half);
+    correction=exp(max(-1.8,min(1.8,envtarget-envsource)));
+    mag*=correction/sqrt(ratio);
+    angle=acc_phase[owner]+wrap_phase(phase[bin]-phase[owner])-$pi*((k-ratio*owner)-(bin-owner));
+    pr=mag*cos(angle);pii=mag*sin(angle);
+    q=2*k;dr=fftbuf[q];di=fftbuf[q+1];
+    // Articulation acts only on the high-frequency, noise-like component.
+    // There is no detector-controlled full-band dry fallback. The noise path
+    // receives the same formant colour before it is blended into the result.
+    noise_color=exp(max(-1.2,min(1.2,envtarget-envelope[k])));
+    consonant_band=max(0,min(1,(k*srate/n-1800)/2000));
+    consonant_blend=blend*consonant_band;
+    pr+=(dr*noise_color-pr)*consonant_blend;
+    pii+=(di*noise_color-pii)*consonant_blend;
+    tilt=bright_smooth*max(-1,min(1,log(max(80,k*srate/n)/1800)/log(8)))+body_smooth/(1+(k*srate/n/450)^2);
+    // Small broad midrange emphasis and less body for the age character.
+    tilt+=(age_smooth*1.1+age_female_smooth*1.5)*exp(-.5*(log(max(80,k*srate/n)/1500)/.65)^2);
+    g=10^(tilt/20);pr*=g;pii*=g;
+    // Aspiration is added once in the continuous sample domain below;
+    // independent random FFT-bin phases are not regenerated each frame.
+    synbuf[q]=pr;synbuf[q+1]=pii;synbuf[2*(n-k)]=pr;synbuf[2*(n-k)+1]=-pii;
+    k+=1;
+  );
+  // Keep DC/Nyquist only in an exact neutral transformation.
+  abs(pitch_log)<.00001 && abs(formant_log)<.00001 ? (synbuf[0]=fftbuf[0];synbuf[n]=fftbuf[n];);
+  fft_ipermute(synbuf,n);ifft(synbuf,n);
+  k=0;loop(n,
+    output_ring[(ring_pos+k)&mask]+=synbuf[2*k]*window[k]/(3*n);k+=1;
+  );
+  k=0;loop(128,
+    u=100*exp(log(100)*k/127)*n/srate;
+    scope_in[k]=interp(envelope,u,half);
+    scope_out[k]=interp(envelope,u/fratio,half);k+=1;
+  );
+);
+
+setup_engine();set_targets();
+
+@slider
+set_targets();
+
+@block
+(slider15!=last_quality || srate!=last_srate) ? setup_engine();
+pdc_delay=latency;pdc_bot_ch=0;pdc_top_ch=2;
+set_targets();
+// Compare-exchange consumes a start once (v0.1.1 fix retained).
+cal_state==1 && cal_generation!=atomic_get(cal_serial) ? (cal_state=0;cal_remaining=0;);
+atomic_setifequal(cal_request,1,0)==1 ? (
+  cal_generation=atomic_get(cal_serial);cal_source_auto=slider22>.5;
+  cal_remaining=srate*8;cal_elapsed=0;cal_valid_seconds=0;cal_valid=0;
+  memset(cal_hist,0,281);cal_state=1;cal_start_time=time_precise();
+);
+
+@sample
+raw=slider17<.5 ? spl0 : slider17<1.5 ? spl1 : .5*(spl0+spl1);
+in_gain+=sample_smooth*(target_in-in_gain);out_gain+=sample_smooth*(target_out-out_gain);
+mix_gain+=sample_smooth*(slider12/100-mix_gain);
+bypass_gain+=sample_smooth*(slider16-bypass_gain);limit_gain+=sample_smooth*(slider18-limit_gain);
+dry=dry_ring[ring_pos];dry_ring[ring_pos]=raw;
+input_ring[ring_pos]=raw*in_gain;
+wet=output_ring[ring_pos];output_ring[ring_pos]=0;
+// Optional mild saturation, explicitly a character control rather than a
+// claim to model vocal-fold jitter. Default zero leaves this stage inactive.
+rough_drive=1+4*rough_smooth;
+rough_shaped=(wet*rough_drive)/(1+abs(wet*rough_drive));
+wet+=rough_smooth*.35*(rough_shaped-wet);
+// Continuous character stage: no frame-rate steps in amplitude or breath.
+age_sample+=sample_smooth*(age_smooth-age_sample);
+age_female_sample+=sample_smooth*(age_female_smooth-age_female_sample);
+voice_sample+=sample_smooth*(voiced_smooth-voice_sample);
+air_smooth+=sample_smooth*(slider9/100-air_smooth);
+age_phase1=wrap_phase(age_phase1+two_pi*1.7437/srate);
+age_phase2=wrap_phase(age_phase2+two_pi*8.0511/srate);
+air_random=(rand(2)-1)*1.7320508075688772;
+age_noise+=age_noise_alpha*(air_random-age_noise);
+age_texture=.008*age_sample*(sin(age_phase1)+.4*sin(age_phase2));
+age_texture+=age_female_sample*(.024*sin(age_phase1)+.06*age_noise);
+wet*=1+voice_sample*age_texture;
+air_power+=air_env_alpha*(wet*wet-air_power);
+air_hi+=air_hp_alpha*(air_random-air_hi);
+air_lo+=air_lp_alpha*(air_random-air_hi-air_lo);
+air_amount=.5*air_smooth+.025*age_sample+.04*age_female_sample;
+// Envelope comes from the delayed wet signal; silence does not open a hiss.
+air_gate=max(0,min(1,(sqrt(max(0,air_power))-.00005)/.00045));
+wet+=air_lo*sqrt(max(0,air_power))*air_amount*voice_sample*air_gate;
+value=(dry*in_gain*(1-mix_gain)+wet*mix_gain)*out_gain;
+limited=abs(value)>.94 ? sign(value)*(.94+.06*(1-exp(-(abs(value)-.94)/.06))) : value;
+value+=(limited-value)*limit_gain;
+value+=(dry-value)*bypass_gain;
+spl0=value;spl1=value;
+meter_in=max(abs(raw*in_gain),meter_in*meter_decay);
+meter_out=max(abs(value),meter_out*meter_decay);
+meter_limit=max(abs(value-limited),meter_limit*limit_decay);
+ring_pos=(ring_pos+1)&mask;hop_count+=1;
+hop_count>=hop ? (hop_count=0;process_frame(););
+
+@gfx 1040 971
+function color(hex,a) (gfx_set(((hex>>16)&255)/255,((hex>>8)&255)/255,(hex&255)/255,a););
+function box(x,y,w,h,hex) (color(hex,1);gfx_rect(x,y,w,h););
+function label(x,y,size,hex,txt) (
+  gfx_setfont(1,"Arial",size);color(hex,1);gfx_x=x;gfx_y=y;gfx_drawstr(txt);
+);
+function hitbox(x,y,w,h) (ux>=x && ux<x+w && uy>=y && uy<y+h;);
+function notify_param(idx,value,finish) (
+  slider(idx)=value;sliderchange(2^(idx-1));slider_automate(2^(idx-1));
+  finish ? slider_automate(2^(idx-1),1);
+);
+function pill(x,y,w,h,txt,selected) (
+  box(x,y,w,h,selected ? $x184c58 : $x172333);
+  selected ? (box(x,y+h-2,w,2,$x47e5cb););
+  label(x+12,y+(h-13)/2,13,selected ? $x9cfff1 : $xa6b6c8,txt);
+  hitbox(x,y,w,h);
+);
+function profile_name(v,dst) (
+  v==0 ? strcpy(dst,"NEUTRAL");v==1 ? strcpy(dst,"FRAU");
+  v==2 ? strcpy(dst,"MANN");v==3 ? strcpy(dst,"JUNGE");
+  v==4 ? strcpy(dst,"MAEDCHEN");v==5 ? strcpy(dst,"JUGENDLICH");
+  v==6 ? strcpy(dst,"ALTER MANN");v==7 ? strcpy(dst,"ALTE FRAU");
+);
+function param_info(v) (
+  umin=0;umax=100;ustep=1;udef=0;#unit=" %";#tip="";
+  v==3 ? (umin=70;umax=350;udef=slider2<.5 ? 125 : slider2<1.5 ? 180 : 230;#unit=" Hz";#name="STIMMBASIS";#tip="Mittlere Tonhoehe deiner Ausgangsstimme. Mit EINMESSEN automatisch bestimmen.";);
+  v==4 ? (udef=100;#name="VERWANDLUNG";#tip="Staerke der Pitch- und Formantveraenderung. 0 = keine Verschiebung.";);
+  v==5 ? (umin=-12;umax=12;ustep=.1;#unit=" st";#name="TONHOEHE FEIN";#tip="Feinkorrektur zum Profil in Halbtoenen. Die Sprechmelodie bleibt erhalten.";);
+  v==6 ? (umin=-6;umax=6;ustep=.1;#unit=" st";#name="FORMANTEN FEIN";#tip="Resonanzraum unabhaengig von der Tonhoehe: links groesser, rechts kleiner.";);
+  v==7 ? (umin=-6;umax=6;ustep=.1;#unit=" dB";#name="HELLIGKEIT";#tip="Neigung des Spektrums: dunkler oder heller. Kein zusaetzlicher Pitch-Shift.";);
+  v==8 ? (umin=-6;umax=6;ustep=.1;#unit=" dB";#name="KOERPER";#tip="Fuellung der tiefen Frequenzen um und unter 450 Hz.";);
+  v==9 ? (umax=30;#name="LUFTIGKEIT";#tip="Zusaetzliches gefiltertes Atemrauschen. Altersprofile haben separat regelbare Klangtextur.";);
+  v==10 ? (umin=20;umax=250;udef=60;#unit=" ms";#name="GLAETTUNG";#tip="Wie weich Pitch, Formanten und Klangregler neuen Einstellungen folgen.";);
+  v==11 ? (udef=65;#name="ARTIKULATION";#tip="Stabilisiert hohe Reibegeraeusche mit Zielklangfarbe. Kein Ganzband-Original-Bypass.";);
+  v==12 ? (udef=100;#name="EFFEKTANTEIL";#tip="100 % = verwandelte Stimme. Zwischenwerte mischen das zeitlich angepasste Original dazu.";);
+  v==13 ? (umin=-18;umax=18;ustep=.1;#unit=" dB";#name="EINGANG";#tip="Pegel vor der Analyse. Ein klares einzelnes Mikrofonsignal funktioniert am besten.";);
+  v==14 ? (umin=-18;umax=12;ustep=.1;udef=-3;#unit=" dB";#name="AUSGANG";#tip="Ausgangspegel vor dem optionalen Spitzenbegrenzer.";);
+  v==19 ? (udef=65;#name="ALTERSCHARAKTER";#tip="Nur Alter Mann / Alte Frau: Resonanzfarbe, sanfte Luftigkeit und kontinuierliche Stimmtextur.";);
+  v==20 ? (#name="RAUHEIT / SAETTIGUNG";#tip="Optionale dezente Saettigung. Fuer einen sauberen Klang bei 0 beginnen.";);
+  v==21 ? (#name="STIMMZITTERN";#tip="Optionales leicht unregelmaessiges Vibrato. 0 = aus, auch bei Altersprofilen.";);
+);
+
+// Draw at a fixed design resolution, then scale the actual vector-built UI.
+scale=max(.1,min(gfx_w/1040,gfx_h/971));ox=(gfx_w-1040*scale)/2;oy=(gfx_h-971*scale)/2;
+ux=(mouse_x-ox)/scale;uy=(mouse_y-oy)/scale;
+down=mouse_cap&1;pressed=down && !(ui_lastmouse&1);right_pressed=(mouse_cap&2) && !(ui_lastmouse&2);
+gfx_setimgdim(0,1040,971);gfx_dest=0;
+box(0,0,1040,971,$x080e18);
+gy=0;loop(80,box(0,gy,1040,1,$x101c2b);gy+=1;);
+box(28,26,4,37,$x47e5cb);
+label(45,20,12,$x8d9faf,"LAUTFUNK  /  REALTIME VOICE LAB");
+label(43,39,28,$xe9f5ff,"VOICE TRANSFORMER");
+label(552,44,12,$x657e97,"v1.0  /  STIMMEN & CHARAKTER");
+pill(727,27,146,32,"FEINWERTE RESET",0) && pressed ? (
+  notify_param(5,0,1);notify_param(6,0,1);notify_param(7,0,1);notify_param(8,0,1);
+  notify_param(9,0,1);notify_param(10,60,1);notify_param(11,65,1);notify_param(19,65,1);notify_param(20,0,1);notify_param(21,0,1);
+);
+pill(887,27,125,32,slider16 ? "ORIGINAL AN" : "EFFEKT AN",slider16==0) && pressed ? notify_param(16,1-slider16,1);
+
+label(28,84,10,$x7890a9,"ZIELSTIMME  /  PROFIL WAEHLEN, DANACH FEINABSTIMMEN");
+up=0;loop(8,
+  px=28+up*124;selected=floor(slider1+.5)==up;
+  box(px,107,116,64,selected ? $x173746 : $x101b2a);
+  box(px,107,116,3,selected ? $x47e5cb : $x223044);
+  profile_name(up,#profile);
+  label(px+9,121,13,selected ? $xaffff0 : $xd5e1eb,#profile);
+  #desc="Eigene Stimme";
+  up==1 ? #desc="Erwachsen / hell";up==2 ? #desc="Erwachsen / tief";
+  up==3 ? #desc="Kind / Profil A";up==4 ? #desc="Kind / Profil B";up==5 ? #desc="Jung / leicht";
+  up==6 ? #desc="Alter / maennlich";up==7 ? #desc="Alter / weiblich";
+  label(px+9,147,9,$x8298ae,#desc);
+  hitbox(px,107,116,64) && pressed ? notify_param(1,up,1);
+  up+=1;
+);
+
+box(28,188,480,92,$x101b2a);box(524,188,488,92,$x101b2a);
+label(44,201,11,$x91a7bd,"AUSGANGSLAGE / RESONANZ-STARTWERT");
+ui_source=0;loop(3,
+  #source="TIEF";ui_source==1 ? #source="MITTEL";ui_source==2 ? #source="HOCH";
+  pill(44+ui_source*102,231,92,31,#source,floor(slider2+.5)==ui_source) && pressed ? (
+    notify_param(2,ui_source,1);notify_param(22,0,1);
+  );ui_source+=1;
+);
+ui_cal_serial=atomic_get(cal_serial);
+ui_cal_busy=atomic_get(cal_request)==1 || (cal_state==1 && cal_generation==ui_cal_serial);
+// The UI watchdog also works when REAPER stops calling the audio sections.
+ui_cal_busy && (time_precise()-(cal_ui_wait ? cal_ui_start : cal_start_time)>10) ? (
+  atomic_set(cal_request,0);atomic_add(cal_serial,1);
+  cal_ui_wait=0;cal_ui_status=4;ui_cal_busy=0;
+);
+cal_ui_wait && cal_generation==atomic_get(cal_serial) && cal_state>=1 && atomic_get(cal_request)==0 ? cal_ui_wait=0;
+pill(359,231,133,31,ui_cal_busy ? "ABBRECHEN" : "EINMESSEN",ui_cal_busy) && pressed ? (
+  ui_cal_busy ? (
+    atomic_set(cal_request,0);atomic_add(cal_serial,1);cal_ui_wait=0;cal_ui_status=5;
+  ) : (
+    atomic_add(cal_serial,1);cal_ui_status=0;cal_ui_wait=1;cal_ui_start=time_precise();
+    atomic_set(cal_request,1);
+  );
+);
+ui_cal_busy ? sprintf(#cal,"Sprache %.1f / 2 s",cal_valid_seconds) :
+  cal_ui_status==4 ? #cal="Kein Audio / Timeout" :
+  cal_ui_status==5 ? #cal="Abgebrochen" :
+  cal_state==2 ? sprintf(#cal,"%d Hz uebernommen",slider3) :
+  cal_state==3 ? #cal="Zu wenig Sprache" : #cal="3 bis 8 s sprechen";
+label(359,203,10,(cal_state==3 || cal_ui_status==4) ? $xffab88 : $x7d95aa,#cal);
+// Show the requested totals even when the audio device is not running.
+ui_base=max(70,min(350,slider3));ui_src=slider2<.5 ? .90 : slider2<1.5 ? 1 : 1.07;
+ui_hz=ui_base;ui_size=ui_src;ui_p=floor(slider1+.5);
+ui_p==1 ? (ui_hz=205;ui_size=1.06;);ui_p==2 ? (ui_hz=135;ui_size=.90;);
+ui_p==3 ? (ui_hz=270;ui_size=1.27;);ui_p==4 ? (ui_hz=295;ui_size=1.32;);
+ui_p==5 ? (ui_hz=230;ui_size=1.15;);
+ui_p==6 ? (ui_hz=140;ui_size=.91;);ui_p==7 ? (ui_hz=160;ui_size=.95;);
+ui_pitch=max(-18,min(18,slider4/100*(12*log(ui_hz/ui_base)/log(2)+slider5)));
+ui_formant=max(-9,min(9,slider4/100*(12*log(ui_size/ui_src)/log(2)+slider6)));
+label(541,201,11,$x91a7bd,"TONHOEHEN-VERSCHIEBUNG");
+sprintf(#eff,"%+.1f st",ui_pitch);label(540,224,29,$x5cf2d6,#eff);
+label(789,201,11,$x91a7bd,"FORMANT-VERSCHIEBUNG");
+sprintf(#eff,"%+.1f st",ui_formant);label(788,224,29,$xffa6cb,#eff);
+
+box(28,296,984,159,$x0d1724);
+label(44,308,11,$x92a8bc,"RESONANZKURVE");label(222,308,10,$x617e99,"EINGANG");label(299,308,10,$x48dfca,"ZIEL");
+grid=0;loop(5,
+  color($x1c2a3b,1);gfx_line(46,335+grid*23,748,335+grid*23);
+  gfx_line(46+grid*175,334,46+grid*175,430);grid+=1;
+);
+specmax=-20;pk=0;loop(128,specmax=max(specmax,scope_in[pk]);pk+=1;);
+meter_in>.0001 ? (curve=0;loop(2,
+  color(curve ? $x48dfca : $x516984,1);pk=0;
+  loop(128,
+    vv=curve ? scope_out[pk] : scope_in[pk];xx=46+702*pk/127;
+    yy=426-max(0,min(90,(vv-specmax+6)*15));
+    pk>0 ? gfx_line(prevx,prevy,xx,yy);prevx=xx;prevy=yy;pk+=1;
+  );curve+=1;
+);) : label(246,369,13,$x647e97,"MIKROFON AKTIVIEREN UND SPRECHEN");
+label(46,435,9,$x536d85,"100 Hz");label(374,435,9,$x536d85,"1 kHz");label(710,435,9,$x536d85,"10 kHz");
+box(771,310,1,128,$x233044);
+label(793,309,10,$x879db3,"ERKANNTE GRUNDFREQUENZ");
+detected_hz>0 ? sprintf(#hz,"%.0f Hz",detected_hz) : #hz="-- Hz";
+label(792,328,26,$xdeebf7,#hz);
+voice_confidence>.65 ? #voiced="STIMMHAFT" : #voiced="ATEM / UNSTIMMHAFT";
+label(793,363,10,$x7791a6,#voiced);
+label(793,388,10,$x7791a6,"IN");label(793,413,10,$x7791a6,"OUT");
+box(824,390,166,6,$x213047);box(824,415,166,6,$x213047);
+box(824,390,166*max(0,min(1,(20*log10(max(.000001,meter_in))+60)/60)),6,meter_in>.98 ? $xff777e : $x53c4df);
+box(824,415,166*max(0,min(1,(20*log10(max(.000001,meter_out))+60)/60)),6,meter_out>.94 ? $xffb06b : $x47e5cb);
+
+// Direct entry, drag, wheel, and right-click reset all write real host sliders.
+ui_key=gfx_getchar();
+ui_edit>0 ? (
+  ui_key==27 ? ui_edit=0;
+  ui_key==8 ? strlen(#edit)>0 ? str_setlen(#edit,strlen(#edit)-1);
+  ((ui_key>=48 && ui_key<=57) || ui_key==45 || ui_key==46 || ui_key==44) && strlen(#edit)<12 ? strcat(#edit,sprintf(#char,"%c",ui_key==44 ? 46 : ui_key));
+  ui_key==13 ? (
+    param_info(ui_edit);match("%f",#edit,entered) ? notify_param(ui_edit,max(umin,min(umax,entered)),1);
+    ui_edit=0;
+  );
+);
+hover_control=0;#footer="Regler ziehen oder Mausrad nutzen. Wert anklicken: Zahl eingeben. Rechtsklick: Standardwert.";
+uc=0;loop(15,
+  uid=control_ids[uc];param_info(uid);cx=28+(uc%4)*249;cy=474+floor(uc/4)*91;
+  hover=hitbox(cx,cy,237,78);hover ? (hover_control=uid;#footer=#tip;);
+  box(cx,cy,237,78,hover ? $x142539 : $x111d2c);
+  label(cx+14,cy+10,11,$x96abc0,#name);
+  ui_edit==uid ? sprintf(#value,"%s_",#edit) : ustep<1 ? sprintf(#value,"%.1f%s",slider(uid),#unit) : sprintf(#value,"%.0f%s",slider(uid),#unit);
+  label(cx+14,cy+29,20,uid==6 ? $xffa6cb : $xddeaf7,#value);
+  barx=cx+14;barw=209;bar_y=cy+62;norm=max(0,min(1,(slider(uid)-umin)/(umax-umin)));
+  box(barx,bar_y,barw,4,$x2b3a50);box(barx,bar_y,barw*norm,4,uid==6 ? $xf494c0 : $x43cbb8);
+  box(barx+norm*barw-2,bar_y-3,4,10,$xe3fff8);
+  hover && right_pressed ? (notify_param(uid,udef,1);ui_edit=0;);
+  hover && mouse_wheel!=0 ? (
+    delta=mouse_wheel/120*ustep;notify_param(uid,max(umin,min(umax,slider(uid)+delta)),1);mouse_wheel=0;
+  );
+  pressed && hover ? (
+    uy<cy+52 ? (ui_edit=uid;#edit="";ui_drag=0;) : (
+      ui_edit=0;ui_drag=uid;dragx=barx;dragw=barw;
+    );
+  );
+  uc+=1;
+);
+ui_drag>0 && down ? (
+  param_info(ui_drag);nv=umin+max(0,min(1,(ux-dragx)/dragw))*(umax-umin);
+  nv=floor(nv/ustep+.5)*ustep;notify_param(ui_drag,nv,0);
+);
+!down && ui_drag>0 ? (slider_automate(2^(ui_drag-1),1);ui_drag=0;);
+
+box(775,747,237,78,$x111d2c);
+label(789,757,11,$x96abc0,"EINMESSEN: AUSGANGSLAGE");
+pill(789,781,209,29,slider22>.5 ? "AUTOMATISCH" : "MANUELL",slider22>.5) && pressed ? notify_param(22,1-slider22,1);
+hitbox(775,747,237,78) ? #footer="Automatisch: Einmessen setzt Hz und Tief/Mittel/Hoch als Startwert. Keine Geschlechts- oder Altersbestimmung.";
+label(28,853,10,$x7992aa,"QUALITAET / VERZOEGERUNG");
+ui_q=0;loop(4,
+  #qname="LIVE";ui_q==1 ? #qname="BAL.";ui_q==2 ? #qname="STUDIO";ui_q==3 ? #qname="DETAIL";
+  pill(28+ui_q*84,873,78,29,#qname,floor(slider15+.5)==ui_q) && pressed ? notify_param(15,ui_q,1);
+  hitbox(28+ui_q*84,873,78,29) ? #footer="Qualitaetswechsel startet den Audiopuffer neu. Fuer ununterbrochene Sprache vorher einstellen.";
+  ui_q+=1;
+);
+sprintf(#delay,"%.1f ms DSP",1000*latency/srate);label(28,910,11,$x7592a9,#delay);
+label(412,853,10,$x7992aa,"MIKROFONKANAL / MONO-AUSGANG");
+ui_ch=0;loop(3,
+  #channel="LINKS";ui_ch==1 ? #channel="RECHTS";ui_ch==2 ? #channel="L + R";
+  pill(412+ui_ch*99,873,89,29,#channel,floor(slider17+.5)==ui_ch) && pressed ? notify_param(17,ui_ch,1);
+  ui_ch+=1;
+);
+label(797,853,10,$x7992aa,"AUSGANGSSCHUTZ");
+pill(797,873,215,29,slider18 ? "BEGRENZER AN" : "BEGRENZER AUS",slider18) && pressed ? notify_param(18,1-slider18,1);
+label(797,910,10,$x658299,"ORIGINAL: gleicher Zeitversatz");
+ui_edit>0 ? #footer="Zahl eingeben und ENTER druecken. ESC verwirft die Eingabe. Punkt oder Komma moeglich.";
+label(28,943,11,$x8a9eb2,#footer);
+ui_lastmouse=mouse_cap;
+gfx_dest=-1;box(0,0,gfx_w,gfx_h,$x080e18);
+gfx_blit(0,1,0,0,0,1040,971,ox,oy,1040*scale,971*scale);
