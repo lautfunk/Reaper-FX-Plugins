@@ -31,7 +31,6 @@ Die LautFunk-Plugins sind keine klassischen Mixing-Werkzeuge, die möglichst una
   - [Einmessung](#vt-einmessung)
   - [Profile und Klangregler](#vt-profile)
   - [Qualität und Latenz](#vt-qualitaet)
-  - [Hörvergleich](#vt-hoervergleich)
   - [Prüfung und Grenzen](#vt-pruefung)
   - [Fachliche Grundlage](#vt-grundlage)
 - [LautFunk FartSynth 61 v1.0](#fartsynth)
@@ -39,7 +38,7 @@ Die LautFunk-Plugins sind keine klassischen Mixing-Werkzeuge, die möglichst una
   - [Modus „EIN CHARAKTER“](#fartsynth-ein-charakter)
   - [FartSynth-Regler](#fartsynth-regler)
   - [MIDI-Steuerung](#fartsynth-midi)
-  - [Hörfolge und technische Prüfung](#fartsynth-pruefung)
+  - [Technische Prüfung](#fartsynth-pruefung)
 - [Installation](#installation)
 - [Typische Installationspfade](#installationspfade)
 - [Plugins in REAPER laden](#plugins-laden)
@@ -546,8 +545,6 @@ Die einzelne JSFX-Datei ist vollständig. Zusätzliche Modelle, DLLs oder eine I
 
 ## Einmessung
 
-Sarahs gelieferte Originalaufnahme ergibt im geprüften Anfangsausschnitt weiterhin **185 Hz / Mittel**. Das ist ein Ausschnittsergebnis; andere Sprechabschnitte können andere Werte liefern.
-
 Die Einmessung sammelt stimmhafte Abschnitte mit ausreichender Erkennungssicherheit und bestimmt deren Median. Sie endet frühestens nach 3 Sekunden verarbeiteter Audiozeit, sobald mindestens 2 Sekunden gültiges Material vorliegen. Nach 8 Sekunden wird mit mindestens 1 Sekunde gültigem Material ausgewertet; andernfalls erscheint „Zu wenig Sprache“ und die bisherigen Werte bleiben erhalten. Ein zweiter Klick auf den Messknopf bricht ab.
 
 Bei geöffneter Oberfläche beendet eine zusätzliche Zeitüberwachung eine stockende Messung nach ungefähr 10 Sekunden mit „Kein Audio / Timeout“. Wenn sowohl Audioverarbeitung als auch Oberfläche nicht laufen, kann kein Timer ausgeführt werden; beim Wiederöffnen wird der Zustand überprüft.
@@ -614,30 +611,13 @@ Die Tabelle zeigt die **DSP-Verzögerung des Plugins**. Audiointerface und Hostp
 
 REAPER erhält die Verzögerung für den Latenzausgleich. Der Originalvergleich verwendet denselben Zeitversatz und umgeht Effektpegel und Begrenzer; Effektanteil 0 % behält dagegen die eingestellten Pegel und den Begrenzer bei. Der Begrenzer ist kein Lautheitsabgleich.
 
-<a id="vt-hoervergleich"></a>
-
-## Hörvergleich
-
-`LautFunk_Voice_Transformer_v1.0_Hoerprobe.wav` enthält je 15 Sekunden aus derselben Originalaufnahme, mit 1,5 Sekunden Pause:
-
-| Beginn | Abschnitt |
-| --- | --- |
-| 0:00,0 | Sarahs Original |
-| 0:16,5 | Alter Mann v0.2 |
-| 0:33,0 | Alter Mann v1.0 |
-| 0:49,5 | Alte Frau v0.2 |
-| 1:06,0 | Alte Frau v1.0 |
-| 1:22,5 | Mann v1.0 |
-
-Die Effektabschnitte sind native REAPER-Renderings mit Studio, 185 Hz / Mittel, 100 % Verwandlung und Effektanteil, Artikulation 65 %, Alterscharakter 65 %, Rauheit/Stimmzittern 0 %. Die v0.2-Referenzen stammen aus den gespeicherten Renderings dieser Einstellungen; sie sind nicht identisch mit den zuletzt hochgeladenen MP3-Exports unbekannter vollständiger Einstellungen. Die Abschnitte sind ungefähr auf gleichen RMS-Pegel gebracht. Identische wahrgenommene Lautheit ist damit nicht garantiert. Kurze Randblenden vermeiden Schnittknackser.
 
 <a id="vt-pruefung"></a>
 
 ## Prüfung und Grenzen
 
-`LautFunk_Voice_Transformer_v1.0_Pruefbericht.json` dokumentiert 32 bestandene Prüfungen aus dem nativen REAPER-7.81-Batch-Konverter unter Linux: automatische und manuelle Einmessung, wiederholte Messung, Abbruch, Zeitüberschreitung, neutrale Rekonstruktion, Sampleraten, Sprach-Renderings, Stille, Extremwerte, Profiltonhöhen und den Vergleich gleitender Testtöne zwischen v0.2 und v1.0.
+`LautFunk_Voice_Transformer_v1.0_Pruefbericht.json` dokumentiert 32 bestandene Prüfungen aus dem nativen REAPER-7.81-Batch-Konverter unter Linux: automatische und manuelle Einmessung, wiederholte Messung, Abbruch, Zeitüberschreitung, neutrale Rekonstruktion, Sampleraten, Stille, Extremwerte, Profiltonhöhen und den Vergleich gleitender Testtöne zwischen v0.2 und v1.0.
 
-Die Zeitüberwachung wurde mit den unveränderten Überwachungsanweisungen und einer gezielt abgelaufenen Uhr im EEL-Interpreter geprüft. Das ist kein Test echter GUI-Ereignisse. Die Oberfläche wurde im Code überprüft; Windows, echte Maus-/Tastaturbedienung, ein physisches Mikrofon und ein Echtzeit-CPU-Test mit verbindlichen Audiopufferfristen wurden hier nicht geprüft. Numerische Tests bestätigen keine vollständige Artefaktfreiheit und ersetzen den Hörvergleich nicht.
 
 Der Effekt bleibt eine eigenständige spektrale STFT-/Pitch-/Formant-Verarbeitung. Rubber Band R3, WORLD und neuronale Voice Conversion sind nicht eingebaut. Große Verschiebungen, raues Lachen, Flüstern oder überlagerte Stimmen bleiben anspruchsvoll. Mehr Alterscharakter ist deshalb nicht automatisch natürlicher; für den ersten Versuch bei 65 % bleiben.
 
@@ -665,7 +645,7 @@ Der **LautFunk FartSynth 61** ist kein Sampleplayer.
 
 Die Klänge werden innerhalb der Synthese-Engine aus analytisch erzeugten Klangbausteinen und neu generierter Resttextur aufgebaut.
 
-Die Engine basiert auf Analysedaten von Referenzaufnahmen, lädt beim Spielen jedoch keine WAV- oder MP3-Dateien.
+Die Engine erzeugt ihre Klänge vollständig innerhalb der Synthese-Engine und lädt beim Spielen keine externen Audiodateien.
 
 Technisch handelt es sich deshalb um eine:
 
@@ -854,30 +834,7 @@ Modus und Charakterauswahl werden zusammen mit den Pluginparametern im REAPER-Pr
 
 <a id="fartsynth-pruefung"></a>
 
-# Hörfolge und technische Prüfung
-
-Zum FartSynth gehört die Testdatei:
-
-`LautFunk_FartSynth_61_v1.0_61_Tasten.wav`
-
-Sie spielt im Modus **ALLE 12** sämtliche 61 Tasten nacheinander ab:
-
-**MIDI 36 bis MIDI 96**
-
-Die Aufnahme wurde mit den Werkseinstellungen und Velocity 104 erzeugt.
-
-Die Audiodaten stammen direkt aus der tatsächlichen JSFX-Engine im **ysfx-Prüfhost**.
-
-Für die Hörfolge wurden lediglich:
-
-- Stille am Ende einzelner Töne gekürzt
-- Pausen zwischen den Klängen eingefügt
-
-Es erfolgte keine individuelle Klangbearbeitung oder Pegelanpassung.
-
-Zusätzliche genaue Zeitmarken befinden sich in:
-
-`LautFunk_FartSynth_61_v1.0_Hoerfolge.json`
+# Technische Prüfung
 
 Geprüft wurden unter anderem:
 
