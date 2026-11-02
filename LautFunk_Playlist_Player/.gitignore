@@ -1,0 +1,7 @@
+# Build-Artefakte und lokale IDE-Dateien
+/build/
+/build-*/
+/.vs/
+/.idea/
+.DS_Store
+*.user
