@@ -1,0 +1,395 @@
+desc:LautFunk SoftGuard v1.1 - Voice Leveler + Soft-Knee Limiter
+// LautFunk SoftGuard v1.1 (JSFX; stereo and mono routed as stereo)
+// Speaker: gentle K-weighted approximate active-speech leveler and sample-peak limiter.
+// Master: optional gentle real-time leveling and sample-peak limiter.
+// IMPORTANT: realtime short-term estimate is NOT integrated LUFS normalization.
+// Final -14 LUFS-I and -1 dBTP are set in REAPER's Render dialog (see companion Lua).
+// This is not a certified true-peak limiter; final render TRUE-PEAK limit is necessary.
+// DSP: K-weighting approximated from BS.1770 DeMan filter design; short-term energy EMA.
+
+options:gfx_hz=30
+in_pin:Left
+in_pin:Right
+out_pin:Left
+out_pin:Right
+
+slider1:0<0,1,1{Voice/Einzelsprecher,Master/Bus}>-Betriebsart
+slider2:-18<-30,-12,0.5>-Voice - Aktivsprache-Ziel (LUFS naeherungsweise)
+slider3:-14<-24,-10,0.5>-Master - Live-Lautheitsziel (LUFS-S naeherungsweise)
+slider4:-12<-24,-3,0.5>-Voice - Sample Peak Ceiling (dBFS)
+slider5:-1<-6,-0.1,0.1>-Master - Sample Peak Ceiling (dBFS)
+slider6:6<0,18,0.5>-Soft Knee (dB)
+slider7:6<2,20,1>-Lookahead (ms)
+slider8:150<40,500,10>-Limiter Release (ms)
+slider9:9<0,18,1>-Leveler Max. Gain (+/- dB)
+slider10:1<0,1,1{Aus,An}>-Auto-Leveler
+slider11:-38<-55,-20,1>-Stimmaktivitaet Gate (LUFS ungefaehr)
+slider12:0<0,1,1{Normal,Bypass mit Latenz}>-Bypass
+slider13:0<0,1,1{Aus,An}>-Master Auto-Leveler (optional; Export nutzt LUFS-I)
+
+@init
+// All audio uses two explicitly linked channels. Memory for 2 x 32768 samples.
+ringL = 0;
+ringR = 32768;
+dryL = 65536;
+dryR = 98304;
+ring_mask = 32767;
+wpos = 0;
+processed_samples = 0;
+
+// K-weighted biquad states: stereo shelf + stereo RLB HP.
+sl_z1=sl_z2=sr_z1=sr_z2=0;
+hl_z1=hl_z2=hr_z1=hr_z2=0;
+energy_short=0;
+energy_moment=0;
+level_gain=1;
+wanted_gain=1;
+limit_gain=1;
+limit_goal=1;
+limit_hold=0;
+sample_counter=0;
+max_peak=0;
+vis_in_lufs=-90;
+vis_out_peak=-90;
+vis_gr=0;
+vis_lev=0;
+
+function configure_dsp() (
+mode = slider1;
+auto_enabled = (mode == 0 ? slider10 : slider13);
+target = mode == 0 ? slider2 : slider3;
+ceiling_db = mode == 0 ? slider4 : slider5;
+ceiling_lin = 10^(ceiling_db/20);
+knee = slider6;
+delay_samples = max(1, floor(srate * slider7 * 0.001 + 0.5));
+// samples are buffered at ringL/ringR to allow pre-emptive limiter gain.
+pdc_delay = delay_samples;
+pdc_bot_ch = 0;
+pdc_top_ch = 2;
+
+lim_attack = 1 - exp(-1/(0.00035*srate)); // fast attack, lookahead provides time
+lim_release = 1 - exp(-1/(slider8*0.001*srate));
+// Leveler has deliberately slow response; avoids breathing between syllables.
+lev_up = 1 - exp(-1/(3*srate));
+lev_down = 1 - exp(-1/(1.5*srate));
+energy_alpha_s = 1 - exp(-1/(3*srate));
+energy_alpha_m = 1 - exp(-1/(0.4*srate));
+max_level_gain = 10^(slider9/20);
+min_level_gain = 1/max_level_gain;
+
+// DeMan/BS.1770 K-weighting high shelf, computed for arbitrary project srate.
+// Shelf: ~+4 dB above 1.68 kHz, with exact DeMan parameter values.
+shK = tan($pi * 1681.9744509555319 / srate);
+shQ = 0.7071752369554193;
+shVh = 10^(3.99984385397/20);
+shVb = shVh^(0.499666774155);
+shNorm = 1 + shK / shQ + shK*shK;
+sh_b0 = (shVh + shVb*shK/shQ + shK*shK)/shNorm;
+sh_b1 = 2*(shK*shK-shVh)/shNorm;
+sh_b2 = (shVh - shVb*shK/shQ + shK*shK)/shNorm;
+sh_a1 = 2*(shK*shK-1)/shNorm;
+sh_a2 = (1 - shK/shQ + shK*shK)/shNorm;
+
+// RLB HP, DeMan form. The RLB numerator is deliberately unnormalized.
+hpK = tan($pi * 38.13547087613982 / srate);
+hpQ = 0.5003270373253953;
+hpNorm = 1 + hpK/hpQ + hpK*hpK;
+hp_a1 = 2*(hpK*hpK-1)/hpNorm;
+hp_a2 = (1 - hpK/hpQ + hpK*hpK)/hpNorm;
+
+);
+
+@slider
+configure_dsp();
+
+@block
+ui_dirty ? (
+  ui_dirty = 0;
+  configure_dsp();
+);
+
+@sample
+xL = spl0;
+xR = spl1;
+
+// ---- K-weighted measurement (before gain/limiting) ----
+ksL = sh_b0*xL + sl_z1;
+sl_z1 = sh_b1*xL - sh_a1*ksL + sl_z2;
+sl_z2 = sh_b2*xL - sh_a2*ksL;
+ksR = sh_b0*xR + sr_z1;
+sr_z1 = sh_b1*xR - sh_a1*ksR + sr_z2;
+sr_z2 = sh_b2*xR - sh_a2*ksR;
+
+khL = ksL + hl_z1;
+hl_z1 = -2*ksL - hp_a1*khL + hl_z2;
+hl_z2 = ksL - hp_a2*khL;
+khR = ksR + hr_z1;
+hr_z1 = -2*ksR - hp_a1*khR + hr_z2;
+hr_z2 = ksR - hp_a2*khR;
+
+// Voice is treated as one effective channel (dual-mono remains mono-equivalent).
+// Master uses two-channel BS.1770 channel-sum weighting.
+e = khL*khL + khR*khR;
+mode == 0 ? e *= 0.5;
+energy_short += energy_alpha_s*(e-energy_short);
+energy_moment += energy_alpha_m*(e-energy_moment);
+
+processed_samples += 1;
+sample_counter += 1;
+
+// Update gain target & dashboard ~47 times/s at 48 kHz.
+sample_counter >= 1024 ? (
+  sample_counter = 0;
+  // Bias correction when playback starts, since our EMA begins with zero.
+  normalizer3 = max(0.01, 1-exp(-processed_samples/(3*srate)));
+  normalizer04 = max(0.01, 1-exp(-processed_samples/(0.4*srate)));
+  loud_short = -0.691 + 10*log(max(0.00000000000000000001,energy_short/normalizer3))/log(10);
+  loud_moment = -0.691 + 10*log(max(0.00000000000000000001,energy_moment/normalizer04))/log(10);
+  vis_in_lufs = max(-90, loud_short);
+
+  // Do not raise room noise when the speaker is inactive.
+  // Hold gain over silences; resume slowly during genuine speech.
+  auto_enabled == 1 && slider12 == 0 && loud_moment > slider11 && loud_short > slider11 ? (
+    diff_db = min(slider9, max(-slider9, target - loud_short));
+    wanted_gain = 10^(diff_db/20);
+  ) : (
+    wanted_gain = level_gain;
+  );
+);
+
+// Smooth even when no new loudness estimate is available.
+auto_enabled == 1 && slider12 == 0 ? (
+  level_gain += (wanted_gain < level_gain ? lev_down : lev_up) * (wanted_gain-level_gain);
+) : (
+  // Bypassing the leveler resets smoothly but only when the FX is active.
+  level_gain += lev_down*(1-level_gain);
+);
+
+// Speaker activity gate drives only the automatic leveler, never a noise gate.
+preL = xL*level_gain;
+preR = xR*level_gain;
+
+// Stereo linked lookahead buffer. 32768 samples allows >= 20ms at normal rates.
+ringL[wpos] = preL;
+ringR[wpos] = preR;
+dryL[wpos] = xL;
+dryR[wpos] = xR;
+
+// Soft knee above (ceiling - knee), smoothly increasing reduction.
+// Ratio 20:1 beyond the knee, followed by a safety sample-peak ceiling.
+detect_peak = max(abs(preL), abs(preR));
+detect_db = 20*log(max(0.000000000000001,detect_peak))/log(10);
+reduction_db=0;
+knee > 0 ? (
+  below_start=ceiling_db-knee;
+  detect_db > below_start ? (
+    detect_db < ceiling_db ? (
+      t=detect_db-below_start;
+      reduction_db = 0.95*t*t/(2*knee);
+    ) : (
+      reduction_db = 0.95*(detect_db-(ceiling_db-knee*0.5));
+    );
+  );
+) : (
+  detect_db > ceiling_db ? reduction_db = 0.95*(detect_db-ceiling_db);
+);
+need_limit = 10^(-reduction_db/20);
+
+// Minimum attenuation is latched for the FULL lookahead interval. A one-sample
+// plosive must be held long enough for the attack envelope to reach its goal.
+need_limit < limit_goal ? (
+  limit_goal = need_limit;
+  limit_hold = delay_samples;
+) : (
+  limit_hold > 0 ? (
+    limit_hold -= 1;
+  ) : (
+    limit_goal += lim_release*(1-limit_goal);
+  );
+);
+limit_gain += (limit_goal < limit_gain ? lim_attack : lim_release)*(limit_goal-limit_gain);
+limit_gain = min(1,max(0,limit_gain));
+
+readpos = (wpos-delay_samples) & ring_mask;
+preoutL = ringL[readpos];
+preoutR = ringR[readpos];
+wpos = (wpos+1) & ring_mask;
+
+// Linked detector gain; final sample-peak guard covers any residual overshoot.
+// This guard is a rare fallback, not the primary limiter action.
+yL = preoutL*limit_gain;
+yR = preoutR*limit_gain;
+peak = max(abs(yL),abs(yR));
+peak > ceiling_lin ? (
+  safe_scale = ceiling_lin/peak;
+  yL *= safe_scale;
+  yR *= safe_scale;
+);
+
+slider12 == 1 ? (
+  // Latency-preserving bypass from separate dry delay lines.
+  yL = dryL[readpos];
+  yR = dryR[readpos];
+);
+
+spl0 = yL;
+spl1 = yR;
+peak_now = max(abs(yL),abs(yR));
+max_peak=max(max_peak,peak_now);
+vis_out_peak = 20*log(max(0.000000000001,peak_now))/log(10);
+vis_gr = -20*log(max(0.000000000001,limit_gain))/log(10);
+vis_lev = 20*log(max(0.000000000001,level_gain))/log(10);
+
+@gfx 760 660
+// UI concept based on the user's own Voice Scrambler v2.2: invisible automatable sliders
+// and the entire control layer drawn in @gfx. Fixed design canvas scaled to fit.
+function sg_color(c) (
+  gfx_set(((c>>16)&255)/255,((c>>8)&255)/255,(c&255)/255,1);
+);
+function sg_box(x,y,w,h,c) (
+  sg_color(c); gfx_rect(x,y,w,h);
+);
+function sg_text(x,y,str,c,size) (
+  sg_color(c); gfx_setfont(1,"Arial",size); gfx_x=x; gfx_y=y; gfx_drawstr(str);
+);
+function sg_center(x,y,w,h,str,c,size) (
+  sg_color(c); gfx_setfont(1,"Arial",size); gfx_x=x;gfx_y=y;
+  gfx_drawstr(str,1|4,x+w,y+h);
+);
+function sg_hit(x,y,w,h) (
+  sg_mx>=x && sg_mx<x+w && sg_my>=y && sg_my<y+h;
+);
+function sg_put(id,value,touch_end) local(mask) (
+  slider(id)=value;
+  mask=2^(id-1);
+  sliderchange(mask);
+  slider_automate(mask,touch_end);
+  ui_dirty=1;
+);
+function sg_button(x,y,w,h,text,active) local(hover) (
+  hover=sg_hit(x,y,w,h);
+  sg_box(x,y,w,h,active ? $x176a5b : hover ? $x243748 : $x162837);
+  sg_color(active ? $x55dcb5 : $x345164);
+  gfx_roundrect(x,y,w,h,7);
+  sg_center(x,y,w,h,text,active ? $xf1fff9 : $xc7dbe2,15);
+  hover && sg_click;
+);
+function sg_toggle(x,y,w,h,txt,on) local(hit) (
+  hit=sg_hit(x,y,w,h);
+  sg_box(x,y,w,h,on ? $x176a5b : (hit ? $x283a49 : $x172a39));
+  sg_color(on ? $x51dbb2 : $x385363);gfx_roundrect(x,y,w,h,6);
+  sg_text(x+11,y+7,txt,on ? $xeafff7 : $xc8d9dd,12);
+  sg_box(x+w-42,y+6,30,16,on ? $x46cfaa : $x425d6d);
+  sg_box(on ? x+w-28 : x+w-40,y+8,12,12,$xf0f7f5);
+  hit && sg_click;
+);
+// Mouse: click / drag bar or wheel over bar. Hidden host parameters remain automatable.
+function sg_fader(id,x,y,w,name,lo,hi,step,unit) local(v,p,hit) (
+  v=slider(id);
+  sg_text(x,y,name,$xa8c3c8,13);
+  step<1 ? sprintf(#sg_val,"%.1f %s",v,unit) : sprintf(#sg_val,"%.0f %s",v,unit);
+  sg_text(x+w-95,y,#sg_val,$x5de2bc,14);
+  sg_box(x,y+27,w,9,$x0b1b27);
+  p=min(1,max(0,(v-lo)/(hi-lo)));
+  sg_box(x,y+27,w*p,9,$x2cc8a7);
+  sg_box(x+w*p-5,y+21,10,21,$xe3fcf3);
+  hit=sg_hit(x-2,y+16,w+4,29);
+  hit && sg_click ? sg_active=id;
+  sg_active==id && (mouse_cap&1) ? (
+    v=min(hi,max(lo,lo+(sg_mx-x)/max(1,w)*(hi-lo)));
+    v=lo+floor((v-lo)/step+0.5)*step;
+    v=min(hi,max(lo,v));
+    abs(v-slider(id))>0.0001 ? sg_put(id,v,0);
+  );
+  hit && sg_wheel!=0 ? (
+    v=min(hi,max(lo,slider(id)+sg_wheel*step));
+    sg_put(id,v,1);
+    sg_wheel=0;
+  );
+);
+function sg_meter(x,y,w,name,value,minval,maxval,unit) local(p) (
+  sg_text(x,y,name,$x91afbd,11);
+  sprintf(#sg_metertext,"%+.1f %s",value,unit);
+  sg_text(x+w-113,y,#sg_metertext,$x66e7c3,13);
+  sg_box(x,y+23,w,8,$x0a1925);
+  p=min(1,max(0,(value-minval)/(maxval-minval)));
+  sg_box(x,y+23,p*w,8,$x2ccaa7);
+);
+
+// Design-space mouse mapping. Makes the interface usable when users resize FX window.
+sg_scale=min(gfx_w/760,gfx_h/660);
+sg_ox=(gfx_w-760*sg_scale)/2;
+sg_oy=(gfx_h-660*sg_scale)/2;
+sg_mx=(mouse_x-sg_ox)/max(0.01,sg_scale);
+sg_my=(mouse_y-sg_oy)/max(0.01,sg_scale);
+sg_click=(mouse_cap&1) && !(sg_last_mouse&1);
+sg_release=!(mouse_cap&1) && (sg_last_mouse&1);
+sg_wheel=mouse_wheel/120;
+mouse_wheel=0;
+sg_release && sg_active>0 ? (
+  slider_automate(2^(sg_active-1),1);
+  sg_active=0;
+);
+
+// Fixed canvas, scaled to REAPER's available display size.
+gfx_setimgdim(0,760,660);
+gfx_dest=0;gfx_mode=0;
+sg_box(0,0,760,660,$x0b141f);
+sg_box(0,0,7,660,$x43d6b3);
+sg_text(26,19,"LAUTFUNK",$xe9fff7,26);
+sg_text(182,25,"/ SOFTGUARD",$x76aeb4,20);
+sg_text(27,55,"V1.1  /  VOICE LEVELER + SOFT-KNEE LIMITER",$x718f9c,11);
+
+// Dedicated mode selector. No standard REAPER sliders are visible.
+sg_button(26,82,346,44,"SPRECHER / EINZELSPUR",slider1==0) ? sg_put(1,0,1);
+sg_button(388,82,346,44,"MASTER / BUS",slider1==1) ? sg_put(1,1,1);
+
+sg_box(26,140,708,120,$x132331);
+sg_text(42,150,"LIVE-ANZEIGEN  /  NICHT LUFS-I",$x88a9b3,11);
+sg_meter(44,180,203,"KURZZEIT-PEGEL (ca.)",vis_in_lufs,-60,0,"LUFS");
+sg_meter(282,180,196,"LEVELER-GAIN",vis_lev,-18,18,"dB");
+sg_meter(511,180,205,"LIMITER REDUKTION",-vis_gr,-18,0,"dB");
+sg_text(43,230,"Sample Peak am Ausgang:",$x93adb6,11);
+sprintf(#sg_out,"%.1f dBFS",vis_out_peak);
+sg_text(224,227,#sg_out,$x56e2ba,14);
+sg_text(450,230,"Aktuelles Ceiling:",$x93adb6,11);
+sprintf(#sg_ceil,"%.1f dBFS",ceiling_db);
+sg_text(617,227,#sg_ceil,$x56e2ba,14);
+
+// Left panel: current-mode automatic leveler.
+sg_box(26,274,344,305,$x12222f);
+sg_text(42,287,"AUTO LEVELER",$xe4f5f5,17);
+sg_text(42,314,slider1==0 ? "Lautheit aktiver Sprache" : "Optional: live, nicht Integrated",$x7e9da7,11);
+slider1==0 ? (
+  sg_fader(2,43,345,308,"Aktivsprache-Ziel",-30,-12,0.5,"LUFS");
+  sg_fader(9,43,407,308,"Maximale Anpassung (+/-)",0,18,1,"dB");
+  sg_fader(11,43,469,308,"Aktivitaets-Schwelle",-55,-20,1,"LUFS");
+  sg_toggle(43,530,308,36,slider10 ? "AUTO-LEVELER  AN" : "AUTO-LEVELER  AUS",slider10) ? sg_put(10,1-slider10,1);
+) : (
+  sg_fader(3,43,345,308,"Live-Lautheitsziel",-24,-10,0.5,"LUFS");
+  sg_fader(9,43,407,308,"Maximale Anpassung (+/-)",0,18,1,"dB");
+  sg_fader(11,43,469,308,"Aktivitaets-Schwelle",-55,-20,1,"LUFS");
+  sg_toggle(43,530,308,36,slider13 ? "MASTER LEVELER  AN" : "MASTER LEVELER  AUS",slider13) ? sg_put(13,1-slider13,1);
+);
+
+// Right panel: the controls that otherwise disappear with the host slider panel.
+sg_box(387,274,347,305,$x12222f);
+sg_text(404,287,"SOFT-KNEE LIMITER",$xe4f5f5,17);
+sg_text(404,314,"Stereo-linked / Sample-Peak Schutz",$x7e9da7,11);
+slider1==0 ? sg_fader(4,405,332,308,"Voice Ceiling",-24,-3,0.5,"dBFS") :
+              sg_fader(5,405,332,308,"Master Ceiling",-6,-0.1,0.1,"dBFS");
+sg_fader(6,405,392,308,"Soft Knee",0,18,0.5,"dB");
+sg_fader(7,405,452,308,"Lookahead",2,20,1,"ms");
+sg_fader(8,405,512,308,"Limiter Release",40,500,10,"ms");
+
+// Footer: full length is custom-drawn, including bypass.
+sg_toggle(26,594,202,35,slider12 ? "BYPASS  AN" : "BYPASS  AUS",slider12) ? sg_put(12,1-slider12,1);
+sg_text(242,599,slider1==0 ? "VOICE: Ziel ca. -18 LUFS, Ceiling -12 dBFS" : "MASTER: beim Rendern -14 LUFS-I / -1 dBTP",$xc1d3da,12);
+sg_text(242,619,"True Peak und LUFS-I ausschliesslich beim REAPER-Render finalisieren.",$x8196a2,10);
+sg_text(28,639,"Maus: Klick/Ziehen auf Regler  |  Mausrad: Feineinstellung  |  Alle Parameter automatisierbar",$x78939d,10);
+
+gfx_dest=-1;
+sg_box(0,0,gfx_w,gfx_h,$x07101a);
+gfx_x=sg_ox;gfx_y=sg_oy;
+gfx_blit(0,sg_scale,0);
+sg_last_mouse=mouse_cap;
