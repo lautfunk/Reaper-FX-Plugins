@@ -1,8 +1,8 @@
 # LautFunk REAPER FX Plugins
 
-Kreative und praktische **JSFX-Plugins für REAPER** – entwickelt für Podcasts, Hörspiele, Sounddesign, elektronische Musik, experimentelle Audiobearbeitung und die kontrollierte Sprachproduktion.
+Kreative und praktische **JSFX- und VST3-Plugins für REAPER** – entwickelt für Podcasts, Hörspiele, Livestreams, Sounddesign, elektronische Musik, experimentelle Audiobearbeitung und die kontrollierte Sprachproduktion.
 
-Einige LautFunk-Plugins verändern, verfremden oder zerstören Audio ganz bewusst. Andere helfen dabei, Sprachpegel anzugleichen und Aufnahmen für die Veröffentlichung vorzubereiten. Dazu gehört **LautFunk SoftGuard** mit seiner sanften Dynamikbearbeitung.
+Einige LautFunk-Plugins verändern, verfremden oder zerstören Audio ganz bewusst. Andere helfen dabei, Sprachpegel anzugleichen und Aufnahmen für die Veröffentlichung vorzubereiten. Dazu gehört **LautFunk SoftGuard** mit seiner sanften Dynamikbearbeitung. Der **LautFunk Playlist Player** ergänzt die Sammlung um ein VST3-Instrument für MP3-/WAV-Playlists auf einer eigenen REAPER-Spur.
 
 **Kaputt darf hier ausdrücklich gut klingen. Sauber und transparent aber genauso.**
 
@@ -40,6 +40,15 @@ Einige LautFunk-Plugins verändern, verfremden oder zerstören Audio ganz bewuss
   - [Empfohlener Podcast-Workflow](#softguard-workflow)
   - [Installation und Render-Skript](#softguard-installation)
   - [Messung und technische Grenzen](#softguard-grenzen)
+- [LautFunk Playlist Player v1.0 (VST3)](#playlist-player)
+  - [Funktionen und Einsatz](#playlist-player-funktionen)
+  - [Installation unter Windows und macOS](#playlist-player-installation)
+  - [Einrichten in REAPER ohne Aufnahme](#playlist-player-reaper)
+  - [Playlist laden, sortieren und speichern](#playlist-player-playlist)
+  - [Bedienelemente und Anzeigen](#playlist-player-bedienung)
+  - [Endloswiedergabe und Zufallsmodus](#playlist-player-repeat)
+  - [Praxisbeispiel für Livestreams](#playlist-player-livestream)
+  - [Hinweise und technische Grenzen](#playlist-player-grenzen)
 - [LautFunk FartSynth 61 v1.0](#fartsynth)
   - [Modus „ALLE 12“](#fartsynth-alle-12)
   - [Modus „EIN CHARAKTER“](#fartsynth-ein-charakter)
@@ -67,10 +76,12 @@ Aktuell enthält das Projekt:
   Verändert Stimmen mit acht Klangprofilen, automatischer Einmessung sowie getrennten Reglern für Tonhöhe, Formanten und Stimmcharakter.
 - **LautFunk SoftGuard v1.1**\
   Kombiniert automatische, langsame Sprachpegelanpassung mit einem Soft-Knee-Limiter. Enthält getrennte Modi für Einzelsprecher und Master/Bus sowie ein optionales REAPER-Skript für die finale LUFS-I-/True-Peak-Renderkonfiguration.
+- **LautFunk Playlist Player v1.0 (VST3)**\
+  Spielt MP3-/WAV-Dateien direkt auf einer REAPER-Spur ab: mit Playlist, Gesamtspielzeit, eigener Wiedergabesteuerung, Zufall und Endlosmodus. Für Windows x64 und macOS Universal (Intel und Apple Silicon).
 - **LautFunk FartSynth 61**\
   Ein vollständig synthetischer MIDI-Synthesizer mit 61 spielbaren Tasten und zwölf unterschiedlichen Klangcharakteren.
 
-Alle Plugins laufen direkt als **JSFX in REAPER**. Eine zusätzliche VST-, VST3- oder CLAP-Installation ist nicht erforderlich. SoftGuard bietet optional ein zusätzliches **ReaScript (Lua)** zur Konfiguration der finalen Renderziele.
+**Digital Glitch, Voice Scrambler, Voice Transformer, SoftGuard und FartSynth** laufen direkt als **JSFX** in REAPER. Der **Playlist Player** ist dagegen ein separat zu installierendes **VST3-Instrument**. SoftGuard bietet optional ein zusätzliches **ReaScript (Lua)** zur Konfiguration der finalen Renderziele.
 
 ---
 
@@ -830,6 +841,229 @@ Technische Referenzen: [REAPER JSFX](https://www.reaper.fm/sdk/js/js.php), [REAP
 
 ---
 
+<a id="playlist-player"></a>
+
+# LautFunk Playlist Player v1.0 (VST3)
+
+## MP3- und WAV-Playlists direkt in REAPER abspielen
+
+Der **LautFunk Playlist Player** ist ein eigenes **VST3-Instrument für REAPER**, das Musikdateien direkt über eine Spur wiedergibt. Es ist insbesondere für **Hintergrundmusik in Livestreams**, Podcast-Einspieler und längere Musiklisten gedacht.
+
+Im Gegensatz zu einer normalen REAPER-Timeline müssen die Musikdateien **nicht als Audio-Items auf Spuren gezogen** werden. Der Player besitzt eine eigene Playlist und eigene **Play-, Pause- und Stop-Schaltflächen**. Er steuert damit **nicht** automatisch den globalen REAPER-Transport.
+
+**Eine Aufnahme ist nicht erforderlich.** Damit die Wiedergabe bei gestopptem REAPER-Transport funktioniert, muss REAPER das Plugin weiterhin mit Audiobuffern versorgen (siehe Einrichtung unten).
+
+Version 1.0 wurde als **Windows-x64-VST3** und als **macOS-Universal-VST3** (Intel und Apple Silicon) mit GitHub Actions erfolgreich gebaut. Die Windows-Ausgabe wurde in REAPER verwendet; ein tatsächlicher Hör- und Funktionstest der macOS-Ausgabe ist noch nicht dokumentiert.
+
+<a id="playlist-player-funktionen"></a>
+
+## Funktionen und Einsatz
+
+- **MP3 und WAV** aus dem Dateisystem laden, auch mehrere Dateien gleichzeitig und per Drag-and-drop.
+- Titel in einer internen Playlist anzeigen; **Doppelklick** startet einen bestimmten Titel.
+- Wiedergabe unabhängig von der REAPER-Aufnahmetaste bedienen.
+- **Automatisch zum nächsten Titel** wechseln, auch bei geschlossenem Plugin-Fenster.
+- **Repeat: AUS**, **Repeat: ENDLOS** oder **Repeat: 1 TITEL** wählen.
+- **Zufall** aktivieren, um die Titelreihenfolge zu mischen.
+- Einträge entfernen, die Liste leeren und Titel mit **Hoch/Runter** verschieben.
+- Playlists als **M3U8** speichern und einlesen.
+- **Gesamtspielzeit aller geladenen Titel** sowie Laufzeiten der einzelnen Stücke anzeigen.
+- Aktuellen Titel, verstrichene Zeit, Gesamtdauer und Abspielfortschritt sehen.
+- Player-Lautstärke in dB regeln; der Pegelparameter ist in REAPER **automatisierbar**.
+- Playlists und ihre Einstellungen mit dem REAPER-Projekt speichern.
+
+Die fertige Musik wird **als Stereo-Audio über die jeweilige REAPER-Spur** ausgegeben. Damit stehen Spurfader, FX-Kette, Sends, Busse und alle gewöhnlichen REAPER-Routingmöglichkeiten zur Verfügung.
+
+<a id="playlist-player-installation"></a>
+
+## Installation unter Windows und macOS
+
+Der Playlist Player ist **kein JSFX**. Seine `.vst3`-Datei gehört deshalb **nicht** in den REAPER-Ordner `Effects`, sondern in den VST3-Pluginordner des Betriebssystems.
+
+Die fertigen Plattformpakete findest du im GitHub-Release:
+
+**[LautFunk Playlist Player v1.0.0 – Windows und macOS herunterladen](https://github.com/lautfunk/Reaper-FX-Plugins/releases/tag/playlist-v1.0.0)**
+
+### Windows (64 Bit)
+
+1. Das ZIP **`LautFunk-Playlist-Player-v1.0-Windows-x64.zip`** herunterladen und entpacken.
+2. Den vollständigen Ordner **`LautFunk Playlist Player.vst3`** kopieren nach:
+
+   ```text
+   C:\Program Files\Common Files\VST3\
+   ```
+
+3. REAPER starten bzw. vollständig neu starten.
+4. Falls das Plugin fehlt: **Options → Preferences → Plug-ins → VST** öffnen und einen erneuten Scan ausführen.
+5. Im FX-Browser nach **LautFunk Playlist Player** suchen.
+
+Wichtig: Unter Windows ist `.vst3` hier ein **Plugin-Bundle mit Unterordnern**. Nicht nur die darin liegende Binärdatei kopieren.
+
+### macOS (Intel und Apple Silicon)
+
+1. Das ZIP **`LautFunk-Playlist-Player-v1.0-macOS-Universal.zip`** herunterladen und entpacken.
+2. Das Bundle **`LautFunk Playlist Player.vst3`** in das Benutzer-Pluginverzeichnis kopieren:
+
+   ```text
+   ~/Library/Audio/Plug-Ins/VST3/
+   ```
+
+3. REAPER neu starten und bei Bedarf die VST-Plugins erneut scannen.
+
+Das macOS-Paket wurde als **Universal Binary** gebaut und enthält beide Architekturen (`arm64` und `x86_64`). Es ist **ad-hoc signiert, aber nicht von Apple notarisiert**. Abhängig von den macOS-Sicherheitseinstellungen kann beim ersten Laden eine Sicherheitsmeldung erscheinen. In diesem Fall die Herkunft des Pakets prüfen und die regulären macOS-Freigabemöglichkeiten verwenden.
+
+**Linux:** Für den Playlist Player v1.0 wird in diesem Release **kein Linux-VST3-Paket** bereitgestellt. Die übrigen JSFX-Plugins sind davon nicht betroffen.
+
+<a id="playlist-player-reaper"></a>
+
+## In REAPER einrichten – ohne Aufnahme
+
+1. In REAPER eine neue leere Spur erstellen, beispielsweise **`LAUTFUNK BACKGROUND MUSIC`**.
+2. Über **FX** das Instrument **`VSTi: LautFunk Playlist Player`** zur Spur hinzufügen. Es sind **keine MIDI-Items** erforderlich.
+3. Unter **Options → Preferences → Audio → Playback** die Option **Run FX when stopped** aktivieren, damit das Plugin auch bei gestopptem Projekttransport Audio verarbeiten kann.
+4. Im Plugin über **`+ Dateien`** MP3-/WAV-Dateien hinzufügen oder Dateien in das Pluginfenster ziehen.
+5. Auf **PLAY** klicken. Das Plugin spielt selbstständig ab; **Record** muss nicht gedrückt werden.
+6. Die Musik über den **Spurfader**, die FX-Kette und gegebenenfalls **Sends** zum gewünschten Stream-Ausgang routen.
+
+Die Plugin-Tasten **PLAY, PAUSE und STOP** steuern die Musik im Player und **nicht** die Haupt-Wiedergabe oder Aufnahme von REAPER.
+
+**Wenn trotz PLAY kein Ton kommt:** REAPER-Audiogerät und Ausgangsrouting prüfen, die Option **Run FX when stopped** kontrollieren sowie Track-FX-Bypass, automatischen Bypass auf Stille und ggf. **Flush FX on stop** prüfen. Für den Test kann auch kurz die normale REAPER-Wiedergabe gestartet werden, um eine fehlende Audiobuffer-Versorgung einzugrenzen. Eine Aufnahme ist hierfür nicht nötig.
+
+<a id="playlist-player-playlist"></a>
+
+## Playlist laden, sortieren und speichern
+
+### Musikdateien hinzufügen
+
+Mit **`+ Dateien`** lassen sich mehrere lokale MP3-/WAV-Dateien auswählen. Alternativ funktioniert **Drag-and-drop** in das Plugin-Fenster. Die Reihenfolge der hinzugefügten Dateien entspricht zunächst ihrer Reihenfolge in der Playlist.
+
+Ein **Doppelklick auf einen Listeneintrag** startet den entsprechenden Titel sofort. Ein einfacher Klick wählt ihn zum Bearbeiten aus.
+
+### Reihenfolge verändern
+
+**Hoch** und **Runter** verschieben den ausgewählten Titel um eine Listenposition. **Entfernen** löscht nur den gewählten Eintrag. **Leeren** leert die gesamte Playlist und stoppt die Wiedergabe.
+
+### M3U8-Playlists
+
+- **M3U8 speichern:** Schreibt die aktuelle Playlist in eine `.m3u8`-Datei. Der Export verwendet die vollständigen Dateipfade.
+- **M3U8 laden:** Liest die in einer `.m3u8` hinterlegten Musikdateien ein und **fügt** gültige Einträge der vorhandenen Liste **hinzu**. Relative Dateipfade in der importierten Liste werden relativ zum Speicherort der M3U8-Datei aufgelöst.
+
+Möchtest du die bisherige Playlist **ersetzen**, klicke zuerst auf **Leeren** und danach auf **M3U8 laden**.
+
+### Speicherung mit REAPER-Projekten
+
+Das Plugin merkt sich die Playlist-Einträge (Dateipfade), ihre Reihenfolge, den ausgewählten Titel, Repeat, Zufall und Lautstärke im Projekt. Beim erneuten Öffnen wird die Liste wiederhergestellt, **die Musik startet aus Sicherheitsgründen aber nicht automatisch**.
+
+Die MP3- und WAV-Dateien werden **nicht in die VST3-Datei oder in die M3U8-Playlist eingebettet**. Wenn du Musikdateien verschiebst, umbenennst oder löschst, müssen die Dateipfade wieder passen. Die Dateianzeige kann fehlende Titel als **FEHLT** markieren.
+
+<a id="playlist-player-bedienung"></a>
+
+## Bedienelemente und Anzeigen
+
+Die dunkel gestaltete Oberfläche ist in fünf Bereiche gegliedert: Dateiverwaltung, Playlist, aktueller Titel, Transportsteuerung sowie Wiedergabeoptionen/Lautstärke.
+
+| Element in der Oberfläche | Bedeutung |
+| --- | --- |
+| **+ Dateien** | Eine oder mehrere MP3-/WAV-Dateien hinzufügen |
+| **M3U8 laden** | Vorhandene Playlist einlesen und ihre Einträge hinzufügen |
+| **M3U8 speichern** | Aktuelle Liste als M3U8-Datei exportieren |
+| **Entfernen** | Ausgewählten Titel aus der Liste löschen |
+| **Hoch / Runter** | Ausgewählten Titel in der Playlist verschieben |
+| **Leeren** | Gesamte Playlist löschen |
+| **Doppelklick auf einen Titel** | Gewählten Titel sofort starten |
+| **`|<` (Zurück)** | Vorheriger Titel; nach mehr als 3 Sekunden Spielzeit zunächst aktuellen Titel neu starten |
+| **PLAY** | Aktuellen Titel starten bzw. pausierte Wiedergabe fortsetzen |
+| **PAUSE** | Player-Wiedergabe pausieren |
+| **STOP** | Player-Wiedergabe anhalten und Position auf Titelanfang setzen |
+| **`>|` (Weiter)** | Zum nächsten Titel wechseln |
+| **Fortschrittsbalken** | Aktuelle Wiedergabeposition anzeigen und durch Ziehen ändern |
+| **Repeat: AUS / ENDLOS / 1 TITEL** | Wiederholungsmodus festlegen |
+| **Zufall** | Zufällige Abspielreihenfolge aktivieren |
+| **Lautstärke** | Player-Ausgangspegel in dB; über REAPER automatisierbar |
+| **Aktueller Titel** | Dateiname des laufenden Titels ohne Dateiendung |
+| **Zeitangabe `mm:ss / mm:ss`** | Abgelaufene Spielzeit / Länge des aktuellen Titels |
+| **Titelzeit in der Liste** | Gesamtlänge des jeweiligen MP3-/WAV-Titels |
+| **GESAMTSPIELZEIT** | Summe der bekannten Dauern aller Titel in der Liste |
+| **ENDLOS AKTIV** | Kennzeichnet die eingeschaltete Endlosschleife |
+
+### Gesamtspielzeit richtig lesen
+
+Die **Gesamtspielzeit** befindet sich **oberhalb der Titelliste**, direkt neben der Titelanzahl. Eine lange Playlist kann beispielsweise so angezeigt werden:
+
+```text
+127 TITEL  |  GESAMTSPIELZEIT  5:23:31
+```
+
+Das ist die **einmalige Gesamtdauer** aller erkannten Musikdateien, **nicht** die verbleibende Zeit bis zum Ende und **nicht** die Laufzeit bei aktivem Repeat. Im Endlosmodus ist die tatsächliche Gesamt-Abspieldauer unbegrenzt.
+
+Beim Hinzufügen vieler Dateien werden die Laufzeiten schrittweise eingelesen. Bis alle Metadaten verfügbar sind, kann die Summe noch unvollständig sein. Nicht lesbare Dateien werden entsprechend markiert.
+
+<a id="playlist-player-repeat"></a>
+
+## Endloswiedergabe und Zufallsmodus
+
+Das Auswahlfeld **Repeat** unten links besitzt drei Betriebsarten:
+
+| Modus | Verhalten am Ende eines Titels bzw. der Playlist |
+| --- | --- |
+| **Repeat: AUS** | Spielt die Liste einmal durch und hält am Ende an |
+| **Repeat: ENDLOS** | Springt nach dem letzten Titel wieder zum ersten und spielt die Liste erneut ab |
+| **Repeat: 1 TITEL** | Wiederholt den aktuellen Titel fortlaufend |
+
+**Werkseinstellung: ENDLOS.** Ist diese aktiv, steht rechts oberhalb der Playlist **ENDLOS AKTIV**.
+
+Das Kontrollkästchen **Zufall** mischt die Wiedergabereihenfolge. Mit **Repeat: AUS** endet die Zufallsrunde, sobald alle Titel gespielt wurden. Mit **Repeat: ENDLOS** beginnt danach eine neue zufällige Runde.
+
+**Hinweis:** Der automatische Titelwechsel wird über die interne Ablaufprüfung ausgelöst. Zwischen zwei Stücken kann dadurch eine **kurze Pause** entstehen. Version 1.0 besitzt **noch kein Crossfade** und garantiert keine samplegenau lückenlosen Übergänge.
+
+<a id="playlist-player-livestream"></a>
+
+## Beispiel: Hintergrundmusik im Livestream
+
+Die Musikausgabe des Plugins kann genauso wie jedes andere REAPER-Instrument mit Mikrofonen und weiteren Spuren gemischt werden:
+
+```text
+Mikrofon A ───────────────┐
+Mikrofon B ───────────────┼──► STREAM-BUS ──► OBS / Stream-Ausgang
+                          │
+Musikspur ────────────────┘
+  LautFunk Playlist Player VST3
+  → EQ / Limiter (optional)
+  → Spurfader / Send
+```
+
+### Praxisablauf
+
+1. Musikspur einrichten und ihren Pegel bewusst **unterhalb der Sprache** einstellen.
+2. Eine Playlist mit Hintergrundmusik laden, **Repeat: ENDLOS** aktivieren.
+3. Über den **FX-Button** auf der Musikspur bei Bedarf EQ, Lautheitsbearbeitung oder Limiter **nach** dem Player einfügen.
+4. Lautstärke des Players und den REAPER-Spurfader separat nutzen: Der Player regelt den Plugin-Ausgang, der Fader die ganze Spur.
+5. Den Stream-Ausgang kontrollieren und anschließend den Player mit **PLAY** starten. Aufnahme im Projekt ist nicht notwendig.
+
+Der Player hat in Version 1.0 **noch kein automatisches Ducking**. Wenn die Musik beim Sprechen automatisch leiser werden soll, kann dies zunächst mit einem externen Kompressor und Sidechain-Routing in REAPER realisiert werden.
+
+**Startpegel:** Der interne Lautstärkeparameter ist standardmäßig auf **−12 dB** eingestellt. Dies ist ein Ausgangspunkt, kein automatisch geeigneter Stream-Mix. Den tatsächlichen Pegel über die gesamte Signalkette kontrollieren und bei Bedarf weiter reduzieren.
+
+<a id="playlist-player-grenzen"></a>
+
+## Hinweise, technische Grenzen und Verfügbarkeit
+
+- **Keine Aufnahme nötig:** Der Player arbeitet als VST3-Instrument und erzeugt sein Audiosignal direkt in der REAPER-FX-Kette. Es sind weder MIDI-Items noch Audio-Items erforderlich.
+- **Kein eigener Audioausgang:** Der Sound wird über REAPERs Audiogerät und Routing ausgegeben; es gibt keinen separaten Standalone-Player.
+- **Transport bei Stop:** Damit das Plugin bei gestopptem REAPER-Transport weiterläuft, müssen Host und Audiogerät weiterhin Audiobuffer bereitstellen. Dafür ist **Run FX when stopped** wichtig.
+- **Kein Crossfade / Ducking:** Diese Funktionen gehören nicht zu v1.0.
+- **Mögliche Übergangspausen:** Ein automatischer Titelwechsel ist nicht als garantierter Gapless-Player ausgelegt.
+- **Externe Dateipfade:** Gespeicherte Playlists benötigen weiterhin Zugriff auf die Originaldateien.
+- **Plattformen:** GitHub Actions hat die Windows-x64- und macOS-Universal-Versionen erfolgreich kompiliert. Ein nativer macOS-Funktionstest ist noch offen.
+- **Signierung:** Das macOS-VST3 wurde ad-hoc signiert, ist aber nicht durch Apple notarisiert.
+- **Framework:** Der Player ist in C++ mit **JUCE 9.0.4** entwickelt. Bei öffentlicher Verteilung gelten die jeweiligen JUCE-Lizenzbedingungen; AGPLv3- bzw. kommerzielle Lizenzoptionen vor der Weiterverwendung beachten.
+
+**Download und Quellcode:** [GitHub – LautFunk REAPER FX Plugins](https://github.com/lautfunk/Reaper-FX-Plugins) · [Playlist Player v1.0.0 Release](https://github.com/lautfunk/Reaper-FX-Plugins/releases/tag/playlist-v1.0.0)
+
+[↑ Zurück zum Inhaltsverzeichnis](#inhaltsverzeichnis)
+
+---
+
 <a id="fartsynth"></a>
 
 # LautFunk FartSynth 61 v1.0
@@ -1063,15 +1297,15 @@ Der zusätzliche Source-Ordner enthält den reproduzierbaren Builder und die Pr�
 
 # Installation
 
-Alle LautFunk-Plugins sind **JSFX-Plugins für REAPER**.
+Die LautFunk-Sammlung enthält **JSFX-Plugins** und den separat installierbaren **Playlist Player als VST3-Instrument**.
 
-Eine klassische Installation wie bei VST-, VST3- oder CLAP-Plugins ist deshalb nicht notwendig.
+**JSFX** werden in den REAPER-Ressourcenordner `Effects` kopiert. **Der Playlist Player als VST3** wird in den VST3-Ordner des Betriebssystems installiert (siehe [Playlist Player – Installation](#playlist-player-installation)).
 
-Die Plugin-Dateien müssen lediglich in den REAPER-Ordner:
+Für die JSFX-Dateien genügt das Kopieren in den REAPER-Ordner:
 
 `Effects`
 
-kopiert werden.
+Die folgenden JSFX-Installationsschritte gelten **nicht** für den Playlist Player als VST3.
 
 ## Empfohlene Methode
 
@@ -1111,7 +1345,7 @@ Diese Struktur hält den FX-Browser übersichtlich.
 
 <a id="installationspfade"></a>
 
-# Typische Installationspfade
+# Typische Installationspfade für JSFX
 
 Die tatsächlichen Pfade können abhängig von Betriebssystem, REAPER-Version und einer eventuell verwendeten portablen Installation abweichen.
 
@@ -1166,7 +1400,7 @@ Bei einer portablen REAPER-Installation befindet sich der `Effects`-Ordner inner
 
 # Plugins in REAPER laden
 
-Nach dem Kopieren der Dateien:
+Nach dem Kopieren bzw. Installieren des jeweiligen Plugins:
 
 1. REAPER starten beziehungsweise zu REAPER zurückkehren.
 2. Eine Audio- oder MIDI-Spur auswählen.
@@ -1200,9 +1434,15 @@ LautFunk FartSynth 61
 
 ```
 
+oder (nach separater VST3-Installation):
+
+```text
+LautFunk Playlist Player
+```
+
 Falls ein Plugin nicht sofort angezeigt wird, kann der FX-Browser geschlossen und erneut geöffnet werden.
 
-Alternativ REAPER neu starten beziehungsweise die FX-Liste aktualisieren.
+Alternativ REAPER neu starten beziehungsweise die FX-Liste aktualisieren. Beim Playlist Player gegebenenfalls unter **Preferences → Plug-ins → VST** einen VST-Rescan durchführen.
 
 Beim FartSynth muss zusätzlich:
 
@@ -1219,11 +1459,11 @@ Auch die virtuelle Bildschirmtastatur benötigt eine laufende Audioverarbeitung.
 
 # Anforderungen
 
-- **REAPER**
-- Unterstützung für **JSFX / Jesusonic Effects**
-- Windows, macOS oder Linux
-- keine zusätzlichen VST-Abhängigkeiten
-- keine externe Runtime erforderlich
+- **REAPER** mit JSFX-Unterstützung für die JSFX-Plugins bzw. mit VST3-Unterstützung für den Playlist Player
+- **JSFX-Plugins:** Windows, macOS oder Linux; keine zusätzliche VST-Installation
+- **Playlist Player v1.0:** Windows x64 oder macOS (Intel/Apple Silicon); separate VST3-Installation
+- **Playlist Player:** Zugriff auf lokale MP3-/WAV-Dateien und ein aktives REAPER-Audiogerät
+- Für den **fertigen Playlist Player** ist keine separate JUCE-Installation nötig; für das **Kompilieren des Quellcodes** werden CMake, C++-Compiler und JUCE benötigt
 
 Beim FartSynth können sehr dichte Klangereignisse mit vielen gleichzeitig aktiven Stimmen entsprechend mehr Rechenleistung benötigen.
 
@@ -1260,6 +1500,8 @@ Geeignet sind sie unter anderem für:
 - Sprecher-Pegelabgleich
 - Podcast-Mastering-Vorbereitung
 - transparente Dynamikbearbeitung und Soft-Knee-Limiting
+- Hintergrundmusik über eine Playlist auf eigener REAPER-Spur
+- M3U8-basierte Musiklisten und Endloswiedergabe für Livestreams
 
 ---
 
@@ -1273,7 +1515,7 @@ Die Plugins entstanden ursprünglich für Audio-, Podcast- und Sounddesign-Produ
 
 Der Schwerpunkt liegt nicht darauf, historische Hardware oder reale Übertragungssysteme perfekt zu simulieren.
 
-Stattdessen werden charakteristische Klangideen aufgegriffen und als flexibel einsetzbare Werkzeuge für REAPER umgesetzt. Mit SoftGuard gehört nun auch ein Werkzeug für kontrollierte, möglichst transparente Sprachbearbeitung zum Projekt.
+Stattdessen werden charakteristische Klangideen aufgegriffen und als flexibel einsetzbare Werkzeuge für REAPER umgesetzt. Mit SoftGuard gehört auch ein Werkzeug für kontrollierte, möglichst transparente Sprachbearbeitung zum Projekt. Der Playlist Player ergänzt das Angebot um die direkte Musik- und Playlist-Wiedergabe innerhalb von REAPER.
 
 Mal kontrolliert.
 
