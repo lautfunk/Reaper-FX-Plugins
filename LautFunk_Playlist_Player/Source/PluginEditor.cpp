@@ -1,4 +1,5 @@
 #include "PluginEditor.h"
+#include <algorithm>
 
 namespace
 {
@@ -22,7 +23,7 @@ LautFunkPlaylistEditor::LautFunkPlaylistEditor(LautFunkPlaylistProcessor& p)
                      &clearButton, &prevButton, &playButton, &pauseButton,
                      &stopButton, &nextButton, &newBank, &deleteBank,
                      &prevPage, &nextPage, &stopAllButton, &fadeAllButton,
-                     &loadPadButton, &clearPadButton, &stopPadButton, &fadePadButton })
+                     &loadPadButton, &clearPadButton, &stopPadButton, &fadePadButton, &bankFileButton, &folderImportButton })
     {
         setActionButtonStyle(*b, b == &playButton || b == &soundboardTab);
         addAndMakeVisible(*b);
@@ -100,7 +101,14 @@ LautFunkPlaylistEditor::LautFunkPlaylistEditor(LautFunkPlaylistProcessor& p)
     padDetails.setColour(juce::Label::textColourId, muted);
 
     bankBox.onChange = [this] {
-        if (bankBox.getSelectedId() > 0) { currentBankId = bankBox.getSelectedId(); selectedPad = -1; updatePadSelection(); updateBoard(); }
+        if (bankBox.getSelectedId() > 0)
+        {
+            currentBankId = bankBox.getSelectedId();
+            processor.setMidiBank(currentBankId);
+            selectedPad = -1;
+            updatePadSelection();
+            updateBoard();
+        }
     };
     padViewBox.addItem("12 Pads", 1);
     padViewBox.addItem("24 Pads", 2);
@@ -124,15 +132,30 @@ LautFunkPlaylistEditor::LautFunkPlaylistEditor(LautFunkPlaylistProcessor& p)
     bankName.onReturnKey = [this] { applyBankName(); };
     bankName.onFocusLost = [this] { applyBankName(); };
     addAndMakeVisible(bankName);
+    bankFileButton.onClick = [this] {
+        juce::PopupMenu menu;
+        menu.addItem(1, "Bank laden ...");
+        menu.addItem(2, "Bank speichern ...");
+        const juce::Component::SafePointer<LautFunkPlaylistEditor> safe(this);
+        menu.showMenuAsync(juce::PopupMenu::Options().withTargetComponent(&bankFileButton),
+            [safe](int choice) {
+                if (safe == nullptr) return;
+                if (choice == 1) safe->chooseBankFile(true);
+                else if (choice == 2) safe->chooseBankFile(false);
+            });
+    };
+    folderImportButton.onClick = [this] { chooseSampleFolder(); };
     newBank.onClick = [this] {
         const auto banks = processor.getSoundboard().getBanks();
         currentBankId = processor.getSoundboard().addBank("Bank " + juce::String(banks.size() + 1));
+        processor.setMidiBank(currentBankId);
         lastBankSignature.clear(); updateBoard();
     };
     deleteBank.onClick = [this] {
         if (processor.getSoundboard().removeBank(currentBankId))
         {
             currentBankId = processor.getSoundboard().getBanks().front().id;
+            processor.setMidiBank(currentBankId);
             lastBankSignature.clear(); selectedPad = -1; updateBoard();
         }
     };
@@ -195,6 +218,38 @@ LautFunkPlaylistEditor::LautFunkPlaylistEditor(LautFunkPlaylistProcessor& p)
         addAndMakeVisible(*slider);
     }
 
+    // Soundboard ducking is optional and remains separate from sample volume.
+    duckEnabledButton.setColour(juce::ToggleButton::textColourId, white);
+    duckEnabledButton.setColour(juce::ToggleButton::tickColourId, teal);
+    duckEnabledButton.onClick = [this] {
+        processor.duckEnabledParam->setValueNotifyingHost(
+            duckEnabledButton.getToggleState() ? 1.f : 0.f);
+    };
+    addAndMakeVisible(duckEnabledButton);
+
+    const auto configureDuck = [this](juce::Slider& slider,
+                                      juce::AudioParameterFloat& param,
+                                      const juce::String& suffix, int textWidth) {
+        slider.setSliderStyle(juce::Slider::LinearHorizontal);
+        slider.setTextBoxStyle(juce::Slider::TextBoxRight, false, textWidth, 22);
+        slider.setRange(param.range.start, param.range.end, param.range.interval);
+        slider.setTextValueSuffix(suffix);
+        slider.setValue(param.get(), juce::dontSendNotification);
+        slider.setColour(juce::Slider::thumbColourId, teal);
+        slider.setColour(juce::Slider::trackColourId, teal);
+        slider.setColour(juce::Slider::backgroundColourId, panelBright);
+        slider.onValueChange = [&slider, &param] {
+            param.setValueNotifyingHost(param.convertTo0to1((float) slider.getValue()));
+        };
+        addAndMakeVisible(slider);
+    };
+    configureDuck(duckDepthSlider, *processor.duckDepthParam, " dB", 66);
+    configureDuck(duckAttackSlider, *processor.duckAttackParam, " ms", 76);
+    configureDuck(duckReleaseSlider, *processor.duckReleaseParam, " ms", 78);
+    duckDepthSlider.setTooltip("Ducking-Absenkung der Playlist-Musik in dB");
+    duckAttackSlider.setTooltip("Wie schnell die Playlist leiser wird (Millisekunden)");
+    duckReleaseSlider.setTooltip("Wie schnell die Musik nach Samples wieder ansteigt");
+
     showMode(false);
     updateControls();
     updateBoard();
@@ -232,7 +287,9 @@ void LautFunkPlaylistEditor::showMode(bool board)
         &bankBox, &bankName, &padViewBox, &newBank, &deleteBank,
         &prevPage, &nextPage, &stopAllButton, &fadeAllButton,
         &loadPadButton, &clearPadButton, &stopPadButton, &fadePadButton,
-        &loopPad, &padGain, &padFade, &bankStatus, &padDetails
+        &loopPad, &padGain, &padFade, &bankStatus, &padDetails,
+        &bankFileButton, &folderImportButton, &duckEnabledButton,
+        &duckDepthSlider, &duckAttackSlider, &duckReleaseSlider
     };
     for (auto* c : boardComponents) c->setVisible(board);
     for (auto& button : padButtons) button.setVisible(board);
@@ -347,7 +404,9 @@ void LautFunkPlaylistEditor::resized()
     fadeAllButton.setBounds(w - 264, h - 220, 111, 33);
     stopAllButton.setBounds(w - 143, h - 220, 113, 33);
 
-    padDetails.setBounds(30, h - 177, w - 60, 23);
+    padDetails.setBounds(30, h - 177, w - 405, 23);
+    folderImportButton.setBounds(w - 367, h - 181, 174, 30);
+    bankFileButton.setBounds(w - 185, h - 181, 155, 30);
     loadPadButton.setBounds(30, h - 144, 144, 34);
     clearPadButton.setBounds(184, h - 144, 122, 34);
     stopPadButton.setBounds(316, h - 144, 110, 34);
@@ -355,7 +414,12 @@ void LautFunkPlaylistEditor::resized()
     loopPad.setBounds(558, h - 144, 100, 34);
     padGain.setBounds(30, h - 101, (w - 75) / 2, 36);
     padFade.setBounds(45 + (w - 75) / 2, h - 101, (w - 75) / 2, 36);
-    // Bottom space intentionally left for host-specific resizing handles.
+    duckEnabledButton.setBounds(26, h - 58, 142, 31);
+    const int leftDuck = 168;
+    const int duckW = (w - leftDuck - 40) / 3;
+    duckDepthSlider.setBounds(leftDuck, h - 60, duckW, 36);
+    duckAttackSlider.setBounds(leftDuck + duckW + 5, h - 60, duckW, 36);
+    duckReleaseSlider.setBounds(leftDuck + 2 * (duckW + 5), h - 60, duckW, 36);
 }
 
 int LautFunkPlaylistEditor::getNumRows() { return snapshot.size(); }
@@ -412,6 +476,13 @@ void LautFunkPlaylistEditor::timerCallback()
 
 void LautFunkPlaylistEditor::updateControls()
 {
+    duckEnabledButton.setToggleState(processor.duckEnabledParam->get(), juce::dontSendNotification);
+    if (!duckDepthSlider.isMouseButtonDown())
+        duckDepthSlider.setValue(processor.duckDepthParam->get(), juce::dontSendNotification);
+    if (!duckAttackSlider.isMouseButtonDown())
+        duckAttackSlider.setValue(processor.duckAttackParam->get(), juce::dontSendNotification);
+    if (!duckReleaseSlider.isMouseButtonDown())
+        duckReleaseSlider.setValue(processor.duckReleaseParam->get(), juce::dontSendNotification);
     const auto rev = processor.getRevision();
     const auto index = processor.getCurrentIndex();
     if (rev != lastRevision)
@@ -496,6 +567,13 @@ void LautFunkPlaylistEditor::selectPad(int slot)
 
 void LautFunkPlaylistEditor::updateBoard()
 {
+    const int externalBank = processor.getMidiBank();
+    if (externalBank > 0 && externalBank != currentBankId)
+    {
+        currentBankId = externalBank;
+        selectedPad = -1;
+        updatePadSelection();
+    }
     const auto banks = processor.getSoundboard().getBanks();
     if (banks.empty()) return;
     bool found = false;
@@ -606,6 +684,153 @@ void LautFunkPlaylistEditor::openPadMenu(int slot)
             else if (choice == 3) safe->processor.getSoundboard().stopPad(safe->currentBankId, slot, true);
             else if (choice == 4) { safe->processor.getSoundboard().clearPad(safe->currentBankId, slot); safe->updateBoard(); }
         });
+}
+
+void LautFunkPlaylistEditor::chooseBankFile(bool importing)
+{
+    chooser = std::make_unique<juce::FileChooser>(
+        importing ? "LautFunk Soundbank laden" : "LautFunk Soundbank speichern",
+        juce::File::getSpecialLocation(juce::File::userDocumentsDirectory), "*.lfsb");
+    const juce::Component::SafePointer<LautFunkPlaylistEditor> safe(this);
+    const int bankId = currentBankId;
+    chooser->launchAsync(importing
+        ? (juce::FileBrowserComponent::openMode | juce::FileBrowserComponent::canSelectFiles)
+        : (juce::FileBrowserComponent::saveMode | juce::FileBrowserComponent::warnAboutOverwriting),
+        [safe, importing, bankId](const juce::FileChooser& dialog) {
+            if (safe == nullptr) return;
+            auto file = dialog.getResult();
+            if (file == juce::File{}) return;
+            if (importing)
+            {
+                const auto xml = juce::XmlDocument::parse(file);
+                if (!xml) return;
+                const auto state = juce::ValueTree::fromXml(*xml);
+                const int newId = safe->processor.getSoundboard().importBank(state);
+                if (newId > 0)
+                {
+                    safe->currentBankId = newId;
+                    safe->processor.setMidiBank(newId);
+                    safe->selectedPad = -1;
+                    safe->lastBankSignature.clear();
+                    safe->updateBoard();
+                }
+            }
+            else
+            {
+                if (!file.hasFileExtension("lfsb")) file = file.withFileExtension("lfsb");
+                const auto state = safe->processor.getSoundboard().exportBank(bankId);
+                if (!state.isValid()) return;
+                if (const auto xml = state.createXml())
+                    file.replaceWithText(xml->toString());
+            }
+        });
+}
+
+void LautFunkPlaylistEditor::chooseSampleFolder()
+{
+    chooser = std::make_unique<juce::FileChooser>(
+        "Ordner mit Soundboard-Samples auswählen",
+        juce::File::getSpecialLocation(juce::File::userMusicDirectory));
+    const juce::Component::SafePointer<LautFunkPlaylistEditor> safe(this);
+    chooser->launchAsync(juce::FileBrowserComponent::openMode |
+                         juce::FileBrowserComponent::canSelectDirectories,
+        [safe](const juce::FileChooser& picker) {
+            if (safe == nullptr) return;
+            const auto folder = picker.getResult();
+            if (folder.isDirectory()) safe->importSamplesFromFolder(folder);
+        });
+}
+
+void LautFunkPlaylistEditor::importSamplesFromFolder(const juce::File& folder)
+{
+    juce::Array<juce::File> files;
+    folder.findChildFiles(files, juce::File::findFiles, false, "*.wav;*.mp3");
+    if (files.isEmpty())
+    {
+        juce::AlertWindow::showMessageBoxAsync(
+            juce::MessageBoxIconType::InfoIcon, "Soundboard-Import",
+            "In diesem Ordner wurden keine WAV- oder MP3-Dateien gefunden.");
+        return;
+    }
+    std::sort(files.begin(), files.end(),
+        [](const juce::File& a, const juce::File& b) {
+            return a.getFileName().compareIgnoreCase(b.getFileName()) < 0;
+        });
+
+    auto& engine = processor.getSoundboard();
+    int bankId = currentBankId;
+    int filled = 0;
+    int created = 0;
+    const auto initialBanks = engine.getBanks();
+    juce::String baseName = folder.getFileName();
+    if (baseName.isEmpty()) baseName = "Samples";
+
+    int fileIndex = 0;
+    while (fileIndex < files.size())
+    {
+        const auto banks = engine.getBanks();
+        const SoundboardEngine::Bank* bank = nullptr;
+        for (const auto& b : banks)
+            if (b.id == bankId) { bank = &b; break; }
+
+        // A completely occupied current bank is extended by a fresh bank.
+        // Existing slot assignments are never overwritten.
+        bool hasSpace = false;
+        if (bank != nullptr)
+            for (const auto& pad : bank->pads)
+                if (pad.file.getFullPathName().isEmpty()) { hasSpace = true; break; }
+
+        if (!hasSpace)
+        {
+            ++created;
+            bankId = engine.addBank(baseName + " " + juce::String(created + 1));
+            continue;
+        }
+        for (int slot = 0; slot < SoundboardEngine::padsPerBank && fileIndex < files.size(); ++slot)
+        {
+            if (!bank->pads[static_cast<size_t>(slot)].file.getFullPathName().isEmpty())
+                continue;
+            SoundboardEngine::Pad pad;
+            pad.file = files.getReference(fileIndex++);
+            pad.name = pad.file.getFileNameWithoutExtension();
+            if (engine.setPad(bankId, slot, pad))
+                ++filled;
+        }
+        if (fileIndex < files.size())
+        {
+            ++created;
+            bankId = engine.addBank(baseName + " " + juce::String(created + 1));
+        }
+    }
+    lastBankSignature.clear();
+    updateBoard();
+    juce::AlertWindow::showMessageBoxAsync(
+        juce::MessageBoxIconType::InfoIcon, "Soundboard-Import",
+        juce::String(filled) + " Samples importiert. " +
+        juce::String(created) + " zusätzliche Soundbank(en) angelegt.");
+}
+
+bool LautFunkPlaylistEditor::keyPressed(const juce::KeyPress& key)
+{
+    if (!showingBoard || bankName.hasKeyboardFocus(true) ||
+        key.getModifiers().isCommandDown() ||
+        key.getModifiers().isAltDown())
+        return false;
+    const int code = key.getKeyCode();
+    if (code == juce::KeyPress::pageUpKey)
+    { processor.selectMidiBankRelative(-1); updateBoard(); return true; }
+    if (code == juce::KeyPress::pageDownKey)
+    { processor.selectMidiBankRelative(1); updateBoard(); return true; }
+    if (code == juce::KeyPress::escapeKey)
+    { processor.getSoundboard().stopAll(false); return true; }
+    const int mapped = juce::String("1234567890-=").indexOfChar(static_cast<juce::juce_wchar>(code));
+    if (mapped >= 0)
+    {
+        const int slot = padCount == 12 ? padPage * 12 + mapped : mapped;
+        processor.getSoundboard().triggerPad(currentBankId, slot);
+        return true;
+    }
+    return false;
 }
 
 void LautFunkPlaylistEditor::assignSample(int slot)
