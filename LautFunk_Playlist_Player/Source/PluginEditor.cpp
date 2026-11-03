@@ -18,7 +18,7 @@ LautFunkPlaylistEditor::LautFunkPlaylistEditor(LautFunkPlaylistProcessor& p)
     setResizable(true, true);
     setResizeLimits(950, 840, 1800, 1240);
 
-    for (auto* b : { &playlistTab, &soundboardTab, &addButton, &importButton,
+    for (auto* b : { &playlistTab, &soundboardTab, &routingButton, &addButton, &importButton,
                      &exportButton, &removeButton, &upButton, &downButton,
                      &clearButton, &prevButton, &playButton, &pauseButton,
                      &stopButton, &nextButton, &newBank, &deleteBank,
@@ -30,6 +30,13 @@ LautFunkPlaylistEditor::LautFunkPlaylistEditor(LautFunkPlaylistProcessor& p)
     }
     playlistTab.onClick = [this] { showMode(false); };
     soundboardTab.onClick = [this] { showMode(true); };
+    routingButton.onClick = [this] { showRoutingMenu(); };
+    routingButton.setTooltip("Stereo-Mix oder getrennte Ausgaenge (nur mit DAW-Mehrkanalrouting)");
+
+    routingStatusLabel.setColour(juce::Label::textColourId, muted);
+    routingStatusLabel.setFont(juce::FontOptions(11.0f));
+    routingStatusLabel.setTooltip("Bei getrennter Ausgabe muss Ausgang 3/4 in der DAW zugewiesen werden.");
+    addAndMakeVisible(routingStatusLabel);
 
     list.setRowHeight(32);
     list.setMultipleSelectionEnabled(false);
@@ -295,6 +302,54 @@ void LautFunkPlaylistEditor::setActionButtonStyle(juce::TextButton& b, bool prim
     b.setColour(juce::TextButton::textColourOnId, bg);
 }
 
+void LautFunkPlaylistEditor::showRoutingMenu()
+{
+    juce::PopupMenu menu;
+    const bool separated = processor.getSeparateOutputs();
+    menu.addItem(1, "Standard: Playlist + Soundboard auf Stereo 1/2", true, !separated);
+    menu.addItem(2, "Erweitert: Playlist 1/2, Soundboard 3/4", true, separated);
+    menu.addSeparator();
+    menu.addItem(3, "Info: Ausgang 3/4 in der DAW einrichten ...");
+    const juce::Component::SafePointer<LautFunkPlaylistEditor> safe(this);
+    menu.showMenuAsync(juce::PopupMenu::Options().withTargetComponent(&routingButton),
+        [safe](int choice) {
+            if (safe == nullptr) return;
+            if (choice == 3)
+            {
+                juce::AlertWindow::showMessageBoxAsync(
+                    juce::MessageBoxIconType::InfoIcon, "Optionale Audioausgaenge",
+                    "Standard: Musik und Soundboard gemeinsam auf Stereo 1/2.\n\n"
+                    "Erweitert: Musik 1/2, Soundboard 3/4.\n"
+                    "Dafuer muss die DAW den zweiten Stereo-Ausgang auf eine "
+                    "hoerbare Spur beziehungsweise die Kanaele 3/4 routen.\n\n"
+                    "Wenn kein Sample hoerbar ist, hier zurueck auf Standard wechseln.");
+                return;
+            }
+            if (choice != 1 && choice != 2) return;
+            const bool requestedSplit = choice == 2;
+            const bool worked = safe->processor.setSeparateOutputs(requestedSplit);
+            if (!worked)
+            {
+                juce::AlertWindow::showMessageBoxAsync(
+                    juce::MessageBoxIconType::WarningIcon,
+                    "Mehrkanal-Ausgang nicht verfuegbar",
+                    "Die DAW hat den zweiten Stereo-Ausgang nicht aktiviert. "
+                    "Das Plugin bleibt im gemeinsamen Stereo-Mix auf 1/2.");
+            }
+            else if (requestedSplit)
+            {
+                juce::AlertWindow::showMessageBoxAsync(
+                    juce::MessageBoxIconType::InfoIcon,
+                    "Audio-Routing: getrennt",
+                    "Getrennter Ausgang aktiviert. Die Samples liegen auf 3/4.\n"
+                    "Bitte in der DAW Ausgang 3/4 aktivieren und auf eine "
+                    "hoerbare Spur routen. Wenn kein Ton kommt, wieder auf "
+                    "Standard (Stereo-Mix) umschalten.");
+            }
+            safe->updateControls();
+        });
+}
+
 void LautFunkPlaylistEditor::showMode(bool board)
 {
     showingBoard = board;
@@ -334,7 +389,7 @@ void LautFunkPlaylistEditor::paint(juce::Graphics& g)
     g.drawText("PLAYLIST PLAYER & SOUNDBOARD", 22, 36, w - 290, 35, juce::Justification::centredLeft);
     g.setColour(muted);
     g.setFont(juce::FontOptions(12.0f));
-    g.drawText("VST3  |  2.2 OSC DEV", w - 280, 37, 256, 30, juce::Justification::centredRight);
+    g.drawText("VST3  |  2.3 ROUTING RC", w - 280, 37, 256, 30, juce::Justification::centredRight);
 
     g.setColour(panel);
     if (!showingBoard)
@@ -368,6 +423,8 @@ void LautFunkPlaylistEditor::resized()
     const int w = getWidth(), h = getHeight();
     playlistTab.setBounds(22, 87, 170, 37);
     soundboardTab.setBounds(202, 87, 184, 37);
+    routingButton.setBounds(396, 87, 172, 37);
+    routingStatusLabel.setBounds(578, 87, w - 596, 37);
     if (!showingBoard)
     {
         constexpr int gap = 8;
@@ -503,6 +560,9 @@ void LautFunkPlaylistEditor::timerCallback()
 
 void LautFunkPlaylistEditor::updateControls()
 {
+    routingStatusLabel.setText(processor.getRoutingStatus(), juce::dontSendNotification);
+    routingButton.setButtonText(processor.getSeparateOutputs()
+        ? "ROUTING: GETRENNT" : "AUDIO-ROUTING");
     const auto& osc = processor.getOscControl();
     oscEnabledButton.setToggleState(osc.isEnabled(), juce::dontSendNotification);
     if (!oscPortEditor.hasKeyboardFocus(true))
