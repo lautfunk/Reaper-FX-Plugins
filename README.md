@@ -6,6 +6,10 @@ Einige LautFunk-Plugins verändern, verfremden oder zerstören Audio ganz bewuss
 
 **Kaputt darf hier ausdrücklich gut klingen. Sauber und transparent aber genauso.**
 
+**Neues VST3-Projekt:** Der [LautFunk Playlist Player & Soundboard](LautFunk_Playlist_Player/README_DE.md) kombiniert Musik-Playlist und Soundboard in einem Plugin. Die neueste **v2.3 ROUTING RC** ist noch ein Release-Kandidat und bietet gemeinsames Stereo-Routing als Standard sowie optionale getrennte Stereoausgänge. Installationsanleitung, MIDI, OSC/Stream Deck, Testplan und Release-Checkliste liegen im [Plugin-Unterverzeichnis](LautFunk_Playlist_Player/).
+
+
+
 > **Navigation:** Diese README ist umfangreich. Über das Inhaltsverzeichnis kannst du direkt zu jedem Plugin und zu den wichtigsten Unterkapiteln springen.
 
 <a id="inhaltsverzeichnis"></a>
@@ -70,7 +74,7 @@ Aktuell enthält das Projekt:
 - **LautFunk FartSynth 61**\
   Ein vollständig synthetischer MIDI-Synthesizer mit 61 spielbaren Tasten und zwölf unterschiedlichen Klangcharakteren.
 
-Alle Plugins laufen direkt als **JSFX in REAPER**. Eine zusätzliche VST-, VST3- oder CLAP-Installation ist nicht erforderlich. SoftGuard bietet optional ein zusätzliches **ReaScript (Lua)** zur Konfiguration der finalen Renderziele.
+Alle in diesem Abschnitt aufgeführten JSFX-Plugins laufen direkt als **JSFX in REAPER**. Eine zusätzliche VST-, VST3- oder CLAP-Installation ist nicht erforderlich. SoftGuard bietet optional ein zusätzliches **ReaScript (Lua)** zur Konfiguration der finalen Renderziele.
 
 ---
 
