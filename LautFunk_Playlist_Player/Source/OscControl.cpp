@@ -53,7 +53,7 @@ bool LautFunkOscControl::setEnabled(bool shouldEnable, int requestedPort)
     socket = std::make_unique<juce::DatagramSocket>(false);
     if (!socket->bindToPort(port, "127.0.0.1"))
     {
-        status = "OSC: Port " + juce::String(port) + " belegt / nicht verfügbar";
+        status = "OSC: Port " + juce::String(port) + juce::String::fromUTF8(" belegt / nicht verf\xC3\xBC""gbar");
         return false;
     }
 
