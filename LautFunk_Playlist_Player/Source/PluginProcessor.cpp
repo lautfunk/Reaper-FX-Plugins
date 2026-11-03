@@ -275,12 +275,12 @@ void LautFunkPlaylistProcessor::appendFiles(const juce::Array<juce::File>& files
     if (inserted > 0)
     {
         playedShuffleIndices.clear();
-        status = juce::String(inserted) + " Datei(en) hinzugefügt";
+        status = juce::String(inserted) + juce::String::fromUTF8(" Datei(en) hinzugef\xC3\xBC""gt");
         ++revision;
     }
     else
     {
-        status = "Keine gültigen MP3-/WAV-Dateien ausgewählt";
+        status = juce::String::fromUTF8("Keine g\xC3\xBC""ltigen MP3-/WAV-Dateien ausgew\xC3\xA4""hlt");
     }
 }
 
@@ -375,7 +375,7 @@ void LautFunkPlaylistProcessor::play()
 {
     if (getTrackFiles().isEmpty())
     {
-        status = "Bitte zuerst Musik hinzufügen";
+        status = juce::String::fromUTF8("Bitte zuerst Musik hinzuf\xC3\xBC""gen");
         return;
     }
     if (fileSource == nullptr || transport.hasStreamFinished())
