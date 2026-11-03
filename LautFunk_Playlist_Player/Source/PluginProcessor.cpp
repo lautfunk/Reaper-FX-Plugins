@@ -9,6 +9,21 @@ LautFunkPlaylistProcessor::LautFunkPlaylistProcessor()
         juce::ParameterID { "volume", 1 }, "Player Volume (dB)",
         juce::NormalisableRange<float>(-60.0f, 6.0f, 0.1f), -12.0f);
     addParameter(volumeParam);
+    duckEnabledParam = new juce::AudioParameterBool(
+        juce::ParameterID { "duck_enabled", 1 }, "Soundboard ducks playlist", true);
+    duckDepthParam = new juce::AudioParameterFloat(
+        juce::ParameterID { "duck_depth", 1 }, "Ducking (dB)",
+        juce::NormalisableRange<float>(0.0f, 30.0f, 0.5f), 12.0f);
+    duckAttackParam = new juce::AudioParameterFloat(
+        juce::ParameterID { "duck_attack", 1 }, "Ducking Attack (ms)",
+        juce::NormalisableRange<float>(1.0f, 500.0f, 1.0f), 35.0f);
+    duckReleaseParam = new juce::AudioParameterFloat(
+        juce::ParameterID { "duck_release", 1 }, "Ducking Release (ms)",
+        juce::NormalisableRange<float>(20.0f, 3000.0f, 10.0f), 650.0f);
+    addParameter(duckEnabledParam);
+    addParameter(duckDepthParam);
+    addParameter(duckAttackParam);
+    addParameter(duckReleaseParam);
     formats.registerBasicFormats();
     readerThread.startThread();
     startTimerHz(20); // EOF detection works even with the UI closed.
@@ -35,6 +50,11 @@ bool LautFunkPlaylistProcessor::isBusesLayoutSupported(const BusesLayout& layout
 void LautFunkPlaylistProcessor::prepareToPlay(double sampleRate, int blockSize)
 {
     transport.prepareToPlay(blockSize, sampleRate);
+    hostRate = sampleRate;
+    duckGain.reset(sampleRate, 0.0);
+    duckGain.setCurrentAndTargetValue(1.0f);
+    duckTargetActive = false;
+    duckingActive.store(false);
     gain.reset(sampleRate, 0.025);
     gain.setCurrentAndTargetValue(juce::Decibels::decibelsToGain(volumeParam->get()));
     soundboardScratch.setSize(2, juce::jmax(8192, blockSize));
@@ -50,6 +70,10 @@ void LautFunkPlaylistProcessor::releaseResources()
 void LautFunkPlaylistProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midi)
 {
     juce::ScopedNoDenormals noDenormals;
+    // Never open audio files in this callback. MIDI commands go into an
+    // allocation-free SPSC queue and are dispatched on the message timer.
+    for (const auto event : midi)
+        handleMidiMessage(event.getMessage());
     midi.clear();
     buffer.clear(); // Instrument: generate audio rather than pass the track's input.
     if (buffer.getNumChannels() < 2 || buffer.getNumSamples() == 0)
@@ -59,11 +83,26 @@ void LautFunkPlaylistProcessor::processBlock(juce::AudioBuffer<float>& buffer, j
     transport.getNextAudioBlock(output);
 
     gain.setTargetValue(juce::Decibels::decibelsToGain(volumeParam->get()));
+    const bool shouldDuck = duckEnabledParam->get() && soundboard.hasActiveVoices();
+    if (shouldDuck != duckTargetActive)
+    {
+        duckTargetActive = shouldDuck;
+        duckGain.reset(hostRate, (shouldDuck ? duckAttackParam->get()
+                                              : duckReleaseParam->get()) * 0.001);
+        const float target = shouldDuck
+            ? juce::Decibels::decibelsToGain(-duckDepthParam->get()) : 1.0f;
+        duckGain.setTargetValue(target);
+    }
+    else if (shouldDuck)
+    {
+        duckGain.setTargetValue(juce::Decibels::decibelsToGain(-duckDepthParam->get()));
+    }
+    duckingActive.store(shouldDuck, std::memory_order_relaxed);
     auto* left = buffer.getWritePointer(0);
     auto* right = buffer.getWritePointer(1);
     for (int i = 0; i < buffer.getNumSamples(); ++i)
     {
-        const float g = gain.getNextValue();
+        const float g = gain.getNextValue() * duckGain.getNextValue();
         left[i] *= g;
         right[i] *= g;
     }
@@ -384,6 +423,7 @@ void LautFunkPlaylistProcessor::advanceAtEnd()
 
 void LautFunkPlaylistProcessor::timerCallback()
 {
+    handleMidiCommands();
     soundboard.timerTick();
     if (playingWanted.load() && transport.hasStreamFinished())
         advanceAtEnd();
@@ -516,6 +556,11 @@ void LautFunkPlaylistProcessor::getStateInformation(juce::MemoryBlock& dest)
         }
     }
     root.setProperty("volume", volumeParam->get(), nullptr);
+    root.setProperty("midiBank", midiBankId.load(), nullptr);
+    root.setProperty("duckEnabled", duckEnabledParam->get(), nullptr);
+    root.setProperty("duckDepth", duckDepthParam->get(), nullptr);
+    root.setProperty("duckAttack", duckAttackParam->get(), nullptr);
+    root.setProperty("duckRelease", duckReleaseParam->get(), nullptr);
     root.addChild(soundboard.saveState(), -1, nullptr);
     if (auto xml = root.createXml())
         juce::AudioProcessor::copyXmlToBinary(*xml, dest);
@@ -567,11 +612,124 @@ void LautFunkPlaylistProcessor::handleAsyncUpdate()
     }
     auto sb = state.getChildWithName("Soundboard");
     if (sb.isValid()) soundboard.loadState(sb);
+    const auto bankList = soundboard.getBanks();
+    int selectedBank = static_cast<int>(state.getProperty("midiBank", 1));
+    bool foundBank = false;
+    for (const auto& bank : bankList) if (bank.id == selectedBank) foundBank = true;
+    if (!foundBank && !bankList.empty()) selectedBank = bankList.front().id;
+    midiBankId.store(selectedBank);
+    auto restoreParam = [](juce::RangedAudioParameter* param, float value) {
+        param->setValueNotifyingHost(param->convertTo0to1(value));
+    };
+    restoreParam(duckEnabledParam, static_cast<bool>(state.getProperty("duckEnabled", true)) ? 1.f : 0.f);
+    restoreParam(duckDepthParam, juce::jlimit(0.f, 30.f, static_cast<float>(state.getProperty("duckDepth", 12.f))));
+    restoreParam(duckAttackParam, juce::jlimit(1.f, 500.f, static_cast<float>(state.getProperty("duckAttack", 35.f))));
+    restoreParam(duckReleaseParam, juce::jlimit(20.f, 3000.f, static_cast<float>(state.getProperty("duckRelease", 650.f))));
     const auto savedGain = juce::jlimit(-60.0f, 6.0f, (float) state.getProperty("volume", -12.0f));
     volumeParam->setValueNotifyingHost(volumeParam->convertTo0to1(savedGain));
     if (getCurrentIndex() >= 0)
         loadIndex(getCurrentIndex(), false); // Safety: don't auto-play on project open.
     ++revision;
+}
+
+void LautFunkPlaylistProcessor::setMidiBank(int bankId)
+{
+    const auto banks = soundboard.getBanks();
+    for (const auto& bank : banks)
+        if (bank.id == bankId) { midiBankId.store(bankId); ++revision; return; }
+}
+
+void LautFunkPlaylistProcessor::selectMidiBankRelative(int direction)
+{
+    const auto banks = soundboard.getBanks();
+    if (banks.empty()) return;
+    int index = 0;
+    for (int i = 0; i < static_cast<int>(banks.size()); ++i)
+        if (banks[static_cast<size_t>(i)].id == midiBankId.load()) { index = i; break; }
+    const int count = static_cast<int>(banks.size());
+    setMidiBank(banks[static_cast<size_t>((index + count + direction % count) % count)].id);
+}
+
+void LautFunkPlaylistProcessor::queueMidi(const MidiCommand& command) noexcept
+{
+    int start1 = 0, size1 = 0, start2 = 0, size2 = 0;
+    midiFifo.prepareToWrite(1, start1, size1, start2, size2);
+    if (size1 > 0)
+    {
+        midiCommands[static_cast<size_t>(start1)] = command;
+        midiFifo.finishedWrite(1);
+    }
+}
+
+void LautFunkPlaylistProcessor::handleMidiMessage(const juce::MidiMessage& message) noexcept
+{
+    // Notes 36..59 = 24 sample pads. Notes 60..83 = stop pads,
+    // notes 84..107 = fade pads. Omni channel.
+    if (message.isNoteOn())
+    {
+        const int note = message.getNoteNumber();
+        if (note >= 36 && note < 60)
+            queueMidi({ MidiAction::trigger, note - 36 });
+        else if (note >= 60 && note < 84)
+            queueMidi({ MidiAction::stopPad, note - 60 });
+        else if (note >= 84 && note < 108)
+            queueMidi({ MidiAction::fadePad, note - 84 });
+    }
+    if (message.isProgramChange())
+        queueMidi({ MidiAction::bankProgram, message.getProgramChangeNumber() });
+    if (message.isController() && message.getControllerValue() >= 64)
+    {
+        MidiAction action;
+        switch (message.getControllerNumber())
+        {
+            case 110: action = MidiAction::bankPrev; break;
+            case 111: action = MidiAction::bankNext; break;
+            case 112: action = MidiAction::stopAll; break;
+            case 113: action = MidiAction::fadeAll; break;
+            case 114: action = MidiAction::playlistToggle; break;
+            case 115: action = MidiAction::playlistNext; break;
+            case 116: action = MidiAction::playlistPrevious; break;
+            case 117: action = MidiAction::playlistStop; break;
+            default: return;
+        }
+        queueMidi({ action, 0 });
+    }
+}
+
+void LautFunkPlaylistProcessor::handleMidiCommands()
+{
+    int start1 = 0, size1 = 0, start2 = 0, size2 = 0;
+    midiFifo.prepareToRead(midiQueueSize, start1, size1, start2, size2);
+    auto execute = [this](const MidiCommand& cmd)
+    {
+        const int bankId = midiBankId.load();
+        switch (cmd.action)
+        {
+            case MidiAction::trigger: soundboard.triggerPad(bankId, cmd.value); break;
+            case MidiAction::stopPad: soundboard.stopPad(bankId, cmd.value, false); break;
+            case MidiAction::fadePad: soundboard.stopPad(bankId, cmd.value, true); break;
+            case MidiAction::bankPrev: selectMidiBankRelative(-1); break;
+            case MidiAction::bankNext: selectMidiBankRelative(1); break;
+            case MidiAction::bankProgram:
+            {
+                const auto banks = soundboard.getBanks();
+                if (cmd.value < static_cast<int>(banks.size()))
+                    setMidiBank(banks[static_cast<size_t>(cmd.value)].id);
+                break;
+            }
+            case MidiAction::stopAll: soundboard.stopAll(false); break;
+            case MidiAction::fadeAll: soundboard.stopAll(true); break;
+            case MidiAction::playlistToggle: if (isPlaying()) pause(); else play(); break;
+            case MidiAction::playlistStop: stop(); break;
+            case MidiAction::playlistNext: next(); break;
+            case MidiAction::playlistPrevious: previous(); break;
+        }
+    };
+    for (int i = 0; i < size1; ++i)
+        execute(midiCommands[static_cast<size_t>(start1 + i)]);
+    for (int i = 0; i < size2; ++i)
+        execute(midiCommands[static_cast<size_t>(start2 + i)]);
+    midiFifo.finishedRead(size1 + size2);
 }
 
 juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
