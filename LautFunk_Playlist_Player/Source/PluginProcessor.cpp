@@ -2,7 +2,9 @@
 #include "PluginEditor.h"
 
 LautFunkPlaylistProcessor::LautFunkPlaylistProcessor()
-  : juce::AudioProcessor(BusesProperties().withOutput("Stereo Out", juce::AudioChannelSet::stereo(), true)),
+  : juce::AudioProcessor(BusesProperties()
+          .withOutput("Stereo Mix / Playlist 1-2", juce::AudioChannelSet::stereo(), true)
+          .withOutput("Soundboard 3-4 (optional)", juce::AudioChannelSet::stereo(), false)),
     soundboard(formats, readerThread),
     oscControl(*this)
 {
@@ -46,8 +48,57 @@ LautFunkPlaylistProcessor::~LautFunkPlaylistProcessor()
 
 bool LautFunkPlaylistProcessor::isBusesLayoutSupported(const BusesLayout& layout) const
 {
-    return layout.getMainOutputChannelSet() == juce::AudioChannelSet::stereo()
-        && layout.getMainInputChannelSet().isDisabled();
+    if (layout.getMainOutputChannelSet() != juce::AudioChannelSet::stereo()
+        || !layout.getMainInputChannelSet().isDisabled()
+        || layout.outputBuses.size() != 2)
+        return false;
+
+    const auto second = layout.outputBuses[1];
+    return second.isDisabled() || second == juce::AudioChannelSet::stereo();
+}
+
+bool LautFunkPlaylistProcessor::isAuxOutputEnabled() const noexcept
+{
+    if (const auto* auxBus = getBus(false, 1))
+        return auxBus->isEnabled() && auxBus->getNumberOfChannels() == 2;
+    return false;
+}
+
+bool LautFunkPlaylistProcessor::setSeparateOutputs(bool separate)
+{
+    if (!separate)
+    {
+        // Always switch the actual audio mixer to stereo FIRST. Even if the
+        // host will not disable the auxiliary bus, both signals stay audible
+        // on the main bus.
+        separateOutputs.store(false, std::memory_order_release);
+        if (auto* auxBus = getBus(false, 1))
+            auxBus->enable(false);
+        ++revision;
+        return true;
+    }
+
+    auto* auxBus = getBus(false, 1);
+    if (auxBus == nullptr)
+        return false;
+
+    // The host may reject the change. Never enable split mixing unless the
+    // extra stereo bus is actually available and enabled.
+    if (!auxBus->isEnabled() && !auxBus->enable(true))
+        return false;
+    if (!isAuxOutputEnabled())
+        return false;
+
+    separateOutputs.store(true, std::memory_order_release);
+    ++revision;
+    return true;
+}
+
+juce::String LautFunkPlaylistProcessor::getRoutingStatus() const
+{
+    if (!getSeparateOutputs()) return "Stereo-Mix: Musik + Samples -> Out 1/2";
+    if (!isAuxOutputEnabled()) return "Stereo-Fallback: Aux-Ausgang nicht verfuegbar";
+    return "Getrennt: Musik 1/2 | Soundboard 3/4 (Host-Routing pruefen)";
 }
 
 void LautFunkPlaylistProcessor::prepareToPlay(double sampleRate, int blockSize)
@@ -78,11 +129,17 @@ void LautFunkPlaylistProcessor::processBlock(juce::AudioBuffer<float>& buffer, j
     for (const auto event : midi)
         handleMidiMessage(event.getMessage());
     midi.clear();
-    buffer.clear(); // Instrument: generate audio rather than pass the track's input.
+    buffer.clear(); // Instrument: always overwrite every output bus.
     if (buffer.getNumChannels() < 2 || buffer.getNumSamples() == 0)
         return;
 
-    juce::AudioSourceChannelInfo output(&buffer, 0, buffer.getNumSamples());
+    // The main bus is always stereo. The additional bus is optional and
+    // disabled by default. JUCE resolves actual bus channel offsets for us.
+    auto mainOut = getBusBuffer(buffer, false, 0);
+    if (mainOut.getNumChannels() != 2)
+        return;
+
+    juce::AudioSourceChannelInfo output(&mainOut, 0, mainOut.getNumSamples());
     transport.getNextAudioBlock(output);
 
     gain.setTargetValue(juce::Decibels::decibelsToGain(volumeParam->get()));
@@ -101,16 +158,31 @@ void LautFunkPlaylistProcessor::processBlock(juce::AudioBuffer<float>& buffer, j
         duckGain.setTargetValue(juce::Decibels::decibelsToGain(-duckDepthParam->get()));
     }
     duckingActive.store(shouldDuck, std::memory_order_relaxed);
-    auto* left = buffer.getWritePointer(0);
-    auto* right = buffer.getWritePointer(1);
-    for (int i = 0; i < buffer.getNumSamples(); ++i)
+    auto* left = mainOut.getWritePointer(0);
+    auto* right = mainOut.getWritePointer(1);
+    for (int i = 0; i < mainOut.getNumSamples(); ++i)
     {
         const float g = gain.getNextValue() * duckGain.getNextValue();
         left[i] *= g;
         right[i] *= g;
     }
-    // Independent samples are mixed after playlist volume processing.
-    soundboard.mixInto(buffer, soundboardScratch);
+
+    // If the DAW has not enabled output bus 2, NEVER discard samples.
+    // An enabled JUCE bus does not prove that the DAW has mapped it to a
+    // physical output or track; the GUI explicitly warns about this.
+    const bool trySeparate = separateOutputs.load(std::memory_order_acquire)
+                             && isAuxOutputEnabled()
+                             && buffer.getNumChannels() >= 4;
+    if (trySeparate)
+    {
+        auto samplesOut = getBusBuffer(buffer, false, 1);
+        if (samplesOut.getNumChannels() == 2)
+        {
+            soundboard.mixInto(samplesOut, soundboardScratch);
+            return;
+        }
+    }
+    soundboard.mixInto(mainOut, soundboardScratch);
 }
 
 juce::AudioProcessorEditor* LautFunkPlaylistProcessor::createEditor()
@@ -566,6 +638,7 @@ void LautFunkPlaylistProcessor::getStateInformation(juce::MemoryBlock& dest)
     root.setProperty("duckRelease", duckReleaseParam->get(), nullptr);
     root.setProperty("oscEnabled", oscControl.isEnabled(), nullptr);
     root.setProperty("oscPort", oscControl.getPort(), nullptr);
+    root.setProperty("separateOutputs", separateOutputs.load(), nullptr);
     root.addChild(soundboard.saveState(), -1, nullptr);
     if (auto xml = root.createXml())
         juce::AudioProcessor::copyXmlToBinary(*xml, dest);
@@ -633,6 +706,7 @@ void LautFunkPlaylistProcessor::handleAsyncUpdate()
     // Restored only on the message thread, after host state callbacks.
     oscControl.setEnabled(static_cast<bool>(state.getProperty("oscEnabled", false)),
                           static_cast<int>(state.getProperty("oscPort", 9001)));
+    setSeparateOutputs(static_cast<bool>(state.getProperty("separateOutputs", false)));
     const auto savedGain = juce::jlimit(-60.0f, 6.0f, (float) state.getProperty("volume", -12.0f));
     volumeParam->setValueNotifyingHost(volumeParam->convertTo0to1(savedGain));
     if (getCurrentIndex() >= 0)
