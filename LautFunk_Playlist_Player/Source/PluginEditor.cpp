@@ -100,7 +100,7 @@ LautFunkPlaylistEditor::LautFunkPlaylistEditor(LautFunkPlaylistProcessor& p)
     timeLabel.setJustificationType(juce::Justification::centredRight);
     timeLabel.setColour(juce::Label::textColourId, muted);
     statusLabel.setColour(juce::Label::textColourId, muted);
-    gainLabel.setText("LAUTSTÄRKE", juce::dontSendNotification);
+    gainLabel.setText(juce::String::fromUTF8("LAUTST\xC3\x84""RKE"), juce::dontSendNotification);
     gainLabel.setColour(juce::Label::textColourId, muted);
     playlistStats.setFont(juce::FontOptions(14.0f).withStyle("Bold"));
     repeatStatus.setJustificationType(juce::Justification::centredRight);
@@ -175,7 +175,7 @@ LautFunkPlaylistEditor::LautFunkPlaylistEditor(LautFunkPlaylistProcessor& p)
     {
         auto& b = padButtons[(size_t)i];
         setActionButtonStyle(b);
-        b.setTooltip("Linksklick: One-Shot starten | Rechtsklick: Menü / Einstellungen");
+        b.setTooltip(juce::String::fromUTF8("Linksklick: One-Shot starten | Rechtsklick: Men\xC3\xBC"" / Einstellungen"));
         b.onClick = [this, i] {
             const int slot = visiblePadToSlot(i);
             selectPad(slot);
@@ -529,7 +529,7 @@ void LautFunkPlaylistEditor::paintListBoxItem(int row, juce::Graphics& g,
                width - 166, 0, 70, height, juce::Justification::centredRight);
     const double sec = juce::isPositiveAndBelow(row, snapshotDurations.size()) ? snapshotDurations[row] : -1.0;
     g.setFont(juce::FontOptions(12.0f));
-    g.drawText(sec >= 0.0 ? secondsToText(sec) : (sec < -1.5 ? "--:--" : "…"),
+    g.drawText(sec >= 0.0 ? secondsToText(sec) : (sec < -1.5 ? "--:--" : juce::String::fromUTF8("\xE2\x80\xA6""")),
                width - 95, 0, 85, height, juce::Justification::centredRight);
 }
 
@@ -590,7 +590,7 @@ void LautFunkPlaylistEditor::updateControls()
     }
     const auto files = processor.getTrackFiles();
     const auto name = juce::isPositiveAndBelow(index, files.size())
-        ? files[index].getFileNameWithoutExtension() : "Keine Datei ausgewählt";
+        ? files[index].getFileNameWithoutExtension() : juce::String::fromUTF8("Keine Datei ausgew\xC3\xA4""hlt");
     nowPlaying.setText(name, juce::dontSendNotification);
     nowPlaying.setTooltip(name);
     const double duration = processor.getLength();
@@ -613,7 +613,7 @@ void LautFunkPlaylistEditor::updateControls()
     playlistStats.setText(line, juce::dontSendNotification);
     const auto repeat = processor.getRepeatMode();
     const bool endless = repeat == LautFunkPlaylistProcessor::RepeatMode::all;
-    repeatStatus.setText(endless ? "BIS NÄCHSTER DURCHLAUF" :
+    repeatStatus.setText(endless ? juce::String::fromUTF8("BIS N\xC3\x84""CHSTER DURCHLAUF") :
                          repeat == LautFunkPlaylistProcessor::RepeatMode::one ? "1 TITEL WIEDERHOLEN" :
                          "BIS PLAYLIST-ENDE", juce::dontSendNotification);
     repeatStatus.setColour(juce::Label::textColourId, endless ? teal : muted);
@@ -621,7 +621,7 @@ void LautFunkPlaylistEditor::updateControls()
 
 void LautFunkPlaylistEditor::chooseFiles()
 {
-    chooser = std::make_unique<juce::FileChooser>("MP3/WAV zur Playlist hinzufügen", juce::File{}, "*.mp3;*.wav");
+    chooser = std::make_unique<juce::FileChooser>(juce::String::fromUTF8("MP3/WAV zur Playlist hinzuf\xC3\xBC""gen"), juce::File{}, "*.mp3;*.wav");
     const juce::Component::SafePointer<LautFunkPlaylistEditor> safe(this);
     chooser->launchAsync(juce::FileBrowserComponent::openMode
         | juce::FileBrowserComponent::canSelectMultipleItems
@@ -632,7 +632,7 @@ void LautFunkPlaylistEditor::chooseFiles()
 void LautFunkPlaylistEditor::choosePlaylist(bool importing)
 {
     chooser = std::make_unique<juce::FileChooser>(
-        importing ? "Playlist öffnen" : "Playlist speichern",
+        importing ? juce::String::fromUTF8("Playlist \xC3\xB6""ffnen") : "Playlist speichern",
         juce::File::getSpecialLocation(juce::File::userDocumentsDirectory), "*.m3u8");
     const juce::Component::SafePointer<LautFunkPlaylistEditor> safe(this);
     chooser->launchAsync(importing
@@ -700,15 +700,15 @@ void LautFunkPlaylistEditor::updateBoard()
         juce::String title = pad.name.isNotEmpty() ? pad.name : pad.file.getFileNameWithoutExtension();
         if (title.isEmpty()) title = "[Leer]";
         title = juce::String(slot + 1).paddedLeft('0', 2) + "  " + title;
-        if (active) title += "   ▶";
+        if (active) title += juce::String::fromUTF8("   \xE2\x96\xB6""");
         button.setButtonText(title);
         button.setColour(juce::TextButton::buttonColourId,
                          active ? juce::Colour(0xff235751) : slot == selectedPad ? juce::Colour(0xff294858) : panelBright);
         button.setColour(juce::TextButton::textColourOffId, active ? teal : white);
         button.setTooltip(pad.file.getFullPathName().isNotEmpty() ? pad.file.getFullPathName() : "Rechtsklick zum Laden");
     }
-    bankStatus.setText("Bank " + juce::String(currentBankId) + " · Seite "
-        + juce::String(padCount == 24 ? 1 : padPage + 1) + " · "
+    bankStatus.setText("Bank " + juce::String(currentBankId) + juce::String::fromUTF8(" \xC2\xB7"" Seite ")
+        + juce::String(padCount == 24 ? 1 : padPage + 1) + juce::String::fromUTF8(" \xC2\xB7"" ")
         + juce::String(processor.getSoundboard().activeCount()) + " aktiv",
         juce::dontSendNotification);
     prevPage.setEnabled(padCount == 12 && padPage != 0);
@@ -835,13 +835,13 @@ void LautFunkPlaylistEditor::configureOscFromUi()
     oscEnabledButton.setToggleState(osc.isEnabled(), juce::dontSendNotification);
     oscStatusLabel.setText(osc.getStatus(), juce::dontSendNotification);
     if (!success)
-        oscStatusLabel.setTooltip("Port ist möglicherweise bereits von einer anderen Plugin-Instanz belegt.");
+        oscStatusLabel.setTooltip(juce::String::fromUTF8("Port ist m\xC3\xB6""glicherweise bereits von einer anderen Plugin-Instanz belegt."));
 }
 
 void LautFunkPlaylistEditor::chooseSampleFolder()
 {
     chooser = std::make_unique<juce::FileChooser>(
-        "Ordner mit Soundboard-Samples auswählen",
+        juce::String::fromUTF8("Ordner mit Soundboard-Samples ausw\xC3\xA4""hlen"),
         juce::File::getSpecialLocation(juce::File::userMusicDirectory));
     const juce::Component::SafePointer<LautFunkPlaylistEditor> safe(this);
     chooser->launchAsync(juce::FileBrowserComponent::openMode |
@@ -919,7 +919,7 @@ void LautFunkPlaylistEditor::importSamplesFromFolder(const juce::File& folder)
     juce::AlertWindow::showMessageBoxAsync(
         juce::MessageBoxIconType::InfoIcon, "Soundboard-Import",
         juce::String(filled) + " Samples importiert. " +
-        juce::String(created) + " zusätzliche Soundbank(en) angelegt.");
+        juce::String(created) + juce::String::fromUTF8(" zus\xC3\xA4""tzliche Soundbank(en) angelegt."));
 }
 
 bool LautFunkPlaylistEditor::keyPressed(const juce::KeyPress& key)
