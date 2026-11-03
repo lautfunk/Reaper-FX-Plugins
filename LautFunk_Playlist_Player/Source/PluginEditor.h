@@ -71,7 +71,9 @@ private:
 
     juce::ComboBox bankBox, padViewBox;
     juce::TextEditor bankName;
-    juce::TextButton newBank { "+ Bank" }, deleteBank { "Bank löschen" };
+    // ASCII-only UTF-8 escapes avoid mojibake on Windows source-code code pages.
+    juce::TextButton newBank { "+ Bank" },
+                     deleteBank { juce::String::fromUTF8("Bank l\\xC3\\xB6schen") };
     std::array<PadButton, 24> padButtons;
     juce::TextButton prevPage { "< Seite" }, nextPage { "Seite >" },
                      stopAllButton { "STOP ALL" }, fadeAllButton { "FADE ALL" },
