@@ -2,7 +2,13 @@
 
 Dieses Changelog unterscheidet bereits veröffentlichte Fassungen von Entwicklungsständen. Ein erfolgreicher CI-Build ist keine öffentliche Freigabe.
 
-## [2.3.0-rc1] – Release-Kandidat mit finalem Produktnamen, noch nicht offiziell veröffentlicht
+## [2.3.0] – stabile Veröffentlichung
+
+- Getestete Playlist-/Soundboard-Funktionen, optionale Ausgangsbusse, MIDI und OSC.
+- Windows-x64- und macOS-Universal-VST3, deutsche Dokumentation, vollständiger Quellcode und MIT-Lizenz.
+- Endgültige Plugin-ID für zukünftige Updates; frühere Entwicklerfassungen bleiben eigenständige Plugins.
+
+## [2.3.0-rc1] – geprüfter Release-Kandidat
 
 - VST3 mit künftig dauerhaftem Produktnamen `LautFunk Playlist Player & Soundboard` und eigener Plugin-ID vorbereitet.
 - Veröffentlichungs-Pakete mit deutscher Anleitung, Versionshistorie, MIT-Lizenz und SHA-256-Prüfsummen vorgesehen.
