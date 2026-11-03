@@ -34,7 +34,7 @@ Bisher haben die DEV-Fassungen unterschiedliche VST3-Plugin-IDs und Namen, damit
 Empfohlener Name: **LautFunk Playlist Player & Soundboard**
 Vorgeschlagener erster Release-Tag der neuen Produktlinie: **`playlist-soundboard-v2.3.0`**.
 
-Die Release-Kandidaten nutzen bereits den final vorgesehenen VST3-Namen. Eine öffentliche GitHub-Release-Seite wurde noch nicht veröffentlicht. Vor dem finalen Tag ist ein Funktionstest der neuen Plugin-ID erforderlich.
+Die Release-Kandidaten nutzen bereits den final vorgesehenen VST3-Namen. Die finale Plugin-ID wurde vom Betreiber in REAPER getestet. Beim Release werden der Tag und die beiden Downloadpakete automatisch aus genau demselben Commit erstellt.
 
 ## 4. Release-Pakete
 
