@@ -48,6 +48,7 @@ private:
     void updateSelectedPad(std::function<void(SoundboardEngine::Pad&)> change);
     void applyBankName();
     void chooseBankFile(bool importing);
+    void configureOscFromUi();
     void chooseSampleFolder();
     void importSamplesFromFolder(const juce::File& folder);
     bool keyPressed(const juce::KeyPress&) override;
@@ -87,6 +88,9 @@ private:
     juce::ToggleButton loopPad { "Loop" };
     juce::Slider padGain, padFade, duckDepthSlider, duckAttackSlider, duckReleaseSlider;
     juce::ToggleButton duckEnabledButton { "Musik-Ducking" };
+    juce::ToggleButton oscEnabledButton { "OSC lokal" };
+    juce::TextEditor oscPortEditor;
+    juce::Label oscStatusLabel;
     juce::Label bankStatus, padDetails;
 
     std::unique_ptr<juce::FileChooser> chooser;
