@@ -73,6 +73,12 @@ public:
     void setMidiBank(int bankId);
     void selectMidiBankRelative(int direction);
     bool isDucking() const { return duckingActive.load(); }
+    // Safe fallback: when the host cannot enable output 3/4, stay in
+    // the ordinary stereo mix. Call from the JUCE message thread only.
+    bool setSeparateOutputs(bool separate);
+    bool getSeparateOutputs() const noexcept { return separateOutputs.load(); }
+    bool isAuxOutputEnabled() const noexcept;
+    juce::String getRoutingStatus() const;
     juce::AudioParameterBool* duckEnabledParam = nullptr;
     juce::AudioParameterFloat* duckDepthParam = nullptr;
     juce::AudioParameterFloat* duckAttackParam = nullptr;
@@ -109,6 +115,7 @@ private:
     void handleMidiMessage(const juce::MidiMessage& message) noexcept;
     std::atomic<int> midiBankId { 1 };
     std::atomic<bool> duckingActive { false };
+    std::atomic<bool> separateOutputs { false };
     juce::SmoothedValue<float, juce::ValueSmoothingTypes::Linear> duckGain;
     double hostRate = 48000.0;
     bool duckTargetActive = false;
