@@ -29,7 +29,7 @@ private:
     void stop();
 
     LautFunkPlaylistProcessor& processor;
-    juce::DatagramSocket socket { false };
+    std::unique_ptr<juce::DatagramSocket> socket;
     juce::OSCReceiver receiver { "LautFunk OSC localhost" };
     bool enabled = false;
     int port = 9001;
