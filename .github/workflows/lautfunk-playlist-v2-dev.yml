@@ -41,15 +41,15 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Windows-VST3 als ZIP packen
         run: |
-          $bundle = Join-Path "$env:PROJECT_DIR/build-ci-win/LautFunkPlaylistPlayer_artefacts/Release/VST3" 'LautFunk Playlist Soundboard DEV.vst3'
+          $bundle = Join-Path "$env:PROJECT_DIR/build-ci-win/LautFunkPlaylistPlayer_artefacts/Release/VST3" 'LautFunk Playlist Soundboard LIVE DEV.vst3'
           if (-not (Test-Path -LiteralPath $bundle)) { throw "VST3-Ordner fehlt: $bundle" }
           New-Item -ItemType Directory -Force -Path dist | Out-Null
-          Compress-Archive -LiteralPath $bundle -DestinationPath 'dist/LautFunk-Playlist-Soundboard-v2.0-DEV-Windows-x64.zip' -Force
-          if (-not (Test-Path 'dist/LautFunk-Playlist-Soundboard-v2.0-DEV-Windows-x64.zip')) { throw 'ZIP wurde nicht erstellt' }
+          Compress-Archive -LiteralPath $bundle -DestinationPath 'dist/LautFunk-Playlist-Soundboard-v2.1-LIVE-DEV-Windows-x64.zip' -Force
+          if (-not (Test-Path 'dist/LautFunk-Playlist-Soundboard-v2.1-LIVE-DEV-Windows-x64.zip')) { throw 'ZIP wurde nicht erstellt' }
       - uses: actions/upload-artifact@v4
         with:
-          name: playlist-v2-dev-windows-x64
-          path: dist/LautFunk-Playlist-Soundboard-v2.0-DEV-Windows-x64.zip
+          name: playlist-v2-live-dev-windows-x64
+          path: dist/LautFunk-Playlist-Soundboard-v2.1-LIVE-DEV-Windows-x64.zip
           if-no-files-found: error
           retention-days: 14
 
@@ -74,9 +74,9 @@ jobs:
       - name: Beide Architekturen validieren und ZIP packen
         shell: bash
         run: |
-          bundle="$PROJECT_DIR/build-ci-mac/LautFunkPlaylistPlayer_artefacts/Release/VST3/LautFunk Playlist Soundboard DEV.vst3"
+          bundle="$PROJECT_DIR/build-ci-mac/LautFunkPlaylistPlayer_artefacts/Release/VST3/LautFunk Playlist Soundboard LIVE DEV.vst3"
           test -d "$bundle"
-          binary="$bundle/Contents/MacOS/LautFunk Playlist Soundboard DEV"
+          binary="$bundle/Contents/MacOS/LautFunk Playlist Soundboard LIVE DEV"
           test -f "$binary"
           lipo -info "$binary"
           lipo -archs "$binary" | grep -qw arm64
@@ -85,11 +85,11 @@ jobs:
           codesign --force --deep --sign - --timestamp=none "$bundle"
           mkdir -p dist
           ditto -c -k --sequesterRsrc --keepParent "$bundle" \
-            'dist/LautFunk-Playlist-Soundboard-v2.0-DEV-macOS-Universal.zip'
-          test -s 'dist/LautFunk-Playlist-Soundboard-v2.0-DEV-macOS-Universal.zip'
+            'dist/LautFunk-Playlist-Soundboard-v2.1-LIVE-DEV-macOS-Universal.zip'
+          test -s 'dist/LautFunk-Playlist-Soundboard-v2.1-LIVE-DEV-macOS-Universal.zip'
       - uses: actions/upload-artifact@v4
         with:
-          name: playlist-v2-dev-macos-universal
-          path: dist/LautFunk-Playlist-Soundboard-v2.0-DEV-macOS-Universal.zip
+          name: playlist-v2-live-dev-macos-universal
+          path: dist/LautFunk-Playlist-Soundboard-v2.1-LIVE-DEV-macOS-Universal.zip
           if-no-files-found: error
           retention-days: 14
