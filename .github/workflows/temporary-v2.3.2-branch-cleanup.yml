@@ -28,7 +28,7 @@ jobs:
             echo "::error::Release tag moved; no branches deleted."
             exit 1
           fi
-          gh release view "$official_tag" --json isDraft,isPrerelease --jq '.isDraft == false and .isPrerelease == false' | grep -Fxq true
+          gh release view "$official_tag" --repo "$GITHUB_REPOSITORY" --json isDraft,isPrerelease --jq '.isDraft == false and .isPrerelease == false' | grep -Fxq true
 
           # Validate both exact ref SHAs before any branch is deleted.
           for branch in "fix/playlist-utf8-text-v2.3.2" "release/playlist-soundboard-v2.3.2-utf8"; do
