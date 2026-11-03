@@ -1,6 +1,7 @@
 #pragma once
 #include <JuceHeader.h>
 #include <atomic>
+#include "SoundboardEngine.h"
 
 class LautFunkPlaylistProcessor final : public juce::AudioProcessor,
                                           private juce::Timer,
@@ -55,6 +56,16 @@ public:
         double knownSeconds = 0.0;
     };
 
+    struct RemainingTime
+    {
+        double seconds = 0.0;
+        double progress = 0.0;
+        bool approximate = false;
+    };
+    RemainingTime getRemainingTime() const;
+    SoundboardEngine& getSoundboard() { return soundboard; }
+    const SoundboardEngine& getSoundboard() const { return soundboard; }
+
     juce::Array<juce::File> getTrackFiles() const;
     juce::Array<double> getTrackDurations() const;
     PlaylistStats getPlaylistStats() const;
@@ -88,9 +99,11 @@ private:
 
     juce::AudioFormatManager formats;
     juce::TimeSliceThread readerThread { "LautFunk Playlist Streaming" };
+    SoundboardEngine soundboard;
     juce::AudioTransportSource transport;
     std::unique_ptr<juce::AudioFormatReaderSource> fileSource;
     juce::SmoothedValue<float, juce::ValueSmoothingTypes::Linear> gain;
+    juce::AudioBuffer<float> soundboardScratch;
 
     juce::CriticalSection pendingLock;
     juce::ValueTree pendingState;

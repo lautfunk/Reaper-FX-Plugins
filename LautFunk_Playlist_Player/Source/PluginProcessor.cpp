@@ -2,7 +2,8 @@
 #include "PluginEditor.h"
 
 LautFunkPlaylistProcessor::LautFunkPlaylistProcessor()
-  : juce::AudioProcessor(BusesProperties().withOutput("Stereo Out", juce::AudioChannelSet::stereo(), true))
+  : juce::AudioProcessor(BusesProperties().withOutput("Stereo Out", juce::AudioChannelSet::stereo(), true)),
+    soundboard(formats, readerThread)
 {
     volumeParam = new juce::AudioParameterFloat(
         juce::ParameterID { "volume", 1 }, "Player Volume (dB)",
@@ -21,6 +22,7 @@ LautFunkPlaylistProcessor::~LautFunkPlaylistProcessor()
     transport.stop();
     transport.setSource(nullptr);
     fileSource.reset();
+    soundboard.release();
     readerThread.stopThread(2000);
 }
 
@@ -35,11 +37,14 @@ void LautFunkPlaylistProcessor::prepareToPlay(double sampleRate, int blockSize)
     transport.prepareToPlay(blockSize, sampleRate);
     gain.reset(sampleRate, 0.025);
     gain.setCurrentAndTargetValue(juce::Decibels::decibelsToGain(volumeParam->get()));
+    soundboardScratch.setSize(2, juce::jmax(8192, blockSize));
+    soundboard.prepare(sampleRate, blockSize);
 }
 
 void LautFunkPlaylistProcessor::releaseResources()
 {
     transport.releaseResources();
+    soundboard.release();
 }
 
 void LautFunkPlaylistProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midi)
@@ -62,6 +67,8 @@ void LautFunkPlaylistProcessor::processBlock(juce::AudioBuffer<float>& buffer, j
         left[i] *= g;
         right[i] *= g;
     }
+    // Independent samples are mixed after playlist volume processing.
+    soundboard.mixInto(buffer, soundboardScratch);
 }
 
 juce::AudioProcessorEditor* LautFunkPlaylistProcessor::createEditor()
@@ -93,6 +100,37 @@ LautFunkPlaylistProcessor::PlaylistStats LautFunkPlaylistProcessor::getPlaylistS
         else ++result.unavailableDurations;
     }
     return result;
+}
+
+LautFunkPlaylistProcessor::RemainingTime LautFunkPlaylistProcessor::getRemainingTime() const
+{
+    RemainingTime out;
+    const double pos = transport.getCurrentPosition();
+    const juce::ScopedLock l(playlistLock);
+    if (tracks.isEmpty() || currentIndex < 0 || currentIndex >= tracks.size()) return out;
+    double total = 0.0;
+    for (double seconds : trackDurations)
+    {
+        if (seconds >= 0.0) total += seconds;
+        else out.approximate = true;
+    }
+    const double thisDuration = trackDurations[currentIndex];
+    if (thisDuration >= 0.0) out.seconds = juce::jmax(0.0, thisDuration - pos);
+    else { out.seconds = juce::jmax(0.0, transport.getLengthInSeconds() - pos); out.approximate = true; }
+
+    if (repeatMode != RepeatMode::one)
+    {
+        for (int i = 0; i < trackDurations.size(); ++i)
+        {
+            if (i == currentIndex) continue;
+            const bool pending = shuffle ? !playedShuffleIndices.contains(i) : i > currentIndex;
+            if (pending && trackDurations[i] >= 0.0) out.seconds += trackDurations[i];
+            else if (pending && trackDurations[i] < 0.0) out.approximate = true;
+        }
+    }
+    // In shuffle mode only the current cycle is considered, not the next loop.
+    if (total > 0.0) out.progress = juce::jlimit(0.0, 1.0, 1.0 - out.seconds / total);
+    return out;
 }
 
 int LautFunkPlaylistProcessor::getCurrentIndex() const
@@ -346,6 +384,7 @@ void LautFunkPlaylistProcessor::advanceAtEnd()
 
 void LautFunkPlaylistProcessor::timerCallback()
 {
+    soundboard.timerTick();
     if (playingWanted.load() && transport.hasStreamFinished())
         advanceAtEnd();
 
@@ -477,6 +516,7 @@ void LautFunkPlaylistProcessor::getStateInformation(juce::MemoryBlock& dest)
         }
     }
     root.setProperty("volume", volumeParam->get(), nullptr);
+    root.addChild(soundboard.saveState(), -1, nullptr);
     if (auto xml = root.createXml())
         juce::AudioProcessor::copyXmlToBinary(*xml, dest);
 }
@@ -525,6 +565,8 @@ void LautFunkPlaylistProcessor::handleAsyncUpdate()
         repeatMode = static_cast<RepeatMode>(juce::jlimit(0, 2, (int) state.getProperty("repeat", 1)));
         shuffle = (bool) state.getProperty("shuffle", false);
     }
+    auto sb = state.getChildWithName("Soundboard");
+    if (sb.isValid()) soundboard.loadState(sb);
     const auto savedGain = juce::jlimit(-60.0f, 6.0f, (float) state.getProperty("volume", -12.0f));
     volumeParam->setValueNotifyingHost(volumeParam->convertTo0to1(savedGain));
     if (getCurrentIndex() >= 0)
