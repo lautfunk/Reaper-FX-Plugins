@@ -823,7 +823,7 @@ bool LautFunkPlaylistEditor::keyPressed(const juce::KeyPress& key)
     { processor.selectMidiBankRelative(1); updateBoard(); return true; }
     if (code == juce::KeyPress::escapeKey)
     { processor.getSoundboard().stopAll(false); return true; }
-    const int mapped = juce::String("1234567890-=").indexOfChar(static_cast<juce::juce_wchar>(code));
+    const int mapped = juce::String("1234567890-=").indexOfChar(code);
     if (mapped >= 0)
     {
         const int slot = padCount == 12 ? padPage * 12 + mapped : mapped;
