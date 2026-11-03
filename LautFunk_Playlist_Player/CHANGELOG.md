@@ -2,6 +2,14 @@
 
 Dieses Changelog unterscheidet bereits veröffentlichte Fassungen von Entwicklungsständen. Ein erfolgreicher CI-Build ist keine öffentliche Freigabe.
 
+## [2.3.2] – Korrektur der Zeichenkodierung in der Plugin-Oberfläche
+
+- Behoben: Bei Beschriftungen mit Umlauten, etwa **LAUTSTÄRKE**, wurden statt Ä/ä/ö/ü teilweise **Ã** und ein Kästchen angezeigt.
+- Alle **17 betroffenen Unicode-Textliterale** in `PluginEditor.cpp`, `PluginProcessor.cpp` und `OscControl.cpp` explizit als UTF-8 mit compilerunabhängigen Byte-Escapes an `juce::String::fromUTF8` übergeben.
+- Ein automatisierter UTF-8-Regressionstest überwacht Sonderzeichen, Textbeschriftungen und Symbole auf beiden Plattformen.
+- **Keine Änderung an DSP, Audio-Routing, MIDI, OSC oder Plugin-ID.** Die stabile VST3-ID `LfS3` bleibt wie in v2.3.0 und v2.3.1.
+- Windows x64 und macOS Universal weiterhin mit MIT-Lizenz und Original-Ultraschall-Herkunftshinweisen im ZIP.
+
 ## [2.3.1] – Wartungsrelease: Herkunft und Dokumentation
 
 - **Kein neuer Funktionsumfang und keine Änderungen an den Audio-Algorithmen.** Weiterhin dieselbe VST3-Plugin-ID `LfS3` wie bei v2.3.0.
