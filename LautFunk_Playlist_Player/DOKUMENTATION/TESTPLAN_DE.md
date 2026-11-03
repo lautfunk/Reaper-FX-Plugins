@@ -1,13 +1,13 @@
-# Testplan – v2.3 Routing Release Candidate
+# Testplan – stabile v2.3-Produktlinie (v2.3.1)
 
-**Nur einen Release-Kandidaten nach bestandenen Praxisprüfungen veröffentlichen.** Ein grüner GitHub-Actions-Build ist ein Kompilierungstest, kein Funktions- oder Sicherheitstest.
+Die v2.3.0-Funktionen wurden vom Projektbetreiber in REAPER getestet und freigegeben. **v2.3.1 enthält nur Versions-, Dokumentations- und Paketänderungen; die Audio-Algorithmen und die Plugin-ID bleiben unverändert.** Ein grüner GitHub-Actions-Build bestätigt die Kompilierung und die verpackten Dateien, aber nicht alle Praxis- oder Sicherheitsfälle. Die nachfolgende Liste ist ein wiederverwendbarer Prüfplan; nicht abgehakte Punkte sind keine behaupteten abgeschlossenen Tests.
 
 ## A. Automatisierte Builds
 
 - [ ] Windows x64 mit Visual Studio 2022 und JUCE 9.0.4 kompiliert.
 - [ ] macOS Universal kompiliert; `lipo` bestätigt `arm64` und `x86_64`.
 - [ ] Beide VST3-ZIP-Dateien als CI-Artefakte vorhanden.
-- [ ] Artefakte enthalten ausschließlich die erwarteten VST3-Bundles.
+- [ ] ZIP-Dateien enthalten das erwartete VST3-Bundle und die dokumentierten Lizenz-, Herkunfts- und Handbuchdateien.
 - [ ] Versionsname und Plugin-ID sind passend zur geplanten Freigabe.
 - [ ] SHA256-Prüfsummen der Freigabe-Dateien dokumentiert.
 
@@ -86,10 +86,10 @@
 
 - [ ] JUCE-9-Starter-Lizenz berechtigt alle tatsächlichen JUCE-Framework-Entwickler.
 - [x] MIT-Lizenz für eigenen LautFunk-Code vom Betreiber bestätigt; vollständige `LICENSE` im Plugin-Verzeichnis vorhanden.
-- [ ] Von Dritten lizenzierte Bestandteile und Marken überprüft.
+- [ ] `THIRD_PARTY_NOTICES.md` enthält die ursprüngliche MIT-Lizenz des Ultraschall Soundboards einschließlich Copyright (c) 2014–2021 Daniel Lindenfelser; weitere Drittrechte und Marken geprüft.
 - [ ] README, Installation und REAPER-Routing-Anleitung entsprechen dem finalen Binary.
 - [ ] GitHub-Release-Tag und Download-Artefakte passen zu Version und Plugin-ID.
-- [ ] ZIPs und Checksums im GitHub Release hochgeladen.
+- [ ] ZIPs mit `LICENSE`, `THIRD_PARTY_NOTICES.md`, Handbuch und Changelog veröffentlicht; SHA256SUMS.txt auf beide ZIP-Dateien geprüft.
 - [ ] Beim macOS-Paket tatsächlichen Signierungs-/Notarisierungsstand dokumentiert.
 - [ ] Update-/Rückfallanleitung und bekannte Einschränkungen enthalten.
 
