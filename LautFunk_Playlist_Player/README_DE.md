@@ -150,3 +150,60 @@ Diese Tastenkürzel funktionieren nur, wenn REAPER die Tastatureingaben an das P
 ### Einschränkungen
 
 Die neue Live-Erweiterung ist eine **Entwicklungsfassung** und benötigt Praxistests in REAPER. OSC/Stream-Deck-Fernsteuerung, Mikrofon-Sidechain-Ducking, getrennte Audioausgänge und LUFS-Abgleich sind noch nicht implementiert.
+
+---
+
+## v2.2 OSC DEV – Stream Deck / Companion
+
+Diese Entwicklungsfassung baut auf der in REAPER getesteten v2.1 auf. **Der normale Stereo-Mix bleibt Standard.** Es ist weder ein zweiter Ausgang noch besonderes DAW-Routing nötig. Ein optionaler Mehrkanalmodus ist erst für eine spätere Version vorgesehen.
+
+### OSC einschalten
+
+1. Das VST3 **LautFunk Playlist Soundboard OSC DEV** öffnen (eigene Plugin-ID, parallel zu 2.1 installierbar).
+2. Zum Reiter **SOUNDBOARD** wechseln.
+3. Unten **OSC lokal** aktivieren und den UDP-Port auf **9001** lassen, sofern dieser frei ist.
+4. Der Status zeigt **OSC AN: 127.0.0.1:9001** an. Ist der Port belegt, bleibt OSC ausgeschaltet und eine Fehlermeldung erscheint.
+
+OSC ist standardmäßig **ausgeschaltet** und bindet sich ausschließlich an \`127.0.0.1\`. Andere Rechner im Netzwerk können keine Befehle senden. Die aktive Einstellung und der Port werden mit dem REAPER-Projekt gespeichert. Bei mehreren Plugin-Instanzen muss jede aktivierte OSC-Instanz einen **eigenen Port** erhalten.
+
+### Bitfocus Companion / Stream Deck
+
+1. **Bitfocus Companion** öffnen und die Verbindung **Generic → OSC** hinzufügen.
+2. Ziel-IP: \`127.0.0.1\`, Ziel-Port: \`9001\`.
+3. Einer Stream-Deck-Taste eine Generic-OSC-Aktion zuweisen.
+4. OSC-Pfad eintragen, z. B. \`/lautfunk/pad/trigger\`, und als **Integer** den Wert \`1\` senden (Pad 1). Die meisten Aktionen benötigen keine Argumente.
+
+**Wichtig:** Es geht um eine *ausgehende* OSC-Aktion von Companion zum Player. Ein eventuell vorhandener OSC-**Empfangsport von Companion selbst** ist dafür nicht erforderlich. Stream Deck spricht über Companion mit dem VST3.
+
+### OSC-Befehle
+
+| OSC-Pfad | Argument | Aktion |
+|---|---|---|
+| \`/lautfunk/pad/trigger\` | Integer 1–24 | Pad der aktiven Bank starten |
+| \`/lautfunk/pad/stop\` | Integer 1–24 | Pad sofort stoppen |
+| \`/lautfunk/pad/fade\` | Integer 1–24 | Pad ausblenden |
+| \`/lautfunk/bank/next\` | keines | Nächste Soundbank |
+| \`/lautfunk/bank/previous\` | keines | Vorherige Soundbank |
+| \`/lautfunk/bank/select\` | Integer 1…N | Soundbank nach Position auswählen (nicht interne ID) |
+| \`/lautfunk/all/stop\` | keines | Alle Samples stoppen |
+| \`/lautfunk/all/fade\` | keines | Alle Samples ausblenden |
+| \`/lautfunk/playlist/play\` | keines | Playlist starten / fortsetzen |
+| \`/lautfunk/playlist/pause\` | keines | Playlist pausieren |
+| \`/lautfunk/playlist/toggle\` | keines | Play/Pause umschalten |
+| \`/lautfunk/playlist/stop\` | keines | Playlist stoppen |
+| \`/lautfunk/playlist/next\` | keines | Nächster Titel |
+| \`/lautfunk/playlist/previous\` | keines | Vorheriger Titel |
+| \`/lautfunk/duck/enable\` | Integer 0 oder 1 | Ducking aus / ein |
+| \`/lautfunk/duck/depth\` | Float 0.0–30.0 | Absenkung in dB |
+
+Die Padnummern gelten immer für alle 24 Slots, also auch in der 12-Pad-Ansicht. Ein Soundbankwechsel unterbricht laufende Samples nicht.
+
+### Grenzen dieser Entwicklungsfassung
+
+- Nur **lokale OSC-Steuerung** auf demselben Rechner, kein ungeschützter Netzwerkzugriff.
+- Keine OSC-Statusrückmeldungen an Stream-Deck-Tasten (bidirektionales Feedback später).
+- Keine direkte Elgato-Plugin-Integration; Companion mit Generic OSC stellt die Verbindung her.
+- **Kein getrennter Ausgang** in dieser Version; Playlist und Samples bleiben im Stereo-Mix, Ducking funktioniert wie bisher.
+- Mikrofon-Sidechain-Ducking und LUFS-Normalisierung sind ebenfalls noch nicht enthalten.
+- Auch ein grüner CI-Build ersetzt keinen Praxistest unter REAPER oder einer anderen DAW.
+
