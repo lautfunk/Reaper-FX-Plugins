@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.22)
-project(LautFunkPlaylistPlayer VERSION 2.0.0 LANGUAGES C CXX)
+project(LautFunkPlaylistPlayer VERSION 2.1.0 LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -21,10 +21,10 @@ endif()
 juce_add_plugin(LautFunkPlaylistPlayer
     COMPANY_NAME "LautFunk"
     COMPANY_WEBSITE "https://lautfunk.de"
-    BUNDLE_ID "de.lautfunk.playlistplayer.v2dev"
+    BUNDLE_ID "de.lautfunk.playlistplayer.v2live"
     PLUGIN_MANUFACTURER_CODE Laut
-    PLUGIN_CODE LfD2
-    PRODUCT_NAME "LautFunk Playlist Soundboard DEV"
+    PLUGIN_CODE LfL2
+    PRODUCT_NAME "LautFunk Playlist Soundboard LIVE DEV"
     DESCRIPTION "Independent music playlist and live soundboard for REAPER"
     IS_SYNTH TRUE
     NEEDS_MIDI_INPUT TRUE
