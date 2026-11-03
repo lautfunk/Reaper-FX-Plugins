@@ -6,7 +6,7 @@ Die von LautFunk selbst entwickelten Quellen stehen unter der **[MIT-Lizenz](LIC
 
 **Direkt zu den wichtigsten Bereichen:** [Plugin-Übersicht](#enthaltene-plugins) · [Playlist Player & Soundboard](#playlist-soundboard-vst3) · [JSFX-Installation](#installation) · [VST3-Installation](LautFunk_Playlist_Player/DOKUMENTATION/INSTALLATION_DE.md) · [Quellcode und Lizenz](#quellcode-und-lizenz) · [GitHub Releases](https://github.com/lautfunk/Reaper-FX-Plugins/releases)
 
-**Aktuelle Version:** [LautFunk Playlist Player & Soundboard v2.3.1](https://github.com/lautfunk/Reaper-FX-Plugins/releases/tag/playlist-soundboard-v2.3.1) – kostenloses VST3 für Windows x64 und macOS Universal. Dieses Wartungsrelease ergänzt die ursprünglichen Ultraschall-MIT-Lizenztexte auch in den Downloadpaketen; die Audiofunktionen und die stabile Plugin-ID bleiben unverändert. Die frühere [v2.3.0](https://github.com/lautfunk/Reaper-FX-Plugins/releases/tag/playlist-soundboard-v2.3.0) und die ursprüngliche [Playlist v1.0](https://github.com/lautfunk/Reaper-FX-Plugins/releases/tag/playlist-v1.0.0) bleiben verfügbar.
+**Aktuelle Version:** [LautFunk Playlist Player & Soundboard v2.3.2](https://github.com/lautfunk/Reaper-FX-Plugins/releases/tag/playlist-soundboard-v2.3.2) – kostenloses VST3 für Windows x64 und macOS Universal. Diese Wartungsversion korrigiert Umlaut- und Unicode-Zeichen in der Player-Oberfläche (z. B. **LAUTSTÄRKE**); die Audiofunktionen und die stabile Plugin-ID bleiben unverändert. Die ursprünglichen Ultraschall-MIT-Lizenztexte liegen beiden ZIPs bei. Die älteren [v2.3.1](https://github.com/lautfunk/Reaper-FX-Plugins/releases/tag/playlist-soundboard-v2.3.1) und [v2.3.0](https://github.com/lautfunk/Reaper-FX-Plugins/releases/tag/playlist-soundboard-v2.3.0) bleiben verfügbar.
 
 ---
 
@@ -83,7 +83,7 @@ Der Playlist Player & Soundboard vereint eine eigenständig abspielende WAV-/MP3
 
 **Audioausgänge:** Im Normalbetrieb werden Musik und Samples **gemeinsam auf Stereo 1/2** ausgegeben. Der optionale Expertenmodus führt Musik über 1/2 und Samples über 3/4; dafür ist DAW-Mehrkanalrouting erforderlich. Ohne dieses Routing nutzt man weiterhin den Stereo-Mix.
 
-**Versionen:** Die ursprüngliche Playlist-v1.0 ist über [GitHub Releases](https://github.com/lautfunk/Reaper-FX-Plugins/releases/tag/playlist-v1.0.0) verfügbar. Die v2.3 mit Soundboard und separaten Ausgängen wurde in REAPER als Routing-Testfassung erprobt. Die **v2.3.0** wurde in REAPER getestet und veröffentlicht. Das Wartungsrelease **v2.3.1** aktualisiert die Lizenz- und Herkunftsdokumentation in den Downloads – **ohne Audiofunktionsänderungen und mit derselben stabilen Plugin-ID `LfS3`**. Die zwischenzeitlichen Entwicklungsfassungen behalten ihre abweichenden Plugin-IDs und sind **keine automatischen Upgrades** älterer REAPER-Projekte.
+**Versionen:** Die ursprüngliche Playlist-v1.0 ist über [GitHub Releases](https://github.com/lautfunk/Reaper-FX-Plugins/releases/tag/playlist-v1.0.0) verfügbar. Die v2.3 mit Soundboard und separaten Ausgängen wurde in REAPER als Routing-Testfassung erprobt. Die **v2.3.0** wurde in REAPER getestet und veröffentlicht. Die **v2.3.1** aktualisierte die Lizenz-/Herkunftsdokumentation in den Downloads; **v2.3.2** behebt fehlerhaft dargestellte Umlaute und andere Unicode-Zeichen in der GUI. Beide Wartungsversionen behalten die stabile Plugin-ID `LfS3` und die Audiofunktionen unverändert. Die zwischenzeitlichen Entwicklungsfassungen behalten ihre abweichenden Plugin-IDs und sind **keine automatischen Upgrades** älterer REAPER-Projekte.
 
 ### Herkunft und Open-Source-Lizenz
 
@@ -120,7 +120,8 @@ Dokumente: [Benutzerhandbuch](LautFunk_Playlist_Player/README_DE.md) · [Install
 | Playlist Player **v1.0.0** | Veröffentlicht | Windows x64 und macOS Universal als VST3 |
 | Playlist Player & Soundboard **v2.0–v2.2 DEV** | Entwicklungsfassungen | Soundbänke, Ducking, MIDI und OSC schrittweise ergänzt |
 | Playlist Player & Soundboard **v2.3.0** | Vorherige stabile Version | Playlist, Soundboard, getrennte Ausgänge, MIDI und OSC |
-| Playlist Player & Soundboard **v2.3.1** | **Aktuelles Wartungsrelease** | Unveränderte Plugin-ID und Audiofunktionen; Original-Ultraschall-MIT-Lizenz in beiden Downloadpaketen |
+| Playlist Player & Soundboard **v2.3.1** | Vorheriges Wartungsrelease | Original-Ultraschall-MIT-Lizenz in beiden Downloadpaketen |
+| Playlist Player & Soundboard **v2.3.2** | **Aktuelles Wartungsrelease** | Umlaute und Unicode-Symbole korrekt; Audiofunktionen und Plugin-ID unverändert |
 
 **macOS-Hinweis:** Die macOS-Version ist nur ad-hoc signiert und **nicht Apple-notarisiert**. Je nach Systemeinstellungen kann macOS das Laden blockieren oder zusätzliche Freigaben verlangen.
 
