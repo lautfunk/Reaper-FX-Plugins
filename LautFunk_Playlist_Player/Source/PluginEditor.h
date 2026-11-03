@@ -47,6 +47,8 @@ private:
     void assignSample(int slot);
     void updateSelectedPad(std::function<void(SoundboardEngine::Pad&)> change);
     void applyBankName();
+    void chooseBankFile(bool importing);
+    bool keyPressed(const juce::KeyPress&) override;
 
     LautFunkPlaylistProcessor& processor;
     bool showingBoard = false;
@@ -73,14 +75,16 @@ private:
     juce::TextEditor bankName;
     // ASCII-only UTF-8 escapes avoid mojibake on Windows source-code code pages.
     juce::TextButton newBank { "+ Bank" },
-                     deleteBank { juce::String::fromUTF8("Bank l\xC3\xB6schen") };
+                     deleteBank { juce::String::fromUTF8("Bank l\xC3\xB6schen") },
+                     bankFileButton { "Bank-Datei" };
     std::array<PadButton, 24> padButtons;
     juce::TextButton prevPage { "< Seite" }, nextPage { "Seite >" },
                      stopAllButton { "STOP ALL" }, fadeAllButton { "FADE ALL" },
                      loadPadButton { "Sample laden" }, clearPadButton { "Slot leeren" },
                      stopPadButton { "Stop Pad" }, fadePadButton { "Fade Pad" };
     juce::ToggleButton loopPad { "Loop" };
-    juce::Slider padGain, padFade;
+    juce::Slider padGain, padFade, duckDepthSlider, duckAttackSlider, duckReleaseSlider;
+    juce::ToggleButton duckEnabledButton { "Musik-Ducking" };
     juce::Label bankStatus, padDetails;
 
     std::unique_ptr<juce::FileChooser> chooser;
