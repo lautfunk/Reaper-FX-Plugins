@@ -48,6 +48,10 @@ public:
     void stopAll(bool fade);
     bool isPadActive(int bankId, int padIndex) const;
     int activeCount() const;
+    // Fast snapshot check, safe from the audio callback (no file I/O / locks).
+    bool hasActiveVoices() const noexcept;
+    juce::ValueTree exportBank(int bankId) const;
+    int importBank(const juce::ValueTree& bankTree);
     juce::String getLastError() const { return error; }
 
     juce::ValueTree saveState() const;
