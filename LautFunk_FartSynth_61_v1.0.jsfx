@@ -1,4 +1,7 @@
 desc:LautFunk FartSynth 61 v1.0 - Reference Resynthesis Instrument
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 LautFunk contributors
+// See LICENSE in the repository root for permissions and warranty disclaimer.
 tags:instrument synth MIDI resynthesis
 in_pin:none
 out_pin:Left

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.22)
-project(LautFunkPlaylistPlayer VERSION 1.0.0 LANGUAGES C CXX)
+project(LautFunkPlaylistPlayer VERSION 2.3.0 LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -21,13 +21,14 @@ endif()
 juce_add_plugin(LautFunkPlaylistPlayer
     COMPANY_NAME "LautFunk"
     COMPANY_WEBSITE "https://lautfunk.de"
-    BUNDLE_ID "de.lautfunk.playlistplayer"
+    BUNDLE_ID "de.lautfunk.playlistsoundboard"
     PLUGIN_MANUFACTURER_CODE Laut
-    PLUGIN_CODE LfP1
-    PRODUCT_NAME "LautFunk Playlist Player"
-    DESCRIPTION "Playlist sampler for MP3/WAV background music on a REAPER track"
+    PLUGIN_CODE LfS3
+    PLUGIN_NAME "LautFunk Playlist Player & Soundboard"
+    PRODUCT_NAME "LautFunk Playlist Soundboard"
+    DESCRIPTION "Independent music playlist and soundboard with optional routing, MIDI and OSC"
     IS_SYNTH TRUE
-    NEEDS_MIDI_INPUT FALSE
+    NEEDS_MIDI_INPUT TRUE
     NEEDS_MIDI_OUTPUT FALSE
     IS_MIDI_EFFECT FALSE
     EDITOR_WANTS_KEYBOARD_FOCUS TRUE
@@ -40,6 +41,10 @@ juce_generate_juce_header(LautFunkPlaylistPlayer)
 target_sources(LautFunkPlaylistPlayer PRIVATE
     Source/PluginProcessor.cpp
     Source/PluginProcessor.h
+    Source/SoundboardEngine.cpp
+    Source/SoundboardEngine.h
+    Source/OscControl.cpp
+    Source/OscControl.h
     Source/PluginEditor.cpp
     Source/PluginEditor.h)
 
@@ -51,6 +56,7 @@ target_compile_definitions(LautFunkPlaylistPlayer PUBLIC
 
 target_link_libraries(LautFunkPlaylistPlayer PRIVATE
     juce::juce_audio_utils
+    juce::juce_osc
     juce::juce_audio_formats
     juce::juce_audio_processors
     juce::juce_recommended_config_flags

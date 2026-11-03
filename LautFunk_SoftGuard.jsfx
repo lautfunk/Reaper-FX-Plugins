@@ -1,4 +1,7 @@
 desc:LautFunk SoftGuard v1.1 - Voice Leveler + Soft-Knee Limiter
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 LautFunk contributors
+// See LICENSE in the repository root for permissions and warranty disclaimer.
 // LautFunk SoftGuard v1.1 (JSFX; stereo and mono routed as stereo)
 // Speaker: gentle K-weighted approximate active-speech leveler and sample-peak limiter.
 // Master: optional gentle real-time leveling and sample-peak limiter.

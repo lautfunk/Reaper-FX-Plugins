@@ -21,6 +21,6 @@ if errorlevel 1 (
   exit /b 1
 )
 echo.
-echo Fertig. Suche LautFunk Playlist Player.vst3 unter build\LautFunkPlaylistPlayer_artefacts\Release\VST3\.
+echo Fertig. Suche LautFunk Playlist Soundboard.vst3 unter build\LautFunkPlaylistPlayer_artefacts\Release\VST3\.
 echo Kopiere den kompletten .vst3-Ordner nach C:\Program Files\Common Files\VST3\
 pause

@@ -1,18 +1,23 @@
-# LautFunk REAPER FX Plugins
+# LautFunk – Audio-Plugins für REAPER und VST3-Hosts
 
-Kreative und praktische **JSFX- und VST3-Plugins für REAPER** – entwickelt für Podcasts, Hörspiele, Livestreams, Sounddesign, elektronische Musik, experimentelle Audiobearbeitung und die kontrollierte Sprachproduktion.
+**Kostenlose Open-Source-Audiowerkzeuge für Podcasts, Livestreams, Hörspiele, Musikproduktion und Sounddesign.** Das Repository enthält zwei unterschiedliche Plugin-Arten: direkt in REAPER nutzbare **JSFX** sowie den separat installierbaren **Playlist Player & Soundboard (VST3)**.
 
-Einige LautFunk-Plugins verändern, verfremden oder zerstören Audio ganz bewusst. Andere helfen dabei, Sprachpegel anzugleichen und Aufnahmen für die Veröffentlichung vorzubereiten. Dazu gehört **LautFunk SoftGuard** mit seiner sanften Dynamikbearbeitung. Der **LautFunk Playlist Player** ergänzt die Sammlung um ein VST3-Instrument für MP3-/WAV-Playlists auf einer eigenen REAPER-Spur.
+Die von LautFunk selbst entwickelten Quellen stehen unter der **[MIT-Lizenz](LICENSE)**. Sie dürfen verwendet, verändert und weitergegeben werden – auch kommerziell, sofern Lizenz- und Urheberrechtshinweise erhalten bleiben. LautFunk stellt die eigenen Plugins selbst **kostenlos** bereit und erzielt nach eigener Angabe damit **0 € Einnahmen**. Externe Frameworks wie JUCE haben **eigene Lizenzbedingungen**.
 
-**Kaputt darf hier ausdrücklich gut klingen. Sauber und transparent aber genauso.**
+**Direkt zu den wichtigsten Bereichen:** [Plugin-Übersicht](#enthaltene-plugins) · [Playlist Player & Soundboard](#playlist-soundboard-vst3) · [JSFX-Installation](#installation) · [VST3-Installation](LautFunk_Playlist_Player/DOKUMENTATION/INSTALLATION_DE.md) · [Quellcode und Lizenz](#quellcode-und-lizenz) · [GitHub Releases](https://github.com/lautfunk/Reaper-FX-Plugins/releases)
 
-> **Navigation:** Diese README ist umfangreich. Über das Inhaltsverzeichnis kannst du direkt zu jedem Plugin und zu den wichtigsten Unterkapiteln springen.
+**Veröffentlichungsstatus:** Der [Playlist Player v1.0](https://github.com/lautfunk/Reaper-FX-Plugins/releases/tag/playlist-v1.0.0) ist bereits veröffentlicht. Der erweiterte **Playlist Player & Soundboard v2.3.0-rc1** befindet sich derzeit in der Freigabeprüfung; dies ist **noch keine offizielle v2.3-Version**. Die [Release-Kandidaten](https://github.com/lautfunk/Reaper-FX-Plugins/actions) werden als GitHub-Actions-Artefakte bereitgestellt.
+
+---
 
 <a id="inhaltsverzeichnis"></a>
 
 ## Inhaltsverzeichnis
 
 - [Enthaltene Plugins](#enthaltene-plugins)
+- [Playlist Player & Soundboard (VST3)](#playlist-soundboard-vst3)
+- [Quellcode und Lizenz](#quellcode-und-lizenz)
+- [Releases und Versionen](#releases-und-versionen)
 - [LautFunk Digital Glitch](#digital-glitch)
   - [Glitch-Arten](#glitch-arten)
   - [Pitch-Modulation](#glitch-pitch)
@@ -40,23 +45,14 @@ Einige LautFunk-Plugins verändern, verfremden oder zerstören Audio ganz bewuss
   - [Empfohlener Podcast-Workflow](#softguard-workflow)
   - [Installation und Render-Skript](#softguard-installation)
   - [Messung und technische Grenzen](#softguard-grenzen)
-- [LautFunk Playlist Player v1.0 (VST3)](#playlist-player)
-  - [Funktionen und Einsatz](#playlist-player-funktionen)
-  - [Installation unter Windows und macOS](#playlist-player-installation)
-  - [Einrichten in REAPER ohne Aufnahme](#playlist-player-reaper)
-  - [Playlist laden, sortieren und speichern](#playlist-player-playlist)
-  - [Bedienelemente und Anzeigen](#playlist-player-bedienung)
-  - [Endloswiedergabe und Zufallsmodus](#playlist-player-repeat)
-  - [Praxisbeispiel für Livestreams](#playlist-player-livestream)
-  - [Hinweise und technische Grenzen](#playlist-player-grenzen)
 - [LautFunk FartSynth 61 v1.0](#fartsynth)
   - [Modus „ALLE 12“](#fartsynth-alle-12)
   - [Modus „EIN CHARAKTER“](#fartsynth-ein-charakter)
   - [FartSynth-Regler](#fartsynth-regler)
   - [MIDI-Steuerung](#fartsynth-midi)
   - [Technische Prüfung](#fartsynth-pruefung)
-- [Installation](#installation)
-- [Typische Installationspfade](#installationspfade)
+- [JSFX-Installation](#installation)
+- [Typische JSFX-Installationspfade](#installationspfade)
 - [Plugins in REAPER laden](#plugins-laden)
 - [Anforderungen](#anforderungen)
 - [Einsatzbereiche](#einsatzbereiche)
@@ -66,22 +62,58 @@ Einige LautFunk-Plugins verändern, verfremden oder zerstören Audio ganz bewuss
 
 ## Enthaltene Plugins
 
-Aktuell enthält das Projekt:
+| Plugin | Typ | Verwendung | Quellcode / Anleitung |
+| --- | --- | --- | --- |
+| **Digital Glitch v1.2** | JSFX | Stutter, Bitcrushing, Glitch-Events und Pitch-Effekte | [JSFX](LautFunk_Digital_Glitch.jsfx) · [Details](#digital-glitch) |
+| **Voice Scrambler v2.2** | JSFX | Sprachverfremdung durch Frequenzinversion und Radiocharakter | [JSFX](LautFunk_Voice_Scrambler_v2.2.jsfx) · [Details](#voice-scrambler) |
+| **Voice Transformer v1.0** | JSFX | Echtzeit-Veränderung von Pitch, Formanten und Stimmcharakter | [JSFX](LautFunk_Voice_Transformer_v1.0.jsfx) · [Details](#voice-transformer) |
+| **SoftGuard v1.1** | JSFX + optionales Lua-ReaScript | Sanfte Sprecherpegel-Regelung und Soft-Knee-Limiter | [JSFX](LautFunk_SoftGuard.jsfx) · [Render-Skript](LautFunk_Render_Ziele.lua) · [Details](#softguard) |
+| **FartSynth 61 v1.0** | JSFX | MIDI-Synthesizer mit 61 Tasten und zwölf Klangcharakteren | [JSFX](LautFunk_FartSynth_61_v1.0.jsfx) · [Details](#fartsynth) |
+| **Playlist Player & Soundboard** | **VST3** | Musikplaylist, Soundbänke, Ducking, MIDI, lokale OSC-Steuerung, optional getrennte Ausgänge | [C++-Quellcode](LautFunk_Playlist_Player/Source) · [VST3-Anleitung](LautFunk_Playlist_Player/README_DE.md) |
 
-- **LautFunk Digital Glitch**\
-  Erzeugt digitale Fehler, Stutter, Buffer-Freezes, Dropouts, Bitcrushing und chaotische Pitch-Effekte.
-- **LautFunk Voice Scrambler**\
-  Verfremdet Sprache mithilfe von Frequenzinversion, Split-Band-Scrambling, Funkrauschen und weiteren Radioeffekten.
-- **LautFunk Voice Transformer v1.0**\
-  Verändert Stimmen mit acht Klangprofilen, automatischer Einmessung sowie getrennten Reglern für Tonhöhe, Formanten und Stimmcharakter.
-- **LautFunk SoftGuard v1.1**\
-  Kombiniert automatische, langsame Sprachpegelanpassung mit einem Soft-Knee-Limiter. Enthält getrennte Modi für Einzelsprecher und Master/Bus sowie ein optionales REAPER-Skript für die finale LUFS-I-/True-Peak-Renderkonfiguration.
-- **LautFunk Playlist Player v1.0 (VST3)**\
-  Spielt MP3-/WAV-Dateien direkt auf einer REAPER-Spur ab: mit Playlist, Gesamtspielzeit, eigener Wiedergabesteuerung, Zufall und Endlosmodus. Für Windows x64 und macOS Universal (Intel und Apple Silicon).
-- **LautFunk FartSynth 61**\
-  Ein vollständig synthetischer MIDI-Synthesizer mit 61 spielbaren Tasten und zwölf unterschiedlichen Klangcharakteren.
+**Unterschied:** JSFX-Dateien werden direkt im REAPER-Effektverzeichnis installiert und brauchen **kein VST3**. Der Playlist Player & Soundboard ist ein **eigenständiges VST3**, dessen Installation über den VST3-Ordner erfolgt. Er ist auch für weitere VST3-Hosts konzipiert; die tatsächlich bestätigte Funktionskompatibilität richtet sich nach den dokumentierten Tests.
 
-**Digital Glitch, Voice Scrambler, Voice Transformer, SoftGuard und FartSynth** laufen direkt als **JSFX** in REAPER. Der **Playlist Player** ist dagegen ein separat zu installierendes **VST3-Instrument**. SoftGuard bietet optional ein zusätzliches **ReaScript (Lua)** zur Konfiguration der finalen Renderziele.
+<a id="playlist-soundboard-vst3"></a>
+
+## LautFunk Playlist Player & Soundboard (VST3)
+
+Der Playlist Player & Soundboard vereint eine eigenständig abspielende WAV-/MP3-Playlist mit einem Soundboard mit **24 Pads je Bank**. Beliebig viele Bänke, 12er-/24er-Ansicht, Loop, Fades, Ordnerimport, Bankdateien und Restlaufzeit unterstützen Podcast- und Live-Produktion. Die Sample-Wiedergabe bleibt auch beim Bankwechsel aktiv.
+
+**Musik-Ducking** lässt sich ein- und ausschalten: Samples senken die Playlist-Musik einstellbar ab, anschließend steigt sie mit einstellbarem Release wieder an. MIDI und **lokales OSC** (optional, standardmäßig deaktiviert) können die Pads und die Playlist steuern; Stream Deck ist über **Bitfocus Companion/Generic OSC** möglich.
+
+**Audioausgänge:** Im Normalbetrieb werden Musik und Samples **gemeinsam auf Stereo 1/2** ausgegeben. Der optionale Expertenmodus führt Musik über 1/2 und Samples über 3/4; dafür ist DAW-Mehrkanalrouting erforderlich. Ohne dieses Routing nutzt man weiterhin den Stereo-Mix.
+
+**Versionen:** Die ursprüngliche Playlist-v1.0 ist über [GitHub Releases](https://github.com/lautfunk/Reaper-FX-Plugins/releases/tag/playlist-v1.0.0) verfügbar. Die v2.3 mit Soundboard und separaten Ausgängen wurde in REAPER als Routing-Testfassung erprobt. Die endgültig benannte **v2.3.0-rc1** wird vor einem öffentlichen Release separat geprüft. Die zwischenzeitlichen Entwicklungsfassungen behalten ihre abweichenden Plugin-IDs und sind **keine automatischen Upgrades** älterer REAPER-Projekte.
+
+Dokumente: [Benutzerhandbuch](LautFunk_Playlist_Player/README_DE.md) · [Installation für Windows/macOS](LautFunk_Playlist_Player/DOKUMENTATION/INSTALLATION_DE.md) · [Routing in REAPER](LautFunk_Playlist_Player/DOKUMENTATION/REAPER_ROUTING_DE.md) · [MIDI/OSC-Befehle](LautFunk_Playlist_Player/README_DE.md#lokale-osc--stream-deck-steuerung) · [Changelog](LautFunk_Playlist_Player/CHANGELOG.md) · [Testplan](LautFunk_Playlist_Player/DOKUMENTATION/TESTPLAN_DE.md) · [Release-Checkliste](LautFunk_Playlist_Player/DOKUMENTATION/RELEASE_CHECKLIST_DE.md).
+
+<a id="quellcode-und-lizenz"></a>
+
+## Quellcode und Lizenz
+
+**Alle eigenen Quelldateien stehen im Repository**, damit andere den Code prüfen, verbessern und weiterentwickeln können: die fünf [JSFX-Skripte](#enthaltene-plugins), das [Lua-ReaScript](LautFunk_Render_Ziele.lua) und das [C++-/JUCE-Projekt](LautFunk_Playlist_Player) mit [Source-Verzeichnis](LautFunk_Playlist_Player/Source) sowie CMake- und Buildskripten.
+
+- **LautFunk-eigener Code:** [MIT-Lizenz](LICENSE), mit SPDX-Hinweisen in den JSFX- und Lua-Dateien. Lizenztext und Urheberrechtsvermerk müssen bei Kopien oder wesentlichen Teilen erhalten bleiben.
+- **JUCE 9.0.4:** Eigenständige Bedingungen von [JUCE](https://juce.com/legal/juce-9-licence/). Für die VST3-Entwicklung wird nach Auskunft des Projekts die kostenlose **JUCE-Starter-Lizenz** genutzt. Die MIT-Lizenz des LautFunk-Codes überträgt **keine** JUCE-Lizenz an Dritte.
+- **Weitere Rechte:** Marken, Logos, Audiosamples, fremde Codebibliotheken und sonstige Drittinhalte sind nur erfasst, soweit die jeweiligen Rechte dies erlauben. Siehe [Lizenz- und Drittanbieterhinweise](LautFunk_Playlist_Player/DOKUMENTATION/RECHT_LIZENZEN_DE.md).
+- **Beiträge:** Pull Requests und nachvollziehbare GitHub-Issues sind willkommen. Bei fremden Codebeiträgen müssen die Beitragenden berechtigt sein, sie unter MIT bereitzustellen.
+
+**MIT erlaubt ausdrücklich auch kommerzielle Weiterverwendung durch andere**; dass LautFunk seine Plugins kostenlos bereitstellt, schränkt diese Rechte nicht ein.
+
+<a id="releases-und-versionen"></a>
+
+## Releases und Versionen
+
+Öffentliche, dauerhaft verfügbare Downloads stehen unter **[GitHub Releases](https://github.com/lautfunk/Reaper-FX-Plugins/releases)**. Entwicklungsstände unter **[GitHub Actions](https://github.com/lautfunk/Reaper-FX-Plugins/actions)** sind zeitlich begrenzte Test-Artefakte und sollten nicht als stabile Veröffentlichung bezeichnet werden.
+
+| Version | Status | Hinweis |
+| --- | --- | --- |
+| Playlist Player **v1.0.0** | Veröffentlicht | Windows x64 und macOS Universal als VST3 |
+| Playlist Player & Soundboard **v2.0–v2.2 DEV** | Entwicklungsfassungen | Soundbänke, Ducking, MIDI und OSC schrittweise ergänzt |
+| Playlist Player & Soundboard **v2.3.0-rc1** | Release-Kandidat | Optional getrennte Ausgänge; finale Plugin-ID, Dokumentation und Buildpakete in Prüfung |
+| **v2.3.0** | Noch nicht veröffentlicht | Erst nach Abschluss der Release-Checkliste und Prüfung der finalen Pakete |
+
+**macOS-Hinweis:** Die bisherigen GitHub-Testpakete sind ad-hoc signiert und **nicht Apple-notarisiert**. Das wird bei einem öffentlichen Release transparent angegeben.
 
 ---
 
@@ -1295,7 +1327,7 @@ Der zusätzliche Source-Ordner enthält den reproduzierbaren Builder und die Pr�
 
 <a id="installation"></a>
 
-# Installation
+# JSFX-Installation in REAPER
 
 Die LautFunk-Sammlung enthält **JSFX-Plugins** und den separat installierbaren **Playlist Player als VST3-Instrument**.
 
@@ -1345,7 +1377,7 @@ Diese Struktur hält den FX-Browser übersichtlich.
 
 <a id="installationspfade"></a>
 
-# Typische Installationspfade für JSFX
+# Typische JSFX-Installationspfade für JSFX
 
 Die tatsächlichen Pfade können abhängig von Betriebssystem, REAPER-Version und einer eventuell verwendeten portablen Installation abweichen.
 

@@ -1,4 +1,7 @@
 desc:LautFunk Digital Glitch
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 LautFunk contributors
+// See LICENSE in the repository root for permissions and warranty disclaimer.
 // v1.2.0 | Standalone stereo JSFX. No imports or external assets.
 // Event-only pitch modulation: Drift, Steps, Crash and Chaos (random mode).
 // Pitch controls are in PITCH. Range: +/-0..24 semitones, speed: 0.1..30 Hz.

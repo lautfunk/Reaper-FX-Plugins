@@ -1,3 +1,6 @@
+-- SPDX-License-Identifier: MIT
+-- Copyright (c) 2026 LautFunk contributors
+-- See LICENSE in the repository root for permissions and warranty disclaimer.
 -- LautFunk SoftGuard - Renderziele fuer bestehendes REAPER-Projekt
 -- Sets only the current project's render normalization and true-peak brickwall.
 -- Does not start a render, change output path/format, or touch the source tracks.
