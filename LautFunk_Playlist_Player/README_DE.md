@@ -135,4 +135,4 @@ Das Programm verwendet JUCE 9, dessen Module unter **AGPLv3 oder einer kommerzie
 
 ## Hintergrund
 
-Die Bank-/Pad-Bedienung ist in ihrer Funktion vom [Ultraschall Soundboard](https://github.com/Ultraschall/ultraschall-soundboard) inspiriert. Der hier verwendete Soundboard-C++-Code wurde eigenständig erstellt und enthält keine aus dem Ultraschall-Projekt übernommenen Quelldateien.
+Die Bank-/Pad-Bedienung orientiert sich unter anderem am [Ultraschall Soundboard](https://github.com/Ultraschall/ultraschall-soundboard) (MIT, Copyright © 2014–2021 Daniel Lindenfelser). Eine Prüfung der zentralen C++-Dateien fand keine längeren identischen Codeabschnitte; eine vollständige Aussage über die Herkunft aller Zwischenstände ist damit nicht möglich. Die ursprüngliche MIT-Lizenz und die Herkunftshinweise stehen deshalb vorsorglich in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).

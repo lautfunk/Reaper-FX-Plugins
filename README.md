@@ -95,6 +95,7 @@ Dokumente: [Benutzerhandbuch](LautFunk_Playlist_Player/README_DE.md) · [Install
 
 - **LautFunk-eigener Code:** [MIT-Lizenz](LICENSE), mit SPDX-Hinweisen in den JSFX- und Lua-Dateien. Lizenztext und Urheberrechtsvermerk müssen bei Kopien oder wesentlichen Teilen erhalten bleiben.
 - **JUCE 9.0.4:** Eigenständige Bedingungen von [JUCE](https://juce.com/legal/juce-9-licence/). Für die VST3-Entwicklung wird nach Auskunft des Projekts die kostenlose **JUCE-Starter-Lizenz** genutzt. Die MIT-Lizenz des LautFunk-Codes überträgt **keine** JUCE-Lizenz an Dritte.
+- **Ultraschall Soundboard:** Die Soundbank-/Pad-Idee orientiert sich auch am [Ultraschall-Soundboard](https://github.com/Ultraschall/ultraschall-soundboard), das unter MIT (Copyright © 2014–2021 Daniel Lindenfelser) steht. Wir erhalten den [Original-Lizenztext und die Herkunftshinweise](LautFunk_Playlist_Player/THIRD_PARTY_NOTICES.md) vorsorglich auch bei unklarem Grad möglicher Übernahmen.
 - **Weitere Rechte:** Marken, Logos, Audiosamples, fremde Codebibliotheken und sonstige Drittinhalte sind nur erfasst, soweit die jeweiligen Rechte dies erlauben. Siehe [Lizenz- und Drittanbieterhinweise](LautFunk_Playlist_Player/DOKUMENTATION/RECHT_LIZENZEN_DE.md).
 - **Beiträge:** Pull Requests und nachvollziehbare GitHub-Issues sind willkommen. Bei fremden Codebeiträgen müssen die Beitragenden berechtigt sein, sie unter MIT bereitzustellen.
 
