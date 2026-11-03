@@ -14,9 +14,9 @@ namespace
 LautFunkPlaylistEditor::LautFunkPlaylistEditor(LautFunkPlaylistProcessor& p)
     : juce::AudioProcessorEditor(&p), processor(p)
 {
-    setSize(1080, 780);
+    setSize(1080, 860);
     setResizable(true, true);
-    setResizeLimits(950, 715, 1800, 1200);
+    setResizeLimits(950, 840, 1800, 1240);
 
     for (auto* b : { &playlistTab, &soundboardTab, &addButton, &importButton,
                      &exportButton, &removeButton, &upButton, &downButton,
@@ -250,6 +250,29 @@ LautFunkPlaylistEditor::LautFunkPlaylistEditor(LautFunkPlaylistProcessor& p)
     duckAttackSlider.setTooltip("Wie schnell die Playlist leiser wird (Millisekunden)");
     duckReleaseSlider.setTooltip("Wie schnell die Musik nach Samples wieder ansteigt");
 
+    // OSC is opt-in and binds to IPv4 localhost only. This keeps the
+    // ordinary soundboard completely usable without network configuration.
+    oscEnabledButton.setColour(juce::ToggleButton::textColourId, white);
+    oscEnabledButton.setColour(juce::ToggleButton::tickColourId, teal);
+    oscEnabledButton.setTooltip("Lokale OSC-Steuerung fuer Stream Deck / Companion aktivieren");
+    oscEnabledButton.onClick = [this] { configureOscFromUi(); };
+    addAndMakeVisible(oscEnabledButton);
+
+    oscPortEditor.setColour(juce::TextEditor::backgroundColourId, panel);
+    oscPortEditor.setColour(juce::TextEditor::textColourId, white);
+    oscPortEditor.setColour(juce::TextEditor::outlineColourId, panelBright);
+    oscPortEditor.setInputRestrictions(5, "0123456789");
+    oscPortEditor.setText(juce::String(processor.getOscControl().getPort()), false);
+    oscPortEditor.setTooltip("Lokaler UDP-Port 1024-65535; Standard 9001");
+    oscPortEditor.onReturnKey = [this] { configureOscFromUi(); };
+    oscPortEditor.onFocusLost = [this] { configureOscFromUi(); };
+    addAndMakeVisible(oscPortEditor);
+
+    oscStatusLabel.setColour(juce::Label::textColourId, muted);
+    oscStatusLabel.setText("OSC AUS", juce::dontSendNotification);
+    oscStatusLabel.setFont(juce::FontOptions(12.0f));
+    addAndMakeVisible(oscStatusLabel);
+
     showMode(false);
     updateControls();
     updateBoard();
@@ -289,7 +312,8 @@ void LautFunkPlaylistEditor::showMode(bool board)
         &loadPadButton, &clearPadButton, &stopPadButton, &fadePadButton,
         &loopPad, &padGain, &padFade, &bankStatus, &padDetails,
         &bankFileButton, &folderImportButton, &duckEnabledButton,
-        &duckDepthSlider, &duckAttackSlider, &duckReleaseSlider
+        &duckDepthSlider, &duckAttackSlider, &duckReleaseSlider,
+        &oscEnabledButton, &oscPortEditor, &oscStatusLabel
     };
     for (auto* c : boardComponents) c->setVisible(board);
     for (auto& button : padButtons) button.setVisible(board);
@@ -310,7 +334,7 @@ void LautFunkPlaylistEditor::paint(juce::Graphics& g)
     g.drawText("PLAYLIST PLAYER & SOUNDBOARD", 22, 36, w - 290, 35, juce::Justification::centredLeft);
     g.setColour(muted);
     g.setFont(juce::FontOptions(12.0f));
-    g.drawText("VST3  |  2.1 LIVE DEV", w - 280, 37, 256, 30, juce::Justification::centredRight);
+    g.drawText("VST3  |  2.2 OSC DEV", w - 280, 37, 256, 30, juce::Justification::centredRight);
 
     g.setColour(panel);
     if (!showingBoard)
@@ -327,8 +351,8 @@ void LautFunkPlaylistEditor::paint(juce::Graphics& g)
     }
     else
     {
-        g.fillRoundedRectangle(16.f, 188.f, (float)(w - 32), (float)(h - 416), 10.f);
-        g.fillRoundedRectangle(16.f, (float)(h - 216), (float)(w - 32), 198.f, 10.f);
+        g.fillRoundedRectangle(16.f, 188.f, (float)(w - 32), (float)(h - 468), 10.f);
+        g.fillRoundedRectangle(16.f, (float)(h - 282), (float)(w - 32), 264.f, 10.f);
     }
     if (draggedOver)
     {
@@ -387,7 +411,7 @@ void LautFunkPlaylistEditor::resized()
     const int rows = count / cols;
     const int left = 29, top = 198, gap = 9;
     const int width = (w - 58 - (cols - 1) * gap) / cols;
-    const int height = (h - 433 - (rows - 1) * gap) / rows;
+    const int height = (h - 480 - (rows - 1) * gap) / rows;
     for (int i = 0; i < 24; ++i)
     {
         const bool visible = i < count;
@@ -398,28 +422,31 @@ void LautFunkPlaylistEditor::resized()
                         top + (i / cols) * (height + gap), width, height);
     }
 
-    prevPage.setBounds(30, h - 220, 112, 32);
-    nextPage.setBounds(151, h - 220, 112, 32);
-    bankStatus.setBounds(275, h - 220, w - 570, 32);
-    fadeAllButton.setBounds(w - 264, h - 220, 111, 33);
-    stopAllButton.setBounds(w - 143, h - 220, 113, 33);
+    prevPage.setBounds(30, h - 274, 112, 32);
+    nextPage.setBounds(151, h - 274, 112, 32);
+    bankStatus.setBounds(275, h - 274, w - 570, 32);
+    fadeAllButton.setBounds(w - 264, h - 274, 111, 33);
+    stopAllButton.setBounds(w - 143, h - 274, 113, 33);
 
-    padDetails.setBounds(30, h - 177, w - 405, 23);
-    folderImportButton.setBounds(w - 367, h - 181, 174, 30);
-    bankFileButton.setBounds(w - 185, h - 181, 155, 30);
-    loadPadButton.setBounds(30, h - 144, 144, 34);
-    clearPadButton.setBounds(184, h - 144, 122, 34);
-    stopPadButton.setBounds(316, h - 144, 110, 34);
-    fadePadButton.setBounds(436, h - 144, 110, 34);
-    loopPad.setBounds(558, h - 144, 100, 34);
-    padGain.setBounds(30, h - 101, (w - 75) / 2, 36);
-    padFade.setBounds(45 + (w - 75) / 2, h - 101, (w - 75) / 2, 36);
-    duckEnabledButton.setBounds(26, h - 58, 142, 31);
+    padDetails.setBounds(30, h - 230, w - 405, 23);
+    folderImportButton.setBounds(w - 367, h - 233, 174, 30);
+    bankFileButton.setBounds(w - 185, h - 233, 155, 30);
+    loadPadButton.setBounds(30, h - 196, 144, 34);
+    clearPadButton.setBounds(184, h - 196, 122, 34);
+    stopPadButton.setBounds(316, h - 196, 110, 34);
+    fadePadButton.setBounds(436, h - 196, 110, 34);
+    loopPad.setBounds(558, h - 196, 100, 34);
+    padGain.setBounds(30, h - 151, (w - 75) / 2, 36);
+    padFade.setBounds(45 + (w - 75) / 2, h - 151, (w - 75) / 2, 36);
+    duckEnabledButton.setBounds(26, h - 106, 142, 31);
     const int leftDuck = 168;
     const int duckW = (w - leftDuck - 40) / 3;
-    duckDepthSlider.setBounds(leftDuck, h - 60, duckW, 36);
-    duckAttackSlider.setBounds(leftDuck + duckW + 5, h - 60, duckW, 36);
-    duckReleaseSlider.setBounds(leftDuck + 2 * (duckW + 5), h - 60, duckW, 36);
+    duckDepthSlider.setBounds(leftDuck, h - 108, duckW, 36);
+    duckAttackSlider.setBounds(leftDuck + duckW + 5, h - 108, duckW, 36);
+    duckReleaseSlider.setBounds(leftDuck + 2 * (duckW + 5), h - 108, duckW, 36);
+    oscEnabledButton.setBounds(26, h - 60, 132, 30);
+    oscPortEditor.setBounds(168, h - 60, 90, 30);
+    oscStatusLabel.setBounds(275, h - 60, w - 310, 30);
 }
 
 int LautFunkPlaylistEditor::getNumRows() { return snapshot.size(); }
