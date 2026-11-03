@@ -1,103 +1,68 @@
-# Veröffentlichung – vom Release-Kandidaten zum stabilen GitHub Release
+# Release-Checkliste – LautFunk Playlist Player & Soundboard
 
-Der aktuelle Entwicklungsstand ist **v2.3.0 ROUTING RC** im Branch `dev/playlist-v2-routing`. Er ist **noch keine freigegebene Version**. Die stabil getestete v2.1 und der erfolgreiche v2.2-OSC-Build bleiben davon unberührt.
+Diese Checkliste gilt für **stabile v2.3.x-Veröffentlichungen**. Die Version **v2.3.0** wurde am 3. November 2026 veröffentlicht und nach Angaben des Betreibers zuvor in REAPER geprüft. Das **Wartungsrelease v2.3.1** bringt keine neuen Audio-Funktionen: Es korrigiert die Dokumentation, ergänzt die Herkunfts-/Lizenztexte in den Downloadpaketen und behält die stabile VST3-Plugin-ID bei.
 
-## 1. Technischer Freeze
+## 1. Vor jeder Veröffentlichung
 
-1. Beide Windows-/macOS-Builds des **gleichen Git-Commits** müssen grün sein.
-2. Checkliste [TESTPLAN_DE.md](TESTPLAN_DE.md) möglichst vollständig abhaken; insbesondere:
-   - Stereo funktioniert ohne Mehrkanal-Setup;
-   - getrenntes Routing in REAPER mit 4 Kanälen;
-   - sicherer Rückweg von getrennt nach Stereo;
-   - Ducking in beiden Modi;
-   - Projekt speichern, schließen, wieder öffnen;
-   - Sample-Ordner, MIDI und OSC weiterhin ohne Regression.
-3. Benutzeroberfläche auf deutsche Umlaute, abgeschnittene Texte und Skalierung testen.
-4. Falls nötig, kleine RC-Fixes auf dem Entwicklungsbranch; anschließend beide Binaries neu bauen.
+1. Versionsnummer in `CMakeLists.txt`, Versionsanzeige und Changelog übereinstimmend setzen.
+2. Die **dauerhafte Plugin-Identität** beibehalten: `PLUGIN_MANUFACTURER_CODE Laut`, `PLUGIN_CODE LfS3` und `BUNDLE_ID de.lautfunk.playlistsoundboard`. Ältere Entwicklungsvarianten mit eigenen IDs bleiben davon unberührt.
+3. Das `main`-Repository über Pull Request aktualisieren; `main` ist gegen Löschung und Force Push geschützt.
+4. Die JUCE-9-Lizenz des tatsächlichen Rechteinhabers und der beteiligten Framework-Entwickler überprüfen. Maßgeblich sind die [JUCE-9-EULA](https://juce.com/legal/juce-9-licence/) und die Angaben in [RECHT_LIZENZEN_DE.md](RECHT_LIZENZEN_DE.md). Die Angaben zur verfügbaren Starter-Lizenz stammen vom Betreiber; eine externe Prüfung des Lizenzkontos erfolgt nicht.
+5. Versionshinweise und Installations- sowie Routingdokumentation auf die tatsächlich gebaute Version abstimmen.
 
-## 2. Lizenzentscheidung
+## 2. Windows- und macOS-Builds
 
-Der Betreiber gibt an, mit den Plugins **0 € Einnahmen** zu erzielen und sämtliche Plugins kostenlos zum Download anzubieten. Eine kostenlose **JUCE-9-Starter-Lizenz** liegt nach eigener Auskunft vor.
+- **Windows x64:** Visual Studio 2022 und JUCE 9.0.4, VST3 in Release-Konfiguration.
+- **macOS Universal:** Intel `x86_64` und Apple Silicon `arm64`, beide mit `lipo` prüfen; macOS-Zielversion 11.
+- Beide Builds müssen **aus genau demselben Quellcode-Commit** stammen und erfolgreich abgeschlossen sein. Ein grüner CI-Build allein ersetzt keinen Praxistest in REAPER.
+- Die macOS-Ausgabe ist derzeit **ad-hoc signiert und nicht Apple-notarisiert**. Dieser Umstand muss im Release und der Anleitung stehen.
 
-Vor der Freigabe:
-- JUCE-9-Starter-EULA auf die konkrete Verwendung und die entwickelnden Personen prüfen.
-- **Erledigt:** Der Betreiber hat die MIT-Lizenz für den eigenen LautFunk-Quellcode am 3. November 2026 ausgewählt.
-- Dazu eine passende `LICENSE`-Datei und einen verständlichen Hinweis im Release einfügen. **Keine Lizenz ohne ausdrückliche Auswahl des Betreibers erfinden.**
-- Die Hinweise in [RECHT_LIZENZEN_DE.md](RECHT_LIZENZEN_DE.md) beachten.
+## 3. Pflichtdateien in beiden Download-ZIPs
 
-## 3. Stabile Produktidentität
+Jedes der beiden Pakete muss Folgendes enthalten:
 
-Bisher haben die DEV-Fassungen unterschiedliche VST3-Plugin-IDs und Namen, damit sie parallel installiert werden können. Für das öffentliche Release eine **dauerhafte Produkt-ID** und einen finalen Namen festlegen.
+- `LautFunk Playlist Soundboard.vst3` (vollständiges Bundle)
+- `LICENSE` (LautFunk-eigener MIT-Code)
+- `THIRD_PARTY_NOTICES.md` mit **Original-MIT-Lizenz des Ultraschall Soundboards** und **Copyright (c) 2014–2021 Daniel Lindenfelser**
+- `README_DE.md` und `RELEASE_NOTES_DE.md`
+- `CHANGELOG.md` und den Ordner `DOKUMENTATION`
 
-**Achtung:** Spätere Änderungen der Plugin-ID sind für die DAW eine *andere Plugin-Instanz*. Bereits bestehende REAPER-Projekte werden deshalb möglicherweise nicht automatisch migriert. Für die stabile Produktlinie muss die ID über künftige Updates hinweg gleich bleiben.
+Die Build-Pipeline überprüft die Existenz des VST3 und die Anwesenheit des ursprünglichen Lizenz-/Copyright-Textes in **beiden ZIPs**, bevor sie einen Release veröffentlicht.
 
-Empfohlener Name: **LautFunk Playlist Player & Soundboard**
-Vorgeschlagener erster Release-Tag der neuen Produktlinie: **`playlist-soundboard-v2.3.0`**.
+## 4. Tag, Assets und Prüfsummen
 
-Die Release-Kandidaten nutzen bereits den final vorgesehenen VST3-Namen. Die finale Plugin-ID wurde vom Betreiber in REAPER getestet. Beim Release werden der Tag und die beiden Downloadpakete automatisch aus genau demselben Commit erstellt.
-
-## 4. Release-Pakete
-
-Für ein öffentliches Release **keine kurzlebigen GitHub-Actions-Artifacts als einzigen Download** verwenden, sondern dauerhafte Assets im GitHub Release:
+Für v2.3.1 gilt:
 
 ```text
-LautFunk-Playlist-Soundboard-v2.3.0-Windows-x64.zip
-LautFunk-Playlist-Soundboard-v2.3.0-macOS-Universal.zip
-LautFunk-Playlist-Soundboard-v2.3.0-SHA256SUMS.txt
+Tag: playlist-soundboard-v2.3.1
+LautFunk-Playlist-Soundboard-v2.3.1-Windows-x64.zip
+LautFunk-Playlist-Soundboard-v2.3.1-macOS-Universal.zip
+SHA256SUMS.txt
 ```
 
-Jedes ZIP soll das VST3-Bundle enthalten und auf die Dokumentation im Repository verweisen. Optional ein zusätzliches ZIP mit Schnellstart-/Installations-PDF und Beispielsamples, **wenn deren Nutzungsrechte geklärt sind**.
+- Der GitHub-Actions-Publish-Workflow erzeugt beide Plattformpakete und die gemeinsame `SHA256SUMS.txt`.
+- **Nur nach beiden erfolgreichen Builds und Lizenzpaket-Prüfungen** darf der Publish-Job die dauerhaften Assets unter [GitHub Releases](https://github.com/lautfunk/Reaper-FX-Plugins/releases) anlegen.
+- Die Veröffentlichung ist kein kurzlebiges Actions-Artefakt. GitHub ergänzt zum Release automatisch Quellcode-Archive (ZIP und tar.gz).
+- Bereits vorhandene Releases werden **nicht automatisch überschrieben**.
+- Die Windows-/macOS-Dateien werden nach der Veröffentlichung mit ihren SHA-256-Prüfsummen auf Integrität geprüft.
 
-Builds für Windows und macOS sollten mit **einem einheitlichen Quellcode-Commit** erzeugt sein. SHA256-Checksummen liefern eine einfache Integritätsprüfung.
+## 5. Praxis- und Regressionstests
 
-## 5. macOS-Signierung
+Die ausführlichen Prüfpunkte stehen im [TESTPLAN_DE.md](TESTPLAN_DE.md), insbesondere:
 
-GitHub Actions erstellt bisher **ad-hoc signierte**, nicht Apple-notarisierte macOS-Binaries. Eine echte, breit zugängliche Mac-Veröffentlichung erfordert eine klare Entscheidung:
+1. Neue Plugin-Instanz in REAPER laden; Stereo-Mix 1/2 verwenden.
+2. Optional getrennte Ausgänge (Musik 1/2, Soundboard 3/4) in einer Vierkanal-Spur prüfen.
+3. Playlist, Soundboard-Pads, WAV/MP3, Ducking, MIDI und lokales OSC auf Funktion prüfen.
+4. Projekt speichern, schließen und neu öffnen.
+5. Bei einem Wechsel von v2.3.0 auf v2.3.1 ein Backup anlegen und die unveränderte Plugin-ID sicherstellen.
+6. Kein offizielles macOS-Praxiszertifikat und keine Tests anderer DAWs behaupten, wenn sie nicht durchgeführt wurden.
 
-- Developer-ID-Signierung und Notarisierung einrichten; oder
-- das Paket transparent als **nicht notarisiert** kennzeichnen und auf mögliche Sicherheitsabfragen hinweisen.
+## 6. Nach dem Release
 
-Keine notarisierten Downloads versprechen, bevor dieser Schritt tatsächlich durchgeführt wurde.
+- Release-URL in der Repository-README und in `README_DE.md` aktuell halten.
+- Bekannte Einschränkungen dokumentieren: kein integrierter Summen-Limiter, keine Mikrofon-Sidechain, macOS nicht notarisiert.
+- Fehlerberichte über [GitHub Issues](https://github.com/lautfunk/Reaper-FX-Plugins/issues) sammeln.
+- Zur rechtlichen Herkunft bei Bedarf die Historie und [THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md) aktualisieren.
+- Bei künftigen Wartungsreleases die **Plugin-ID unverändert** lassen, damit bestehende REAPER-Projekte kompatibel bleiben.
 
-## 6. GitHub-Release erstellen
-
-Nach Freigabe durch den Betreiber:
-1. Finalen geprüften Commit auf den für Veröffentlichungen vorgesehenen Stand bringen.
-2. Finale Plugin-ID, Versionsnummer und Änderungsverlauf setzen.
-3. Den Quellstand als Git-Tag markieren.
-4. CI-Binaries für **genau diesen Tag** bauen und prüfen.
-5. Release auf https://github.com/lautfunk/Reaper-FX-Plugins/releases/new anlegen.
-6. Tag, Titel, deutsche Beschreibung, Windows-/macOS-ZIPs und SHA256-Datei einfügen.
-7. Release veröffentlichen und die dauerhaften Downloadlinks im Repository-README ergänzen.
-
-**Wichtig:** Dieser Schritt wird nicht automatisch durch die Erstellung des RC-Zweigs ausgelöst; er erfolgt erst nach Tests, Lizenzentscheidung und ausdrücklicher Freigabe.
-
-## 7. Release-Text (Vorschlag)
-
-```markdown
-# LautFunk Playlist Player & Soundboard v2.3.0
-
-Kostenloses VST3 für Podcast, Livestream und Musikproduktion.
-Playlist, Soundboard mit 24 Pads je Bank, WAV/MP3-Import,
-automatisches Musik-Ducking, MIDI und lokale OSC-Steuerung.
-
-**Neu:** Optionales getrenntes Stereo-Routing.
-Standardmäßig bleiben Musik und Einspieler gemeinsam auf Out 1/2;
-getrennte Ausgänge 1/2 und 3/4 sind ein Expertenmodus.
-
-**Downloads:** Windows x64, macOS Universal (Intel + Apple Silicon).
-Bitte die Installationsanleitung vor der Verwendung lesen.
-
-**Hinweis:** Audiodateien werden nur über externe Dateipfade referenziert.
-Ein eingebauter Peak-Limiter und Mikrofon-Sidechain sind nicht enthalten.
-Weitere bekannte Einschränkungen stehen in der Dokumentation.
-
-[Hier finale Lizenzangabe und tatsächlichen Mac-Signierungsstatus ergänzen.]
-```
-
-## 8. Nach der Veröffentlichung
-
-- Fehlerberichte und Nutzerfragen als GitHub Issues sammeln.
-- Eine eigene Bugfix-Reihe, z. B. v2.3.1, starten.
-- Funktionswünsche separat planen, ohne die stabile Plugin-ID zu ändern.
-- Vor Livestream-Einsatz nach jedem Update die Projekteinstellungen und Audioausgänge prüfen.
+Diese Checkliste protokolliert die vorgesehenen Prüfungen; sie ersetzt weder individuelle Funktionstests noch die Kontrolle der Lizenzvoraussetzungen.

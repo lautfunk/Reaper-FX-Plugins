@@ -1,6 +1,6 @@
 # REAPER – Stereo-Mix und optional getrennte Audioausgänge
 
-Diese Anleitung gilt für den **Release-Kandidaten v2.3**. Der Modus mit getrennten Ausgängen ist **optional** und benötigt einen VST3-Host mit Multi-Output-Unterstützung.
+Diese Anleitung gilt für die **stabile v2.3-Produktlinie (einschließlich v2.3.1)**. Der Modus mit getrennten Ausgängen ist **optional** und benötigt einen VST3-Host mit Multi-Output-Unterstützung.
 
 ## Einfacher Standardmodus
 

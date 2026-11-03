@@ -1,6 +1,6 @@
 # Lizenz, Urheberrecht und kostenlose Veröffentlichung
 
-**Stand 2026-11-03 · Arbeitsdokument vor Veröffentlichung**
+**Stand 2026-11-03 · Lizenzinformationen für die veröffentlichte v2.3-Produktlinie**
 
 ## Ausgangslage
 
@@ -21,7 +21,7 @@ Offizielle Quellen:
 
 **Aktuelle Angaben des Betreibers:** 0 € Plugin-Einnahmen, kostenlose öffentliche Bereitstellung, kostenlose JUCE-Lizenz vorhanden.
 
-**Vor dem finalen Release prüfen:** Die kostenlose Starter-Lizenz muss dem tatsächlichen Lizenzinhaber, der Anzahl der Framework-Entwickler und der Nutzung des Produkts entsprechen; der JUCE-9-EULA-Text bleibt maßgeblich. Keine Lizenzschlüssel, Kontodaten oder persönlichen Zugänge in ein öffentliches Repository schreiben.
+**Für jede weitere Veröffentlichung und fortlaufende Verteilung prüfen:** Die kostenlose Starter-Lizenz muss zum tatsächlichen Lizenzinhaber, zur Zahl der JUCE-Entwickler und zur Nutzung des Produkts passen. Die aktuelle [JUCE-9-EULA](https://juce.com/legal/juce-9-licence/) ist maßgeblich; eine Prüfung privater Lizenzkonto- und Umsatzangaben lässt sich nicht aus dem öffentlichen Repository ableiten. Keine Lizenzschlüssel, Kontodaten oder persönlichen Zugänge öffentlich ablegen.
 
 ## 2. MIT-Lizenz für den LautFunk-eigenen Quellcode
 
@@ -29,7 +29,7 @@ Offizielle Quellen:
 
 Die vollständige Lizenz liegt in [../LICENSE](../LICENSE), mit dem Copyright-Vermerk `Copyright (c) 2026 LautFunk contributors`.
 
-**Geltungsbereich:** Diese MIT-Lizenz betrifft die im Verzeichnis `LautFunk_Playlist_Player/` enthaltenen, selbst entwickelten Quellen und zugehörigen Unterlagen. Sie **lizenziert weder JUCE noch fremde Komponenten neu** und gilt **nicht automatisch für die übrigen Plugins im übergeordneten Repository**.
+**Geltungsbereich:** Diese MIT-Lizenz betrifft die im Verzeichnis `LautFunk_Playlist_Player/` enthaltenen, selbst entwickelten Quellen und zugehörigen Unterlagen. Sie **lizenziert weder JUCE noch fremde Komponenten neu**. Die übrigen **LautFunk-eigenen JSFX- und Lua-Dateien** des übergeordneten Repositories stehen ebenfalls unter der dortigen [Root-MIT-Lizenz](../../LICENSE), soweit ihre Rechte LautFunk zustehen.
 
 Die MIT-Lizenz erlaubt Nutzung, Veränderung, Verbreitung, Unterlizenzierung und kommerzielle Weiterverwendung des eigenen Codes, sofern der Copyright- und Lizenzhinweis bei Kopien bzw. wesentlichen Teilen enthalten bleibt. Sie verlangt nicht, abgeleitete Werke wiederum als Open Source zu veröffentlichen.
 
@@ -40,8 +40,8 @@ Die Entscheidung, Plugins kostenlos anzubieten, ist unabhängig davon: Eine MIT-
 ## 3. Drittanbieterhinweise und Abgrenzungen
 
 - **JUCE 9.0.4**: © jeweilige Rechteinhaber, separate Lizenzbedingungen (siehe Links oben).
-- **VST3**: Das Plugin verwendet JUCEs VST3-Unterstützung; vor Veröffentlichung aktuelle Hinweise zur Steinberg-VST3-Lizenzierung und etwaigen Markenregeln prüfen.
-- **Ultraschall Soundboard**: Funktionale Vorlage/Inspiration; ursprüngliches Projekt unter MIT (Copyright © 2014–2021 Daniel Lindenfelser). Eine Prüfung fand keine längeren exakt identischen Kern-C++-Abschnitte, kann andere Arten von Übernahmen jedoch nicht ausschließen. Lizenztext und Herkunftshinweis sind vorsorglich vollständig dokumentiert: [../THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md).
+- **VST3**: Das Plugin verwendet JUCEs VST3-Unterstützung. Marken und ggf. geltende Drittrechte separat beachten.
+- **Ultraschall Soundboard**: Funktionale Vorlage/Inspiration; ursprüngliches Projekt unter MIT (Copyright © 2014–2021 Daniel Lindenfelser). Eine Prüfung fand keine längeren exakt identischen Kern-C++-Abschnitte, kann andere Arten von Übernahmen jedoch nicht ausschließen. Der vollständige ursprüngliche MIT-Lizenztext und die Herkunftshinweise liegen ab **v2.3.1 auch beiden offiziellen Download-ZIPs** als `THIRD_PARTY_NOTICES.md` bei: [../THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md).
 - Keine Samples, Fotos, Musikstücke oder Logos von Dritten ohne entsprechende Rechte in Beispielpakete aufnehmen.
 - **Bitfocus Companion / Elgato Stream Deck**: Lediglich Kompatibilität bzw. manuelle OSC-Anbindung; keine offizielle Partnerschaft oder Produktfreigabe behaupten.
 
@@ -53,6 +53,7 @@ Die Entscheidung, Plugins kostenlos anzubieten, ist unabhängig davon: Eine MIT-
 4. JUCE-Version und Link zu den Original-Lizenzbedingungen.
 5. Hinweise zu Dateipfaden, Lautstärke/Clipping, Host-Verhalten und optionalem Routing.
 6. Changelog, bekannte Einschränkungen, Teststatus und Möglichkeit, Fehler zu melden.
-7. Hinweis zur Apple-Signierung/Notarisierung; keine falsche Aussage, dass macOS-Builds notarisiert seien.
+7. Hinweis zur Apple-Signierung/Notarisierung; die bisherige macOS-Version ist lediglich ad-hoc signiert, nicht Apple-notarisiert.
+8. `THIRD_PARTY_NOTICES.md` inklusive Ultraschall-Original-MIT-Lizenz im Windows- **und** macOS-ZIP.
 
 Diese Datei ist Projektorganisation, keine rechtsverbindliche Lizenz und keine individuelle Rechtsberatung.
