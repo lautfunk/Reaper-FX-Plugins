@@ -1,6 +1,6 @@
 # Installation – LautFunk Playlist Player & Soundboard
 
-Stand: **v2.3.0** (stabile Veröffentlichung).
+Stand: **v2.3.1** (stabiles Wartungsrelease, unveränderte Plugin-ID gegenüber v2.3.0).
 
 ## Unterstützte Pakete
 
@@ -11,18 +11,17 @@ Es gibt aktuell weder einen VST2- noch einen AU-, CLAP- oder eigenständigen Sta
 
 ## Windows
 
-1. Die Windows-x64-ZIP-Datei aus dem freigegebenen GitHub Release oder einem früheren Test-Workflow herunterladen.
-2. Falls von GitHub Actions: ZIP zunächst entpacken; darin liegt noch ein zweites ZIP, das ebenfalls entpackt werden muss.
-3. Den **gesamten** Ordner `LautFunk Playlist Soundboard.vst3` nach
+1. Die Windows-x64-ZIP-Datei der [offiziellen v2.3.1-Veröffentlichung](https://github.com/lautfunk/Reaper-FX-Plugins/releases/tag/playlist-soundboard-v2.3.1) herunterladen und **einmal** entpacken. Die enthaltenen Dateien `LICENSE` und `THIRD_PARTY_NOTICES.md` mitlesen.
+2. Den **gesamten** Ordner `LautFunk Playlist Soundboard.vst3` nach
 
    ```text
    C:\Program Files\Common Files\VST3\
    ```
 
    kopieren.
-4. REAPER oder die gewünschte VST3-fähige DAW (neu) starten und, falls nötig, den VST3-Scan ausführen.
-5. Auf einer neuen Spur das Plugin laden. Im **AUDIO-ROUTING**-Menü **Standard: Stereo-Mix** belassen.
-6. Im Playlist-Tab eine WAV- oder MP3-Datei laden oder im Soundboard-Tab ein Sample zuweisen und starten.
+3. REAPER oder die gewünschte VST3-fähige DAW (neu) starten und, falls nötig, den VST3-Scan ausführen.
+4. Auf einer neuen Spur das Plugin laden. Im **AUDIO-ROUTING**-Menü **Standard: Stereo-Mix** belassen.
+5. Im Playlist-Tab eine WAV- oder MP3-Datei laden oder im Soundboard-Tab ein Sample zuweisen und starten.
 
 > Nicht nur eine DLL aus einem `.vst3`-Bundle kopieren: Die gesamte Ordnerstruktur ist erforderlich.
 
@@ -38,7 +37,7 @@ Es gibt aktuell weder einen VST2- noch einen AU-, CLAP- oder eigenständigen Sta
    kopieren; alternativ systemweit nach `/Library/Audio/Plug-Ins/VST3/`.
 3. Die DAW neu starten und VST3-Scan durchführen.
 
-**Wichtig:** Die macOS-Builds der Testreihe sind **ad-hoc signiert, nicht Apple-notarisiert**. Gatekeeper kann die Nutzung einschränken. Für eine allgemein zugängliche macOS-Veröffentlichung sollte eine Apple-Developer-ID-Signierung und Notarisierung erfolgen, bevor man den Build als problemlos installierbar bewirbt.
+**Wichtig:** Auch die offizielle macOS-v2.3.1 ist **nur ad-hoc signiert und nicht Apple-notarisiert**. Gatekeeper kann eine Sicherheitswarnung anzeigen oder das VST3 blockieren. Lade ausschließlich von der offiziellen Release-Seite herunter und prüfe die Herkunft, bevor du eine etwaige Ausnahme in den macOS-Sicherheitseinstellungen zulässt.
 
 ## Erstkonfiguration
 
@@ -50,7 +49,7 @@ Es gibt aktuell weder einen VST2- noch einen AU-, CLAP- oder eigenständigen Sta
 
 ## Mit alten DEV-Fassungen
 
-v2.0, v2.1, v2.2, v2.3 Routing RC und v2.3.0-rc1 verwenden **unterschiedliche Plugin-IDs**. Sie können parallel installiert werden. Ein bereits bestehender Projekt-Effekt wird deshalb **nicht automatisch** auf eine neuere Version aktualisiert.
+Die älteren v2.0-, v2.1-, v2.2- und Routing-/RC-Entwicklungsfassungen verwenden **andere Plugin-IDs** als die stabile Produktlinie. **v2.3.0 und v2.3.1 haben dagegen dieselbe Plugin-ID**: Ein Austausch der VST3-Datei aktualisiert die stabile Installation. Vorher ein REAPER-Projekt-Backup anfertigen; ältere DEV-/RC-Effekte werden nicht automatisch ersetzt.
 
 Vor dem Wechsel: REAPER-Projekt sichern, alte Plugin-Presets exportieren und Audiodateipfade prüfen.
 
@@ -60,7 +59,7 @@ Die jeweilige `.vst3`-Bundle-Datei bzw. den entsprechenden Bundle-Ordner aus dem
 
 ## Lizenz
 
-Der eigenständig entwickelte LautFunk-Quellcode ist unter der **MIT-Lizenz** verfügbar. Sie liegt als `LICENSE` bei. JUCE 9.0.4 und andere Drittkomponenten haben gesonderte Lizenzbedingungen; siehe `DOKUMENTATION/RECHT_LIZENZEN_DE.md`.
+Der selbst entwickelte LautFunk-Quellcode ist unter **MIT** verfügbar. Den Downloadpaketen liegen `LICENSE` und `THIRD_PARTY_NOTICES.md` bei; letztere enthält den vollständigen ursprünglichen MIT-Lizenztext des Ultraschall Soundboards. JUCE 9.0.4 hat gesonderte Lizenzbedingungen; siehe `DOKUMENTATION/RECHT_LIZENZEN_DE.md`.
 
 ## Hinweise zur Audioqualität
 
