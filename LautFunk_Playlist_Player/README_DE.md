@@ -1,6 +1,8 @@
 # LautFunk Playlist Player & Soundboard
 
-**Release-Kandidat v2.3.0-rc1 auf Branch `release/playlist-soundboard-v2.3` (noch keine offizielle Freigabe).**
+**Stabile Veröffentlichung v2.3.0 · Kostenlos · Open Source (MIT).**
+
+Dauerhafter Download: [GitHub Release v2.3.0](https://github.com/lautfunk/Reaper-FX-Plugins/releases/tag/playlist-soundboard-v2.3.0).
 
 VST3-Name der vorgesehenen stabilen Produktlinie: **LautFunk Playlist Soundboard.vst3**. Angezeigter Plugin-Name in der DAW: **LautFunk Playlist Player & Soundboard**. Dieses neue Plugin hat eine eigene, langfristig beizubehaltende Plugin-ID und kann neben den bisherigen DEV-/RC-Versionen installiert werden.
 
@@ -127,7 +129,7 @@ Mehrere parallele DEV-/RC-Versionen tragen **unterschiedliche Plugin-IDs**. Die 
 
 ## Status und Lizenzhinweis
 
-Diese Fassung ist ein **Release-Kandidat**, keine abschließend freigegebene Produktversion. Vor einem öffentlichen Binary-Release sind die Tests und die JUCE-Lizenzprüfung in der [Release-Checkliste](DOKUMENTATION/RELEASE_CHECKLIST_DE.md) verbindlich zu klären.
+Diese Fassung ist ein **Stabile Version 2.3.0** (Veröffentlichung mit Windows-/macOS-Paketen, Dokumentation und vollständigem Quellcode). Vor einem öffentlichen Binary-Release sind die Tests und die JUCE-Lizenzprüfung in der [Release-Checkliste](DOKUMENTATION/RELEASE_CHECKLIST_DE.md) verbindlich zu klären.
 
 Das Programm verwendet JUCE 9, dessen Module unter **AGPLv3 oder einer kommerziellen JUCE-Lizenz** bereitgestellt werden. Für einen nicht unter AGPLv3 veröffentlichten Build kann eine kommerzielle Lizenz erforderlich sein. Der LautFunk-eigene Quellcode ist **MIT-lizenziert** ([LICENSE](LICENSE)); JUCE 9 hat eigene Lizenzbedingungen. Siehe [Lizenzprüfung](DOKUMENTATION/RECHT_LIZENZEN_DE.md).
 
