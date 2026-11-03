@@ -85,6 +85,14 @@ Der Playlist Player & Soundboard vereint eine eigenständig abspielende WAV-/MP3
 
 **Versionen:** Die ursprüngliche Playlist-v1.0 ist über [GitHub Releases](https://github.com/lautfunk/Reaper-FX-Plugins/releases/tag/playlist-v1.0.0) verfügbar. Die v2.3 mit Soundboard und separaten Ausgängen wurde in REAPER als Routing-Testfassung erprobt. Die endgültige **v2.3.0** wurde in REAPER getestet und für die Veröffentlichung freigegeben. Die zwischenzeitlichen Entwicklungsfassungen behalten ihre abweichenden Plugin-IDs und sind **keine automatischen Upgrades** älterer REAPER-Projekte.
 
+### Herkunft und Open-Source-Lizenz
+
+Das Soundboard-Bedienkonzept mit **Soundbänken und Sample-Pads** orientiert sich unter anderem am [Ultraschall Soundboard](https://github.com/Ultraschall/ultraschall-soundboard) des Ultraschall-Projekts. Das Original ist unter der **MIT-Lizenz** veröffentlicht; der ursprüngliche Copyright-Vermerk lautet **Copyright © 2014–2021 Daniel Lindenfelser**. Wir bedanken uns bei den ursprünglichen Entwicklern für ihre Open-Source-Arbeit.
+
+Der **LautFunk Playlist Player & Soundboard** wird als eigenständiges Projekt veröffentlicht und ist **kein offizieller Fork** oder eine Version des Ultraschall-Projekts. Ein Vergleich zentraler C++-Dateien fand keine längeren wörtlich identischen Abschnitte; dies schließt die Übernahme oder Ableitung kleinerer Codebestandteile nicht sicher aus. Deshalb bewahren wir den ursprünglichen Copyright- und Lizenztext vorsorglich auf: [Herkunft und vollständige MIT-Lizenz des Ultraschall Soundboards](LautFunk_Playlist_Player/THIRD_PARTY_NOTICES.md).
+
+Unser selbst entwickelter Quellcode ist ebenfalls [MIT-lizenziert](LICENSE); für **JUCE 9** gelten gesonderte Lizenzbedingungen.
+
 Dokumente: [Benutzerhandbuch](LautFunk_Playlist_Player/README_DE.md) · [Installation für Windows/macOS](LautFunk_Playlist_Player/DOKUMENTATION/INSTALLATION_DE.md) · [Routing in REAPER](LautFunk_Playlist_Player/DOKUMENTATION/REAPER_ROUTING_DE.md) · [MIDI/OSC-Befehle](LautFunk_Playlist_Player/README_DE.md#lokale-osc--stream-deck-steuerung) · [Changelog](LautFunk_Playlist_Player/CHANGELOG.md) · [Testplan](LautFunk_Playlist_Player/DOKUMENTATION/TESTPLAN_DE.md) · [Release-Checkliste](LautFunk_Playlist_Player/DOKUMENTATION/RELEASE_CHECKLIST_DE.md).
 
 <a id="quellcode-und-lizenz"></a>
