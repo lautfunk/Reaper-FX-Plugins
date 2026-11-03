@@ -4,12 +4,18 @@ on:
   workflow_dispatch:
   pull_request:
     paths:
-      - 'LautFunk_Playlist_Player/**'
+      - 'LautFunk_Playlist_Player/Source/**'
+      - 'LautFunk_Playlist_Player/CMakeLists.txt'
+      - 'LautFunk_Playlist_Player/BUILD_WINDOWS.cmd'
+      - 'LautFunk_Playlist_Player/BUILD_MACOS.sh'
       - '.github/workflows/lautfunk-playlist-v2-dev.yml'
   push:
     branches: ['dev/playlist-v2', 'dev/playlist-v2-live', 'dev/playlist-v2-osc', 'dev/playlist-v2-routing']
     paths:
-      - 'LautFunk_Playlist_Player/**'
+      - 'LautFunk_Playlist_Player/Source/**'
+      - 'LautFunk_Playlist_Player/CMakeLists.txt'
+      - 'LautFunk_Playlist_Player/BUILD_WINDOWS.cmd'
+      - 'LautFunk_Playlist_Player/BUILD_MACOS.sh'
       - '.github/workflows/lautfunk-playlist-v2-dev.yml'
 
 permissions:
