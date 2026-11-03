@@ -1,8 +1,10 @@
 # LautFunk Playlist Player & Soundboard
 
-**Stabile Veröffentlichung v2.3.1 · Kostenlos · Open Source (MIT).**
+**Stabile Veröffentlichung v2.3.2 · Kostenlos · Open Source (MIT).**
 
-Dauerhafter Download: [GitHub Release v2.3.1](https://github.com/lautfunk/Reaper-FX-Plugins/releases/tag/playlist-soundboard-v2.3.1). Die frühere [v2.3.0](https://github.com/lautfunk/Reaper-FX-Plugins/releases/tag/playlist-soundboard-v2.3.0) bleibt weiterhin verfügbar.
+Dauerhafter Download: [GitHub Release v2.3.2](https://github.com/lautfunk/Reaper-FX-Plugins/releases/tag/playlist-soundboard-v2.3.2). Die früheren Versionen [v2.3.1](https://github.com/lautfunk/Reaper-FX-Plugins/releases/tag/playlist-soundboard-v2.3.1) und [v2.3.0](https://github.com/lautfunk/Reaper-FX-Plugins/releases/tag/playlist-soundboard-v2.3.0) bleiben verfügbar.
+
+**Korrigiert in v2.3.2:** Umlaute und andere Unicode-Zeichen in der Oberfläche, zum Beispiel **LAUTSTÄRKE**, werden jetzt explizit als UTF-8 an JUCE übergeben. Die Audiofunktionen und Plugin-ID `LfS3` bleiben unverändert. Ein automatisierter Regressionstest schützt die Texte vor erneuten Kodierungsfehlern.
 
 VST3-Dateiname der stabilen Produktlinie: **LautFunk Playlist Soundboard.vst3**. Angezeigter Plugin-Name in der DAW: **LautFunk Playlist Player & Soundboard**. Dieses neue Plugin hat eine eigene, langfristig beizubehaltende Plugin-ID und kann neben den bisherigen DEV-/RC-Versionen installiert werden.
 
@@ -115,7 +117,7 @@ Bei fokussiertem Soundboard: Tasten **1–0, - und =** für die zwölf sichtbare
 
 Die VST3-Einstellungen werden mit der DAW-Projektdatei gespeichert. Audio wird **nicht** ins Projekt eingebettet; verschobene WAV/MP3-Dateien müssen neu zugewiesen werden. Vor Aufnahme oder Livestream ein Preset/Projekt speichern, die Pfade prüfen und das Routing testen.
 
-Die historischen DEV-/RC-Versionen tragen **andere Plugin-IDs**. Die stabile Produktlinie verwendet seit v2.3.0 die **unveränderte Plugin-ID `LfS3`**: Die v2.3.1 kann v2.3.0 aktualisieren, ältere Entwicklungsinstanzen werden in der DAW dagegen **nicht automatisch** ersetzt.
+Die historischen DEV-/RC-Versionen tragen **andere Plugin-IDs**. Die stabile Produktlinie verwendet seit v2.3.0 die **unveränderte Plugin-ID `LfS3`**: Die v2.3.1 und v2.3.2 können v2.3.0 aktualisieren, ältere Entwicklungsinstanzen werden in der DAW dagegen **nicht automatisch** ersetzt.
 
 ## Systemanforderungen und Grenzen
 
@@ -129,7 +131,7 @@ Die historischen DEV-/RC-Versionen tragen **andere Plugin-IDs**. Die stabile Pro
 
 ## Status und Lizenzhinweis
 
-**v2.3.1 ist ein Wartungsrelease der stabilen Produktlinie.** Die Audio-Funktionen wurden gegenüber v2.3.0 nicht verändert. Windows-/macOS-Pakete enthalten Handbuch, MIT-Lizenz, Changelog und die originale Ultraschall-MIT-Lizenz unter `THIRD_PARTY_NOTICES.md`. Vor künftigen Veröffentlichungen sind weiterhin die [Release-Checkliste](DOKUMENTATION/RELEASE_CHECKLIST_DE.md) und die JUCE-Lizenzbedingungen zu prüfen.
+**v2.3.2 ist ein Wartungsrelease der stabilen Produktlinie.** Die Zeichendarstellung wurde korrigiert; die Audio-Funktionen wurden gegenüber v2.3.0/v2.3.1 nicht verändert. Windows-/macOS-Pakete enthalten Handbuch, MIT-Lizenz, Changelog und die originale Ultraschall-MIT-Lizenz unter `THIRD_PARTY_NOTICES.md`. Vor künftigen Veröffentlichungen sind weiterhin die [Release-Checkliste](DOKUMENTATION/RELEASE_CHECKLIST_DE.md) und die JUCE-Lizenzbedingungen zu prüfen.
 
 Das Programm verwendet JUCE 9, dessen Module unter **AGPLv3 oder einer kommerziellen JUCE-Lizenz** bereitgestellt werden. Für einen nicht unter AGPLv3 veröffentlichten Build kann eine kommerzielle Lizenz erforderlich sein. Der LautFunk-eigene Quellcode ist **MIT-lizenziert** ([LICENSE](LICENSE)); JUCE 9 hat eigene Lizenzbedingungen. Siehe [Lizenzprüfung](DOKUMENTATION/RECHT_LIZENZEN_DE.md).
 
