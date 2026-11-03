@@ -1,173 +1,136 @@
-# LautFunk Playlist Player v1.0 – VST3 für REAPER
+# LautFunk Playlist Player & Soundboard
 
-## Was ist das?
+**Release-Kandidat v2.3.0-rc1 auf Branch `release/playlist-soundboard-v2.3` (noch keine offizielle Freigabe).**
 
-Ein **virtuelles Instrument, das eine MP3/WAV-Playlist als Stereo-Audio ausgibt**. Es wird wie ein VSTi auf eine REAPER-Spur geladen. Kein ReaScript, keine Audio-Items, keine Aufnahme und keine laufende Projekt-Wiedergabe nötig – solange REAPER das Plugin bei gestopptem Transport mit Audiobuffern versorgt.
+VST3-Name der vorgesehenen stabilen Produktlinie: **LautFunk Playlist Soundboard.vst3**. Angezeigter Plugin-Name in der DAW: **LautFunk Playlist Player & Soundboard**. Dieses neue Plugin hat eine eigene, langfristig beizubehaltende Plugin-ID und kann neben den bisherigen DEV-/RC-Versionen installiert werden.
 
-**Status:** Quellcode-Version v1.0. Die Vorversion v0.1.1 wurde vom Anwender unter Windows erfolgreich kompiliert und in REAPER als funktionsfähig gemeldet. **Die neuen Änderungen in v1.0 sind hier noch nicht unter Windows kompiliert oder in REAPER getestet.** Das Paket enthält keine Windows-Binärdatei.
+Ein VST3 für Podcasts, Livestreams und Musikprogramme: Playlist und Soundboard in einem Plugin, ohne den DAW-Transport zwingend starten zu müssen. Entwickelt mit **C++17, JUCE 9.0.4 und CMake**.
 
-## Funktionen von v1.0
+> **Sicherer Standard:** Beim ersten Start laufen Playlist und Soundboard gemeinsam über den **Stereoausgang 1/2**. Zusätzliche Kanäle, externes Routing, OSC oder ein Stream Deck sind nicht erforderlich.
 
-- MP3- und WAV-Dateien hinzufügen: mehrere Dateien auswählen oder per Drag-and-drop hineinziehen
-- Playlist im Plugin, Doppelklick startet einen Titel
-- Abspielen, Pause, Stop, vorheriger/nächster Titel
-- Titel verschieben (Hoch/Runter), entfernen oder Playlist leeren
-- Normale Reihenfolge / Zufallswiedergabe
-- **Repeat/Endlos:** Aus, gesamte Playlist in Endlosschleife oder einzelnen Titel wiederholen. Werkseinstellung: ENDLOS. Ein hervorgehobener Status zeigt den aktiven Modus.
-- Lautstärke in dB, als VST3-Parameter für REAPER automatisierbar (Werkseinstellung −12 dB)
-- **Gesamtspielzeit der Playlist:** Dauer aller geladenen MP3-/WAV-Titel, inklusive Stundenanzeige bei langen Listen. Die Dauer jedes Titels erscheint rechts in der Liste.
-- Titelanzahl und Hinweis auf noch zu lesende bzw. nicht auswertbare Dateien.
-- Überarbeitete Oberfläche mit getrennten Bereichen für Listenübersicht, aktuellen Titel, Transport, Status und Einstellungen.
-- Zeit- und Fortschrittsanzeige; im Song springen
-- Playlist als `.m3u8` speichern bzw. einlesen (auch relative Pfade beim Import)
-- Wiederherstellen der Liste nach Speichern/Neuladen des REAPER-Projekts (Dateipfade werden gespeichert)
-- Audio-Streaming über Lese-Thread und Read-ahead, um nicht alle Musikdateien in den RAM laden zu müssen
-- Automatischer Titelwechsel auch bei geschlossenem Plugin-Fenster
-- Unterstützt unterschiedliche MP3-/WAV-Sampleraten über JUCE-Transport
-- Dunkle LautFunk-Bedienoberfläche
+## Einstieg
 
-**Was noch nicht enthalten ist:** Crossfade, Ducking beim Sprechen, Titel-Suchfeld, MP3-Tag-/Cover-Anzeige, unabhängige Audioausgabe außerhalb REAPERs, garantierte lückenlose Übergänge oder eine fertig signierte Installationsdatei. Der automatische Titelwechsel erfolgt über einen 20-Hz-Timer; dadurch können kurze Pausen zwischen Titeln entstehen.
+- [Windows/macOS installieren](DOKUMENTATION/INSTALLATION_DE.md)
+- [REAPER: Stereo-Modus und optionales Routing auf 3/4](DOKUMENTATION/REAPER_ROUTING_DE.md)
+- [Systematische Tests vor einer Veröffentlichung](DOKUMENTATION/TESTPLAN_DE.md)
+- [Release-Checkliste und GitHub-Veröffentlichung](DOKUMENTATION/RELEASE_CHECKLIST_DE.md)
+- [MIT-Lizenz (LautFunk-eigene Quellen)](LICENSE) und [JUCE-/Drittanbieter-Lizenzhinweise](DOKUMENTATION/RECHT_LIZENZEN_DE.md)
+- [Änderungsverlauf](CHANGELOG.md)
 
-## Windows: Kompilieren
+## Funktionsumfang
 
-Voraussetzungen:
+### Playlist
 
-1. Windows 10/11 mit REAPER 64-Bit.
-2. [Visual Studio 2022 Community](https://visualstudio.microsoft.com/vs/community/) oder Build Tools 2022, mit **Desktopentwicklung mit C++**.
-3. [CMake 3.22 oder neuer](https://cmake.org/download/) und Git.
-4. Internet beim ersten Build, damit CMake automatisch **JUCE 9.0.4** herunterlädt. Alternativ ein lokales JUCE-Checkout in einem Ordner `JUCE` neben der `CMakeLists.txt` bereitstellen.
+- WAV/MP3 laden, abspielen, pausieren, stoppen, Titel vor/zurück, Spulen.
+- M3U8 importieren/exportieren, Titel entfernen und Reihenfolge verändern.
+- Repeat aus / ganze Liste / ein Titel und Shuffle.
+- Gesamtspielzeit, Restzeit des Durchlaufs und Fortschrittsanzeige; unbekannte Längen als Näherung.
+- Unabhängige Playlist-Lautstärke.
 
-### Von v0.1.1 auf v1.0 aktualisieren (schnellster Weg)
+### Soundboard
 
-1. REAPER beenden. Die bestehenden VST3-Dateien und den v0.1.1-Projektordner optional sichern.
-2. Im **bereits erfolgreich gebauten** Projektordner `C:\LautFunk_Playlist_Player_VST3_v0.1.1\` die Dateien `CMakeLists.txt`, `BUILD_WINDOWS.cmd`, `README_DE.md` und den vollständigen Unterordner `Source` durch die entsprechenden Dateien aus v1.0 ersetzen.
-3. **Den vorhandenen `build`-Ordner stehen lassen**, solange du den Projektpfad nicht geändert hast. So kann JUCE aus dem vorherigen Build wiederverwendet werden.
-4. `BUILD_WINDOWS.cmd` ausführen. Nach Erfolg REAPER beenden und den neuen vollständigen `.vst3`-Ordner in `C:\Program Files\Common Files\VST3\` ersetzen. REAPER starten und neu scannen.
+- Beliebig viele **Soundbänke mit je 24 Pads**.
+- Umschaltbare Ansichten: 12 große Pads auf zwei Seiten oder 24 kompakte Pads.
+- WAV und MP3 pro Pad, gleichzeitiges Abspielen mehrerer Samples (Engine-Limit 24 Stimmen).
+- One-Shot, Loop, individuelle Pad-Pegel und Fade-Out.
+- STOP ALL, FADE ALL, Stop/Fade für einzelne Pads.
+- **Ordner importieren:** WAV-/MP3-Dateien des ausgewählten Ordners alphabetisch auf freie Pads verteilen; bei Bedarf weitere Soundbänke anlegen. Belegte Pads bleiben unverändert. Keine automatische Unterordnersuche.
+- **Bank-Datei:** Bank-Konfiguration als `.lfsb` speichern oder laden. Die Dateien enthalten **Pfade**, nicht das Audiomaterial selbst.
 
-Alternativ v1.0 frisch in einen **kurzen, unveränderlichen Pfad** wie `C:\LFPlayer\` entpacken und `BUILD_WINDOWS.cmd` doppelklicken. Verschiebst du einen Projektordner mit vorhandenem `build`, musst du den `build`-Ordner löschen, damit CMake keine alten absoluten Pfade verwendet.
+### Ducking
 
-Die Eingabeaufforderung zeigt eventuelle Compilerfehler an. Alternativ im Terminal:
+**Musik-Ducking** im Soundboard ein- oder ausschalten. Wenn ein Sample läuft, wird die **Playlist-Musik** abgesenkt und anschließend weich wieder angehoben. Die Samples bleiben unverändert.
 
-```powershell
-cmake -S . -B build -G "Visual Studio 17 2022" -A x64
-cmake --build build --config Release --target LautFunkPlaylistPlayer_VST3
-```
+- Absenkung: **0–30 dB**, Standard 12 dB.
+- Attack: **1–500 ms**, Standard 35 ms.
+- Release: **20–3000 ms**, Standard 650 ms.
 
-Der Output liegt anschließend im Projekt-Buildordner unter `LautFunkPlaylistPlayer_artefacts/Release/VST3/` (genauen Pfad im Build-Log prüfen). Den **vollständigen Ordner** `LautFunk Playlist Player.vst3` nach
+**Kein Mikrofon- oder Sidechain-Ducking** – das ist eine andere, noch nicht implementierte Funktion.
 
-```text
-C:\Program Files\Common Files\VST3\
-```
+### Optionale Audioausgänge – NEU in v2.3 RC
 
-kopieren. Falls der VST3-Eintrag nicht angezeigt wird, in REAPER **Options → Preferences → Plug-ins → VST** einen erneuten Scan durchführen.
+Über die Schaltfläche **AUDIO-ROUTING** im oberen Bereich:
 
-Bei fehlender Internetverbindung beim JUCE-Download kann der Build nicht starten; alternativ [JUCE](https://github.com/juce-framework/JUCE/releases/tag/9.0.4) manuell herunterladen und den entpackten Quellcode im Projekt-Unterordner `JUCE` ablegen.
+| Modus | Playlist | Soundboard | Zusätzliche Einrichtung |
+| --- | --- | --- | --- |
+| **Standard: Stereo-Mix** | Out 1/2 | Out 1/2 | Nein |
+| **Erweitert: Getrennt** | Out 1/2 | Out 3/4 | Ja, nur wenn DAW weitere Ausgänge unterstützt |
 
-## REAPER: Einrichten für Livestreams ohne Aufnahme
+Der zweite Stereo-Bus ist standardmäßig deaktiviert. Wenn ihn der Host nicht aktiviert, wird der gemeinsame Stereo-Mix beibehalten. **Wichtig:** Ein aktivierter Bus ist nicht automatisch auf eine hörbare Spur geroutet. Wenn der Soundboard-Ton nach dem Umschalten fehlt, in der DAW Ausgang 3/4 zuweisen oder auf **Standard** zurückschalten.
 
-1. Neue leere Spur `LAUTFUNK BACKGROUND MUSIC` erstellen.
-2. Im FX-Browser `VSTi: LautFunk Playlist Player` als Instrument laden. Es werden **keine MIDI-Items** benötigt.
-3. REAPER unter **Options → Preferences → Audio → Playback** öffnen und **Run FX when stopped** aktivieren.
-4. Darauf achten, dass REAPERs Audiogerät im Stop-Zustand geöffnet bleibt. Wenn die Musik nicht zu hören ist: `Flush FX on stop`, Auto-Bypass auf Stille und Track-FX-Bypass kontrollieren.
-5. MP3/WAV-Dateien per Drag-and-drop hineinziehen oder `+ Dateien` wählen.
-6. Im Plugin auf **PLAY** klicken. REAPER muss nicht aufnehmen. Der globale REAPER-Transport kann gestoppt bleiben.
-7. Die Spur über Track-Fader, Sends und Audio-Hardware-Ausgänge zum Stream-Mix/OBS/Loopback routen. Sonstige Effekte **hinter** dem Instrument in der FX-Kette ergänzen.
+Ducking funktioniert in beiden Modi, da es vor der Trennung auf die Playlist angewendet wird. Bei getrennten Ausgängen wird das Soundboard **nicht gleichzeitig auf Out 1/2 gespiegelt**, um Doppelungen zu vermeiden.
 
-### Empfohlenes Routing
+### MIDI
 
-```text
-Mic / Voice Track  ────┐
-                      ├──► Stream-Bus ───► OBS / Stream-Ausgang
-Music Track:          │
-Playlist Player VST3 ─┘
-          │
-   EQ / Ducking (optional)
-```
+MIDI-Nachrichten aus der DAW steuern die aktuelle Soundbank:
 
-Falls du zur Aufnahme innerhalb REAPERs arbeitest, ändert sich daran nichts: Die Musikspur ist ein normales Instrument. Sie muss **nicht** record-armed sein.
+| Ereignis | Aktion |
+| --- | --- |
+| Note 36–59 | Pads 1–24 starten |
+| Note 60–83 | Pads 1–24 stoppen |
+| Note 84–107 | Pads 1–24 ausblenden |
+| Program Change 0–N | Bank nach Index auswählen |
+| CC 110 / 111 (Wert mindestens 64) | Bank vorherige / nächste |
+| CC 112 / 113 | Stop All / Fade All |
+| CC 114–117 | Playlist Play/Pause, nächster/vorheriger Titel, Stop |
 
-### Live-Betrieb: Sicherheit
+MIDI-Noten werden über ihre **Notennummer** angegeben; Oktavnamen unterscheiden sich je nach DAW. MIDI-Steuerung ist nicht samplegenau.
 
-- Vor echtem Livestream ein längeres MP3 und WAV testen, Playlist-Ende prüfen, Projekt speichern und wieder öffnen.
-- Bei geladenen Live-Projekten REAPER-Audioengine und Plugin nicht durch globale Stop-/Pause-Aktionen anhalten, falls `Run FX when stopped` deaktiviert ist.
-- Titeldateien nicht während des Streams verschieben/umbenennen. VST3 speichert Pfade, nicht die Musikdaten.
-- Ein Track kann +6 dB Gain erreichen; dies ist kein Brickwall-Limiter. Für Schutz vor Übersteuerungen nach dem Plugin einen Limiter im Musikbus einsetzen.
-- Bei mehreren Musikquellen auf Routing-Rückkopplungen achten.
+### Lokale OSC-/Stream-Deck-Steuerung
 
-## Bedienung
+OSC im Soundboard über **OSC lokal** aktivieren. Standard: `127.0.0.1:9001` per UDP. Die Funktion ist zunächst **aus** und nur auf demselben Rechner erreichbar. Bei mehreren gleichzeitig aktivierten Plugin-Instanzen muss jede einen eigenen Port erhalten.
 
-| Element | Funktion |
-|---|---|
-| + Dateien / Drag & Drop | MP3/WAV hinzufügen |
-| M3U8 laden / speichern | Playlists importieren/exportieren |
-| Doppelklick in Liste | Gewählten Titel starten |
-| Hoch / Runter | Titel verschieben |
-| Entfernen / Leeren | Eintrag oder ganze Liste löschen |
-| PLAY / PAUSE / STOP | Nur Player-Transport, nicht REAPER |
-| `|<` / `>|` | Vorheriger/nächster Titel |
-| Zufall | Zufällige Titelreihenfolge; bei Repeat Aus ohne Wiederholung innerhalb der Runde |
-| Repeat: AUS / ENDLOS / 1 TITEL | Ausschalten, gesamte Playlist endlos oder denselben Titel wiederholt abspielen |
-| GESAMTSPIELZEIT | Summe der Dauern aller geladenen Titel; während des Einlesens zunächst vorläufig |
-| Zeitangabe je Titel | Songdauer in der Playliste; fehlende bzw. nicht lesbare Dateien sind markiert |
-| Fortschrittsbalken | Abspielposition setzen |
-| Lautstärke (dB) | Player-Ausgabepegel, REAPER-automatisierbar |
+Mit **Bitfocus Companion → Generic OSC** kann ein Stream Deck beispielsweise:
 
-## Technische Architektur
+| OSC-Adresse | Argument | Wirkung |
+| --- | --- | --- |
+| `/lautfunk/pad/trigger` | Integer 1–24 | Sample starten |
+| `/lautfunk/pad/stop` | Integer 1–24 | Sample sofort stoppen |
+| `/lautfunk/pad/fade` | Integer 1–24 | Sample ausblenden |
+| `/lautfunk/bank/next` | keines | Nächste Bank |
+| `/lautfunk/bank/previous` | keines | Vorherige Bank |
+| `/lautfunk/bank/select` | Integer 1–N | Bank nach Position wählen |
+| `/lautfunk/all/stop` | keines | Alle Samples stoppen |
+| `/lautfunk/all/fade` | keines | Alle Samples ausblenden |
+| `/lautfunk/playlist/play` | keines | Playlist starten |
+| `/lautfunk/playlist/pause` | keines | Playlist pausieren |
+| `/lautfunk/playlist/toggle` | keines | Play/Pause umschalten |
+| `/lautfunk/playlist/stop` | keines | Playlist stoppen |
+| `/lautfunk/playlist/next` | keines | Nächster Titel |
+| `/lautfunk/playlist/previous` | keines | Vorheriger Titel |
+| `/lautfunk/duck/enable` | Integer 0 / 1 | Ducking aus / ein |
+| `/lautfunk/duck/depth` | Float 0–30 | Ducking-Absenkung |
 
-- JUCE 9.0.4 / C++17 / CMake, VST3-Format
-- Synth/Instrument ohne Eingang und mit Stereo-Ausgang
-- `AudioFormatManager` mit WAV/MP3, `AudioFormatReaderSource`, `AudioTransportSource` (Sampleratenanpassung), `TimeSliceThread` (Read-ahead)
-- Playlist- und Bedienungslogik auf dem Message-Thread; keine Dateizugriffe in `processBlock`
-- Dauererkennung: maximal ein noch nicht eingelesener Eintrag pro 20-Hz-Timerdurchlauf, über `AudioFormatReader::lengthInSamples / sampleRate`. Werte werden für die Liste zwischengespeichert und beim Verschieben, Entfernen oder Laden von Playlists synchron gehalten. Dabei kann das Auslesen sehr langsamer oder nicht erreichbarer Dateien die Bedienoberfläche kurz blockieren; die Echtzeit-Audiobearbeitung öffnet keine Dateien.
-- Volumenparameter mit 25-ms-Smoothing gegen Regler-Klicks
-- Playlist-Persistenz im REAPER-Projekt als Plugin-State; nach Projektladen kein automatischer Start
-- Audio ist vollständig REAPER-geroutet, kein eigenes Windows-Audiogerät
+Beispiel für Pad 1: Adresse `/lautfunk/pad/trigger`, OSC-Typ **Integer**, Wert **1**.
 
-## Lizenzen und Quellen
+Derzeit **keine OSC-Rückmeldung** an Stream-Deck-Tasten und keine Steuerung über das LAN; ein direkter Elgato-Plugin-Treiber ist nicht enthalten.
 
-Der **JUCE-Frameworkcode ist nicht Teil dieses ZIPs**. Bei Verwendung oder Weitergabe bitte die aktuellen JUCE-9-Lizenzbedingungen prüfen (AGPLv3 bzw. passende kommerzielle Lizenz): https://juce.com/get-juce/
+### Tastatur
 
-Referenzen:
-- https://juce.com/tutorials/tutorial_playing_sound_files/
-- https://docs.juce.com/develop/classjuce_1_1AudioTransportSource.html
-- https://github.com/juce-framework/JUCE/releases/tag/9.0.4
-- https://www.reaper.fm/guides/ReaperTroubleshootingGuide.pdf
+Bei fokussiertem Soundboard: Tasten **1–0, - und =** für die zwölf sichtbaren Pads, **Bild hoch/runter** für Bankwechsel und **Escape** für STOP ALL. Das hängt von der Tastaturweiterleitung der DAW ab.
 
-## Stand
+## Projekte, Dateipfade und Datensicherung
 
-**v0.1 – 02.11.2026:** Erste Quellcode-Version.
+Die VST3-Einstellungen werden mit der DAW-Projektdatei gespeichert. Audio wird **nicht** ins Projekt eingebettet; verschobene WAV/MP3-Dateien müssen neu zugewiesen werden. Vor Aufnahme oder Livestream ein Preset/Projekt speichern, die Pfade prüfen und das Routing testen.
 
+Mehrere parallele DEV-/RC-Versionen tragen **unterschiedliche Plugin-IDs**. Die DAW ersetzt eine alte Instanz daher **nicht automatisch** durch den neuen Kandidaten. Der endgültige öffentliche Produktname und die langfristig stabile Plugin-ID werden vor dem Release festgelegt.
 
-## Korrektur v0.1.1 (2. November 2026)
+## Systemanforderungen und Grenzen
 
-Die CMake-Projektdefinition aktiviert jetzt neben C++ auch die Sprache C:
+- **VST3-Host**, Windows x64 oder macOS Universal (Intel und Apple Silicon); für macOS wird macOS 11 als Build-Ziel verwendet. Tatsächliche Host-Kompatibilität muss getestet werden.
+- JUCE 9.0.4 wird bei der CMake-Konfiguration bezogen, falls keine lokale JUCE-Kopie bereitgestellt wird.
+- Für Musik bei gestopptem DAW-Transport muss der Host weiterhin Plugin-Audio verarbeiten (z. B. REAPERs *Run FX when stopped*).
+- Viele laute gleichzeitige Samples können die Summe übersteuern; ein Peak-Limiter im DAW-Ausgang wird empfohlen.
+- Kein eingebauter LUFS-Angleich, Peak-Limiter, Mikrofon-Sidechain oder bidirektionales OSC-Feedback.
+- Der CI-Build bestätigt die Kompilierung, **nicht** die Praxisfunktion in verschiedenen DAWs.
+- Mac-Builds aus GitHub Actions sind bisher nur **ad-hoc signiert, nicht Apple-notarisiert**.
 
-```cmake
-project(LautFunkPlaylistPlayer VERSION 0.1.1 LANGUAGES C CXX)
-```
+## Status und Lizenzhinweis
 
-Dies behebt die JUCE-9-Konfigurationsmeldung `A C compiler is required to build targets that depend on JUCE` bei einer zuvor nur mit `LANGUAGES CXX` konfigurierten Anwendung. Der Compiler war dabei nicht das Problem. Das Build-Skript meldet bei Konfigurationsfehlern nicht mehr irrefuehrend einen fehlenden Internetzugang.
+Diese Fassung ist ein **Release-Kandidat**, keine abschließend freigegebene Produktversion. Vor einem öffentlichen Binary-Release sind die Tests und die JUCE-Lizenzprüfung in der [Release-Checkliste](DOKUMENTATION/RELEASE_CHECKLIST_DE.md) verbindlich zu klären.
 
-Nach Austausch der Projektdateien kann `BUILD_WINDOWS.cmd` erneut ausgefuehrt werden. Falls noch ein alter CMake-Cache stoert, den Ordner `build` loeschen und das Skript erneut starten.
+Das Programm verwendet JUCE 9, dessen Module unter **AGPLv3 oder einer kommerziellen JUCE-Lizenz** bereitgestellt werden. Für einen nicht unter AGPLv3 veröffentlichten Build kann eine kommerzielle Lizenz erforderlich sein. Der LautFunk-eigene Quellcode ist **MIT-lizenziert** ([LICENSE](LICENSE)); JUCE 9 hat eigene Lizenzbedingungen. Siehe [Lizenzprüfung](DOKUMENTATION/RECHT_LIZENZEN_DE.md).
 
-Hinweis: v0.1.1 korrigiert die CMake-Konfiguration; ein vollstaendiger Windows-VST3-Build und REAPER-Hoertest wurden in dieser Umgebung noch nicht ausgefuehrt.
+## Hintergrund
 
-## Neu in Version 1.0 (2. November 2026)
-
-- **Gesamtdauer:** Automatisches Summieren aller Songlängen; die Dauer wird anhand der Dateimetadaten ermittelt. Die Berechnung funktioniert unabhängig davon, welcher Song gerade läuft.
-- **Dauer je Titel:** In jeder Zeile der Playlist wird nun auch die Titelspielzeit angezeigt.
-- **Endlosmodus deutlich sichtbar:** Die Auswahl `Repeat: ENDLOS` wiederholt nach dem letzten Song den ersten. Oben wird `ENDLOS AKTIV` hervorgehoben. `Repeat: AUS` beendet die Liste am Ende, `Repeat: 1 TITEL` wiederholt nur einen Song.
-- **Überarbeitete GUI:** Angepasste Größen und Abstände; insbesondere sind die Transporttasten, die Statuszeile und die Bedienelemente unten voneinander getrennt.
-- **Versionsnummer:** 1.0.0 in CMake und `VERSION 1.0` in der Oberfläche. VST3-Plugin-ID bleibt identisch, damit bestehende REAPER-Projekte die aktualisierte Version wiederfinden.
-- **Unverändert:** MP3/WAV-Wiedergabe, getrennte Player-Steuerung, Playlist-Persistenz, M3U8, Shuffle, REAPER-Automation des Lautstärkeparameters, Spurenrouting, keine Aufnahme erforderlich.
-
-### Praxistest nach dem Build
-
-1. 3 MP3-/WAV-Titel laden und die Gesamtdauer mit den Einzeldauern vergleichen.
-2. `Repeat: ENDLOS` wählen, zum letzten Titel springen und auf den automatischen Neustart am Listenanfang achten.
-3. `Repeat: AUS` wählen und prüfen, ob die Playlist nach dem letzten Titel stoppt.
-4. `Repeat: 1 TITEL` prüfen, danach `Zufall` zusammen mit Endlos testen.
-5. Plugin-Fenster verkleinern und vergrößern; kontrollieren, ob die Statuszeile die Transporttasten nicht überdeckt.
-6. Projekt speichern, REAPER neu öffnen und die gespeicherte Wiederholungseinstellung prüfen.
-
-**Validierung:** Die Änderungen wurden auf Quellcode-Konsistenz und GUI-Geometrie geprüft. Ein nativer JUCE/Windows-Build der v1.0 war hier nicht möglich. Deshalb erst testen, bevor du diese Fassung in einem produktiven Livestream einsetzt.
+Die Bank-/Pad-Bedienung ist in ihrer Funktion vom [Ultraschall Soundboard](https://github.com/Ultraschall/ultraschall-soundboard) inspiriert. Der hier verwendete Soundboard-C++-Code wurde eigenständig erstellt und enthält keine aus dem Ultraschall-Projekt übernommenen Quelldateien.

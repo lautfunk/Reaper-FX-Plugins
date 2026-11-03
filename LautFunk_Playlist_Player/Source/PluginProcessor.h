@@ -1,6 +1,9 @@
 #pragma once
 #include <JuceHeader.h>
 #include <atomic>
+#include <array>
+#include "SoundboardEngine.h"
+#include "OscControl.h"
 
 class LautFunkPlaylistProcessor final : public juce::AudioProcessor,
                                           private juce::Timer,
@@ -19,7 +22,7 @@ public:
     juce::AudioProcessorEditor* createEditor() override;
     bool hasEditor() const override { return true; }
     const juce::String getName() const override { return JucePlugin_Name; }
-    bool acceptsMidi() const override { return false; }
+    bool acceptsMidi() const override { return true; }
     bool producesMidi() const override { return false; }
     bool isMidiEffect() const override { return false; }
     double getTailLengthSeconds() const override { return 0.0; }
@@ -55,6 +58,32 @@ public:
         double knownSeconds = 0.0;
     };
 
+    struct RemainingTime
+    {
+        double seconds = 0.0;
+        double progress = 0.0;
+        bool approximate = false;
+    };
+    RemainingTime getRemainingTime() const;
+    LautFunkOscControl& getOscControl() { return oscControl; }
+    const LautFunkOscControl& getOscControl() const { return oscControl; }
+    SoundboardEngine& getSoundboard() { return soundboard; }
+    const SoundboardEngine& getSoundboard() const { return soundboard; }
+    int getMidiBank() const { return midiBankId.load(); }
+    void setMidiBank(int bankId);
+    void selectMidiBankRelative(int direction);
+    bool isDucking() const { return duckingActive.load(); }
+    // Safe fallback: when the host cannot enable output 3/4, stay in
+    // the ordinary stereo mix. Call from the JUCE message thread only.
+    bool setSeparateOutputs(bool separate);
+    bool getSeparateOutputs() const noexcept { return separateOutputs.load(); }
+    bool isAuxOutputEnabled() const noexcept;
+    juce::String getRoutingStatus() const;
+    juce::AudioParameterBool* duckEnabledParam = nullptr;
+    juce::AudioParameterFloat* duckDepthParam = nullptr;
+    juce::AudioParameterFloat* duckAttackParam = nullptr;
+    juce::AudioParameterFloat* duckReleaseParam = nullptr;
+
     juce::Array<juce::File> getTrackFiles() const;
     juce::Array<double> getTrackDurations() const;
     PlaylistStats getPlaylistStats() const;
@@ -74,6 +103,22 @@ private:
     void handleAsyncUpdate() override;
     bool loadIndex(int index, bool autoStart);
     void advanceAtEnd();
+    enum class MidiAction : uint8_t { trigger, stopPad, fadePad, bankPrev, bankNext,
+                                    bankProgram, stopAll, fadeAll, playlistToggle,
+                                    playlistStop, playlistNext, playlistPrevious };
+    struct MidiCommand { MidiAction action; int value = 0; };
+    static constexpr int midiQueueSize = 256;
+    juce::AbstractFifo midiFifo { midiQueueSize };
+    std::array<MidiCommand, midiQueueSize> midiCommands {};
+    void queueMidi(const MidiCommand& command) noexcept;
+    void handleMidiCommands();
+    void handleMidiMessage(const juce::MidiMessage& message) noexcept;
+    std::atomic<int> midiBankId { 1 };
+    std::atomic<bool> duckingActive { false };
+    std::atomic<bool> separateOutputs { false };
+    juce::SmoothedValue<float, juce::ValueSmoothingTypes::Linear> duckGain;
+    double hostRate = 48000.0;
+    bool duckTargetActive = false;
 
     mutable juce::CriticalSection playlistLock;
     juce::Array<juce::File> tracks;
@@ -88,9 +133,12 @@ private:
 
     juce::AudioFormatManager formats;
     juce::TimeSliceThread readerThread { "LautFunk Playlist Streaming" };
+    SoundboardEngine soundboard;
+    LautFunkOscControl oscControl;
     juce::AudioTransportSource transport;
     std::unique_ptr<juce::AudioFormatReaderSource> fileSource;
     juce::SmoothedValue<float, juce::ValueSmoothingTypes::Linear> gain;
+    juce::AudioBuffer<float> soundboardScratch;
 
     juce::CriticalSection pendingLock;
     juce::ValueTree pendingState;

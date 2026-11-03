@@ -1,4 +1,7 @@
 desc:LautFunk Voice Transformer v1.0
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 LautFunk contributors
+// See LICENSE in the repository root for permissions and warranty disclaimer.
 tags:vocal voice pitch formant
 version:1.0
 author:LautFunk

@@ -1,4 +1,7 @@
 desc:LautFunk Voice Scrambler v2
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 LautFunk contributors
+// See LICENSE in the repository root for permissions and warranty disclaimer.
 // Version 2.2. Stereo frequency inversion with a 255-tap Hilbert transformer.
 // 127 samples latency. Simple/Clean is approximately reversible; Split/Radio is creative.
 // First 14 parameter slots and filename remain compatible with v2.1 projects.
