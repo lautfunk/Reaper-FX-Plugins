@@ -193,6 +193,68 @@ int SoundboardEngine::activeCount() const
     return count;
 }
 
+bool SoundboardEngine::hasActiveVoices() const noexcept
+{
+    const auto snapshot = std::atomic_load(&voices);
+    for (const auto& v : *snapshot)
+        if (!v->finished.load(std::memory_order_relaxed) &&
+            !v->immediateStop.load(std::memory_order_relaxed) &&
+            (v->loop || !v->transport.hasStreamFinished()))
+            return true;
+    return false;
+}
+
+juce::ValueTree SoundboardEngine::exportBank(int bankId) const
+{
+    const juce::ScopedLock l(banksLock);
+    const auto* bank = findBank(bankId);
+    if (!bank) return {};
+    juce::ValueTree result("LautFunkSoundbank");
+    result.setProperty("version", 1, nullptr);
+    result.setProperty("name", bank->name, nullptr);
+    for (int i = 0; i < padsPerBank; ++i)
+    {
+        const auto& p = bank->pads[static_cast<size_t>(i)];
+        if (p.file.getFullPathName().isEmpty()) continue;
+        juce::ValueTree slot("Pad");
+        slot.setProperty("index", i, nullptr);
+        slot.setProperty("file", p.file.getFullPathName(), nullptr);
+        slot.setProperty("name", p.name, nullptr);
+        slot.setProperty("gain", p.gainDb, nullptr);
+        slot.setProperty("loop", p.loop, nullptr);
+        slot.setProperty("fade", p.fadeSeconds, nullptr);
+        result.addChild(slot, -1, nullptr);
+    }
+    return result;
+}
+
+int SoundboardEngine::importBank(const juce::ValueTree& root)
+{
+    if (!root.hasType("LautFunkSoundbank") || root.getNumChildren() > padsPerBank)
+        return -1;
+    Bank bank;
+    bank.name = root.getProperty("name", "Importierte Bank").toString().trim();
+    if (bank.name.isEmpty()) bank.name = "Importierte Bank";
+    for (int j = 0; j < root.getNumChildren(); ++j)
+    {
+        const auto child = root.getChild(j);
+        if (!child.hasType("Pad")) continue;
+        const int slot = static_cast<int>(child.getProperty("index", -1));
+        if (!juce::isPositiveAndBelow(slot, padsPerBank)) continue;
+        auto& pad = bank.pads[static_cast<size_t>(slot)];
+        const auto path = child.getProperty("file").toString();
+        if (path.isNotEmpty()) pad.file = juce::File(path);
+        pad.name = child.getProperty("name").toString();
+        pad.gainDb = juce::jlimit(-60.f, 6.f, static_cast<float>(child.getProperty("gain", -6.0)));
+        pad.loop = static_cast<bool>(child.getProperty("loop", false));
+        pad.fadeSeconds = juce::jlimit(0.f, 10.f, static_cast<float>(child.getProperty("fade", 0.7)));
+    }
+    const juce::ScopedLock l(banksLock);
+    bank.id = nextBankId++;
+    banks.push_back(std::move(bank));
+    return banks.back().id;
+}
+
 void SoundboardEngine::mixInto(juce::AudioBuffer<float>& output, juce::AudioBuffer<float>& scratch)
 {
     const auto active = std::atomic_load(&voices);
