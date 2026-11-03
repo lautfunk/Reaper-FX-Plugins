@@ -7,7 +7,7 @@ on:
       - 'LautFunk_Playlist_Player/**'
       - '.github/workflows/lautfunk-playlist-v2-dev.yml'
   push:
-    branches: ['dev/playlist-v2']
+    branches: ['dev/playlist-v2', 'dev/playlist-v2-live']
     paths:
       - 'LautFunk_Playlist_Player/**'
       - '.github/workflows/lautfunk-playlist-v2-dev.yml'
