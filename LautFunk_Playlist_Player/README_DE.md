@@ -1,209 +1,134 @@
-# LautFunk Playlist Player & Soundboard v2.0 – Entwicklungsfassung
+# LautFunk Playlist Player & Soundboard
 
-**Status:** DEV PREVIEW – Quellcode, noch nicht offiziell veröffentlicht oder in REAPER auf Windows/macOS validiert.
+**Aktueller Zweig: v2.3.0 ROUTING RC (Release-Kandidat, noch keine stabile öffentliche Freigabe).**
 
-Diese Version baut auf dem getesteten LautFunk Playlist Player v1.0 auf. Sie ist **kein Ersatz für eine stabile Live-Installation**. V1.0 und die DEV-Fassung besitzen unterschiedliche Plugin-IDs; beide können parallel installiert werden.
+Ein VST3 für Podcasts, Livestreams und Musikprogramme: Playlist und Soundboard in einem Plugin, ohne den DAW-Transport zwingend starten zu müssen. Entwickelt mit **C++17, JUCE 9.0.4 und CMake**.
 
-Im ZIP liegen drei kleine, eigens erzeugte `TEST_SAMPLES/*.wav` zum Ausprobieren der Pads.
+> **Sicherer Standard:** Beim ersten Start laufen Playlist und Soundboard gemeinsam über den **Stereoausgang 1/2**. Zusätzliche Kanäle, externes Routing, OSC oder ein Stream Deck sind nicht erforderlich.
 
-## Neu: Playlist-Restzeit
+## Einstieg
 
-Im Playlist-Modus werden angezeigt:
+- [Windows/macOS installieren](DOKUMENTATION/INSTALLATION_DE.md)
+- [REAPER: Stereo-Modus und optionales Routing auf 3/4](DOKUMENTATION/REAPER_ROUTING_DE.md)
+- [Systematische Tests vor einer Veröffentlichung](DOKUMENTATION/TESTPLAN_DE.md)
+- [Release-Checkliste und GitHub-Veröffentlichung](DOKUMENTATION/RELEASE_CHECKLIST_DE.md)
+- [Lizenzen und Drittanbieter-Komponenten](DOKUMENTATION/RECHT_LIZENZEN_DE.md)
+- [Änderungsverlauf](CHANGELOG.md)
 
-- Anzahl der Titel und Gesamtspielzeit
-- **REST**: verbleibende Zeit ab der aktuellen Position bis zum Ende des aktuellen Playlist-Durchlaufs
-- Ein dünner Fortschrittsbalken für diesen Durchlauf
-- Bei `Repeat: ENDLOS`: verbleibende Zeit bis zum nächsten Playlist-Neustart
-- Bei `Repeat: 1 TITEL`: Restlaufzeit des aktuellen Titels
-- Bei Shuffle: aktuelle Titelrestzeit plus Länge noch nicht gespielter Titel dieses Zufallsdurchlaufs
+## Funktionsumfang
 
-Falls eine Dateilänge noch eingelesen wird oder nicht verfügbar ist, steht vor der Restzeit „ca.“. Die Anzeige berücksichtigt manuelles Vorspulen, Überspringen und das Verschieben von Titeln.
+### Playlist
 
-## Neu: Soundboard
+- WAV/MP3 laden, abspielen, pausieren, stoppen, Titel vor/zurück, Spulen.
+- M3U8 importieren/exportieren, Titel entfernen und Reihenfolge verändern.
+- Repeat aus / ganze Liste / ein Titel und Shuffle.
+- Gesamtspielzeit, Restzeit des Durchlaufs und Fortschrittsanzeige; unbekannte Längen als Näherung.
+- Unabhängige Playlist-Lautstärke.
 
-Oben `SOUNDBOARD` anklicken. Der Musikplayer arbeitet im Hintergrund weiter; beide Funktionen sind unabhängig und werden im selben Stereo-VST3-Ausgang gemischt.
+### Soundboard
 
-### Soundbänke
+- Beliebig viele **Soundbänke mit je 24 Pads**.
+- Umschaltbare Ansichten: 12 große Pads auf zwei Seiten oder 24 kompakte Pads.
+- WAV und MP3 pro Pad, gleichzeitiges Abspielen mehrerer Samples (Engine-Limit 24 Stimmen).
+- One-Shot, Loop, individuelle Pad-Pegel und Fade-Out.
+- STOP ALL, FADE ALL, Stop/Fade für einzelne Pads.
+- **Ordner importieren:** WAV-/MP3-Dateien des ausgewählten Ordners alphabetisch auf freie Pads verteilen; bei Bedarf weitere Soundbänke anlegen. Belegte Pads bleiben unverändert. Keine automatische Unterordnersuche.
+- **Bank-Datei:** Bank-Konfiguration als \`.lfsb\` speichern oder laden. Die Dateien enthalten **Pfade**, nicht das Audiomaterial selbst.
 
-- Standardmäßig zwei Bänke: **Jingles** und **Reaktionen**.
-- Über **+ Bank** beliebig viele weitere Bänke hinzufügen.
-- Die aktuelle Bank im Dropdown auswählen.
-- Die Bank im Textfeld daneben umbenennen (Enter drücken oder Feld verlassen).
-- **Bank löschen** entfernt die ausgewählte Bank, solange mindestens eine Bank erhalten bleibt.
-- Beim Wechsel der Bank laufen gestartete Samples weiter.
-- Bänke und Pad-Einstellungen werden mit dem REAPER-Projekt bzw. FX-Preset gespeichert.
+### Ducking
 
-### 12 oder 24 Pads
+**Musik-Ducking** im Soundboard ein- oder ausschalten. Wenn ein Sample läuft, wird die **Playlist-Musik** abgesenkt und anschließend weich wieder angehoben. Die Samples bleiben unverändert.
 
-- **12 Pads**: zwölf größere Pads auf Seite 1, zwölf weitere auf Seite 2.
-- **24 Pads**: alle 24 Slots einer Bank kompakt auf einer Seite.
-- Der Wechsel 12/24 entfernt oder verschiebt keine Sample-Belegung.
-- **< Seite / Seite >** wechselt in der 12er-Ansicht zwischen Slots 1–12 und 13–24.
+- Absenkung: **0–30 dB**, Standard 12 dB.
+- Attack: **1–500 ms**, Standard 35 ms.
+- Release: **20–3000 ms**, Standard 650 ms.
 
-### Samples zuordnen
+**Kein Mikrofon- oder Sidechain-Ducking** – das ist eine andere, noch nicht implementierte Funktion.
 
-1. Einen freien Slot anklicken, damit er ausgewählt wird.
-2. **Sample laden** betätigen und eine WAV- oder MP3-Datei auswählen.
-3. Alternativ eine oder mehrere WAV-/MP3-Dateien direkt auf Pads ziehen. Weitere Dateien füllen die nachfolgenden Slots derselben Bank, soweit Platz vorhanden ist.
-4. Rechtsklick auf einen Pad öffnet ein Menü mit Laden, Stoppen, Ausblenden und Leeren.
+### Optionale Audioausgänge – NEU in v2.3 RC
 
-### Einspieler starten und beenden
+Über die Schaltfläche **AUDIO-ROUTING** im oberen Bereich:
 
-- **Linksklick auf einen belegten Pad:** Sample von Anfang an starten. Kein Autoplay, kein automatischer Wechsel zum nächsten Pad.
-- Mehrere unterschiedliche Samples können gleichzeitig spielen (maximal 24 gleichzeitig aktive Stimmen).
-- Beim erneuten Klick auf einen normalen One-Shot wird derselbe Einspieler zusätzlich neu gestartet (Layering).
-- **Loop:** Der ausgewählte Pad spielt in Schleife. Zweiter Klick auf diesen Pad stoppt seine laufenden Loops.
-- **Stop Pad:** nur die Einspieler des ausgewählten Slots sofort stoppen.
-- **Fade Pad:** Einspieler des ausgewählten Slots mit eingestellter Fade-Zeit ausblenden.
-- **STOP ALL:** alle laufenden Soundboard-Samples sofort stoppen (Playlist-Musik bleibt unbeeinflusst).
-- **FADE ALL:** alle laufenden Soundboard-Samples sanft ausblenden (Playlist-Musik bleibt unbeeinflusst).
+| Modus | Playlist | Soundboard | Zusätzliche Einrichtung |
+| --- | --- | --- | --- |
+| **Standard: Stereo-Mix** | Out 1/2 | Out 1/2 | Nein |
+| **Erweitert: Getrennt** | Out 1/2 | Out 3/4 | Ja, nur wenn DAW weitere Ausgänge unterstützt |
 
-### Pegel und Fade
+Der zweite Stereo-Bus ist standardmäßig deaktiviert. Wenn ihn der Host nicht aktiviert, wird der gemeinsame Stereo-Mix beibehalten. **Wichtig:** Ein aktivierter Bus ist nicht automatisch auf eine hörbare Spur geroutet. Wenn der Soundboard-Ton nach dem Umschalten fehlt, in der DAW Ausgang 3/4 zuweisen oder auf **Standard** zurückschalten.
 
-- **Gain (dB)**: Startlautstärke für neue Wiedergaben des ausgewählten Pads, Standard −6 dB.
-- **Fade (s)**: individuelle Ausblendzeit bei `Fade Pad`/`FADE ALL`, Standard 0,7 Sekunden.
-- **Loop**: für ausgewählten Pad ein-/ausschalten; gilt für neu gestartete Wiedergaben.
-- Änderungen an Gain, Loop und Fade gelten für künftige Starts, nicht rückwirkend für laufende Samples.
+Ducking funktioniert in beiden Modi, da es vor der Trennung auf die Playlist angewendet wird. Bei getrennten Ausgängen wird das Soundboard **nicht gleichzeitig auf Out 1/2 gespiegelt**, um Doppelungen zu vermeiden.
 
-## Was die DEV-Fassung noch nicht bietet
+### MIDI
 
-- Kein Sidechain-/Sprach-Ducking, kein automatisches Musikbett-Ducking
-- Noch keine MIDI-, OSC- oder Stream-Deck-Zuweisung
-- Kein Hold-to-Play, keine separaten VST3-Ausgangsbusse
-- Keine eigene Bankdatei für Import/Export außerhalb des REAPER-Projekts
-- Kein individueller Sample-Namenseditor (Dateiname wird angezeigt)
-- Kein automatischer LUFS-Abgleich und kein Peak-Limiter für die Soundboard-Summe
-- Keine nahtlosen Playlist-Crossfades
+MIDI-Nachrichten aus der DAW steuern die aktuelle Soundbank:
 
-Diese Punkte sind für spätere Entwicklungsstufen vorgesehen.
-
-## Technische Hinweise
-
-- Soundboard-Samples werden beim Start von der Festplatte über JUCE `AudioTransportSource` mit Read-Ahead gestreamt. Das Laden/Öffnen einer Datei erfolgt im UI-Thread, nicht im Audio-Callback.
-- Der Datenzugriff erfolgt über eine unveränderliche Momentaufnahme laufender Stimmen. Für eine offizielle Veröffentlichung sind noch ausführliche Echtzeit-, Stress- und Hosttests vorgesehen.
-- Bei vielen gleichzeitig lauten Samples kann die Summe **übersteuern**. Für den Livebetrieb einen geeigneten Limiter auf den REAPER-Bus legen und die Pegel kontrollieren.
-- REAPER muss Effekte bei gestopptem Transport verarbeiten (z. B. `Run FX when stopped`), damit der Player ohne gestartete REAPER-Wiedergabe hörbar ist.
-- In REAPER werden absolute Dateipfade im Projekt gespeichert. Verschwinden oder verschieben sich Dateien, müssen diese neu zugewiesen werden.
-- Eine Bank-/Pad-Änderung schreibt zunächst den Zustand im aktuellen REAPER-Projekt. Projekt speichern, um sie zu behalten.
-- Diese Entwicklungsfassung ist **noch nicht erfolgreich kompiliert oder auf Windows/macOS getestet**.
-
-## Bauen
-
-Die Datei `GITHUB_SETUP_DE.md` im ZIP beschreibt einen separaten Git-Entwicklungsbranch mit einem eigenen GitHub-Actions-Workflow für Windows x64 und macOS Universal. Der offizielle Release `playlist-v1.0.0` wird dadurch nicht berührt.
-
-## Ursprung
-
-Die getrennte Bank-/Pad-Bedienung ist funktional vom [Ultraschall Soundboard](https://github.com/Ultraschall/ultraschall-soundboard) inspiriert. Der Soundboard-Code in diesem Verzeichnis wurde neu geschrieben und enthält keine aus Ultraschall kopierten Quellcodedateien.
-
----
-
-## Live-Steuerung (Entwicklungsstand v2.1)
-
-### Automatisches Playlist-Ducking
-
-Die Musik-Ducking-Option im Soundboard-Tab kann jederzeit ein- und ausgeschaltet werden. Sobald mindestens ein Soundboard-Sample läuft, wird **nur die Playlist-Musik** um den eingestellten Betrag abgesenkt. Die Samples selbst bleiben unverändert. Nach dem letzten Sample fährt die Musik mit einstellbarer Release-Zeit wieder hoch.
-
-- **Musik-Ducking**: global ein/aus, standardmäßig an.
-- **Absenkung**: 0–30 dB; Standard 12 dB.
-- **Attack**: 1–500 ms; Standard 35 ms.
-- **Release**: 20–3000 ms; Standard 650 ms.
-
-Die Parameter werden mit dem REAPER-Projekt gespeichert. Es handelt sich um Soundboard-zu-Playlist-Ducking innerhalb des Plugins, **nicht** um Mikrofon-/Sidechain-Ducking.
-
-### Komplette Sample-Ordner importieren
-
-Im Soundboard auf **Ordner importieren** klicken und einen Ordner wählen. Die WAV- und MP3-Dateien werden alphabetisch auf freie Pads in der aktuellen Bank verteilt. Bereits belegte Pads bleiben erhalten. Sind mehr Dateien vorhanden als freie Plätze, entstehen automatisch zusätzliche Soundbänke mit jeweils 24 Slots. Standardmäßig werden nur Dateien direkt im gewählten Ordner berücksichtigt, keine Unterordner.
-
-### Soundbank-Dateien
-
-Über **Bank-Datei → Bank speichern ...** lässt sich die aktuelle Bank als `.lfsb` exportieren; **Bank laden ...** importiert sie als neue Bank. Gespeichert werden Namen, Slot-Zuordnung, Gain, Loop und Fade. Audiodateien selbst werden nicht eingebettet, sondern über Dateipfade referenziert.
-
-### MIDI-Tastenbelegung
-
-Das VST3 akzeptiert MIDI-Noten aller Kanäle:
-
-| MIDI-Event | Aktion |
+| Ereignis | Aktion |
 | --- | --- |
-| Note 36–59 (C2–B3 nach üblicher Bezeichnung, je nach DAW-Oktavendarstellung) | Pads 1–24 auslösen |
-| Note 60–83 | Pads 1–24 sofort stoppen |
+| Note 36–59 | Pads 1–24 starten |
+| Note 60–83 | Pads 1–24 stoppen |
 | Note 84–107 | Pads 1–24 ausblenden |
-| Program Change 0–N | Soundbank 1–(N+1) auswählen |
-| CC 110, Wert ≥64 | Vorherige Bank |
-| CC 111, Wert ≥64 | Nächste Bank |
-| CC 112, Wert ≥64 | Stop All |
-| CC 113, Wert ≥64 | Fade All |
-| CC 114, Wert ≥64 | Playlist Play/Pause |
-| CC 115, Wert ≥64 | Nächster Playlist-Titel |
-| CC 116, Wert ≥64 | Vorheriger Playlist-Titel |
-| CC 117, Wert ≥64 | Playlist stoppen |
+| Program Change 0–N | Bank nach Index auswählen |
+| CC 110 / 111 (Wert mindestens 64) | Bank vorherige / nächste |
+| CC 112 / 113 | Stop All / Fade All |
+| CC 114–117 | Playlist Play/Pause, nächster/vorheriger Titel, Stop |
 
-Die MIDI-Notennummer ist maßgeblich, da unterschiedliche Programme Oktaven unterschiedlich benennen. Wenn dein Keyboard einen anderen Notenbereich liefert, kannst du die Noten in REAPER vor dem Plugin transponieren. MIDI-Befehle werden über den REAPER-MIDI-Eingang des Plugins verarbeitet und über den Message-Thread ausgeführt. Es ist deshalb kein Sample-genaues Timing garantiert.
+MIDI-Noten werden über ihre **Notennummer** angegeben; Oktavnamen unterscheiden sich je nach DAW. MIDI-Steuerung ist nicht samplegenau.
 
-### Tastaturkürzel bei fokussierter Soundboard-Oberfläche
+### Lokale OSC-/Stream-Deck-Steuerung
 
-- **1 bis 0, - und =**: Die zwölf sichtbaren Pads auslösen.
-- **Bild hoch / Bild runter**: Soundbank zurück / weiter.
-- **Escape**: Stop All.
+OSC im Soundboard über **OSC lokal** aktivieren. Standard: \`127.0.0.1:9001\` per UDP. Die Funktion ist zunächst **aus** und nur auf demselben Rechner erreichbar. Bei mehreren gleichzeitig aktivierten Plugin-Instanzen muss jede einen eigenen Port erhalten.
 
-Diese Tastenkürzel funktionieren nur, wenn REAPER die Tastatureingaben an das Plugin-Fenster weiterleitet.
+Mit **Bitfocus Companion → Generic OSC** kann ein Stream Deck beispielsweise:
 
-### Einschränkungen
-
-Die neue Live-Erweiterung ist eine **Entwicklungsfassung** und benötigt Praxistests in REAPER. OSC/Stream-Deck-Fernsteuerung, Mikrofon-Sidechain-Ducking, getrennte Audioausgänge und LUFS-Abgleich sind noch nicht implementiert.
-
----
-
-## v2.2 OSC DEV – Stream Deck / Companion
-
-Diese Entwicklungsfassung baut auf der in REAPER getesteten v2.1 auf. **Der normale Stereo-Mix bleibt Standard.** Es ist weder ein zweiter Ausgang noch besonderes DAW-Routing nötig. Ein optionaler Mehrkanalmodus ist erst für eine spätere Version vorgesehen.
-
-### OSC einschalten
-
-1. Das VST3 **LautFunk Playlist Soundboard OSC DEV** öffnen (eigene Plugin-ID, parallel zu 2.1 installierbar).
-2. Zum Reiter **SOUNDBOARD** wechseln.
-3. Unten **OSC lokal** aktivieren und den UDP-Port auf **9001** lassen, sofern dieser frei ist.
-4. Der Status zeigt **OSC AN: 127.0.0.1:9001** an. Ist der Port belegt, bleibt OSC ausgeschaltet und eine Fehlermeldung erscheint.
-
-OSC ist standardmäßig **ausgeschaltet** und bindet sich ausschließlich an \`127.0.0.1\`. Andere Rechner im Netzwerk können keine Befehle senden. Die aktive Einstellung und der Port werden mit dem REAPER-Projekt gespeichert. Bei mehreren Plugin-Instanzen muss jede aktivierte OSC-Instanz einen **eigenen Port** erhalten.
-
-### Bitfocus Companion / Stream Deck
-
-1. **Bitfocus Companion** öffnen und die Verbindung **Generic → OSC** hinzufügen.
-2. Ziel-IP: \`127.0.0.1\`, Ziel-Port: \`9001\`.
-3. Einer Stream-Deck-Taste eine Generic-OSC-Aktion zuweisen.
-4. OSC-Pfad eintragen, z. B. \`/lautfunk/pad/trigger\`, und als **Integer** den Wert \`1\` senden (Pad 1). Die meisten Aktionen benötigen keine Argumente.
-
-**Wichtig:** Es geht um eine *ausgehende* OSC-Aktion von Companion zum Player. Ein eventuell vorhandener OSC-**Empfangsport von Companion selbst** ist dafür nicht erforderlich. Stream Deck spricht über Companion mit dem VST3.
-
-### OSC-Befehle
-
-| OSC-Pfad | Argument | Aktion |
-|---|---|---|
-| \`/lautfunk/pad/trigger\` | Integer 1–24 | Pad der aktiven Bank starten |
-| \`/lautfunk/pad/stop\` | Integer 1–24 | Pad sofort stoppen |
-| \`/lautfunk/pad/fade\` | Integer 1–24 | Pad ausblenden |
-| \`/lautfunk/bank/next\` | keines | Nächste Soundbank |
-| \`/lautfunk/bank/previous\` | keines | Vorherige Soundbank |
-| \`/lautfunk/bank/select\` | Integer 1…N | Soundbank nach Position auswählen (nicht interne ID) |
+| OSC-Adresse | Argument | Wirkung |
+| --- | --- | --- |
+| \`/lautfunk/pad/trigger\` | Integer 1–24 | Sample starten |
+| \`/lautfunk/pad/stop\` | Integer 1–24 | Sample sofort stoppen |
+| \`/lautfunk/pad/fade\` | Integer 1–24 | Sample ausblenden |
+| \`/lautfunk/bank/next\` | keines | Nächste Bank |
+| \`/lautfunk/bank/previous\` | keines | Vorherige Bank |
+| \`/lautfunk/bank/select\` | Integer 1–N | Bank nach Position wählen |
 | \`/lautfunk/all/stop\` | keines | Alle Samples stoppen |
 | \`/lautfunk/all/fade\` | keines | Alle Samples ausblenden |
-| \`/lautfunk/playlist/play\` | keines | Playlist starten / fortsetzen |
+| \`/lautfunk/playlist/play\` | keines | Playlist starten |
 | \`/lautfunk/playlist/pause\` | keines | Playlist pausieren |
 | \`/lautfunk/playlist/toggle\` | keines | Play/Pause umschalten |
 | \`/lautfunk/playlist/stop\` | keines | Playlist stoppen |
 | \`/lautfunk/playlist/next\` | keines | Nächster Titel |
 | \`/lautfunk/playlist/previous\` | keines | Vorheriger Titel |
-| \`/lautfunk/duck/enable\` | Integer 0 oder 1 | Ducking aus / ein |
-| \`/lautfunk/duck/depth\` | Float 0.0–30.0 | Absenkung in dB |
+| \`/lautfunk/duck/enable\` | Integer 0 / 1 | Ducking aus / ein |
+| \`/lautfunk/duck/depth\` | Float 0–30 | Ducking-Absenkung |
 
-Die Padnummern gelten immer für alle 24 Slots, also auch in der 12-Pad-Ansicht. Ein Soundbankwechsel unterbricht laufende Samples nicht.
+Beispiel für Pad 1: Adresse \`/lautfunk/pad/trigger\`, OSC-Typ **Integer**, Wert **1**.
 
-### Grenzen dieser Entwicklungsfassung
+Derzeit **keine OSC-Rückmeldung** an Stream-Deck-Tasten und keine Steuerung über das LAN; ein direkter Elgato-Plugin-Treiber ist nicht enthalten.
 
-- Nur **lokale OSC-Steuerung** auf demselben Rechner, kein ungeschützter Netzwerkzugriff.
-- Keine OSC-Statusrückmeldungen an Stream-Deck-Tasten (bidirektionales Feedback später).
-- Keine direkte Elgato-Plugin-Integration; Companion mit Generic OSC stellt die Verbindung her.
-- **Kein getrennter Ausgang** in dieser Version; Playlist und Samples bleiben im Stereo-Mix, Ducking funktioniert wie bisher.
-- Mikrofon-Sidechain-Ducking und LUFS-Normalisierung sind ebenfalls noch nicht enthalten.
-- Auch ein grüner CI-Build ersetzt keinen Praxistest unter REAPER oder einer anderen DAW.
+### Tastatur
 
+Bei fokussiertem Soundboard: Tasten **1–0, - und =** für die zwölf sichtbaren Pads, **Bild hoch/runter** für Bankwechsel und **Escape** für STOP ALL. Das hängt von der Tastaturweiterleitung der DAW ab.
+
+## Projekte, Dateipfade und Datensicherung
+
+Die VST3-Einstellungen werden mit der DAW-Projektdatei gespeichert. Audio wird **nicht** ins Projekt eingebettet; verschobene WAV/MP3-Dateien müssen neu zugewiesen werden. Vor Aufnahme oder Livestream ein Preset/Projekt speichern, die Pfade prüfen und das Routing testen.
+
+Mehrere parallele DEV-/RC-Versionen tragen **unterschiedliche Plugin-IDs**. Die DAW ersetzt eine alte Instanz daher **nicht automatisch** durch den neuen Kandidaten. Der endgültige öffentliche Produktname und die langfristig stabile Plugin-ID werden vor dem Release festgelegt.
+
+## Systemanforderungen und Grenzen
+
+- **VST3-Host**, Windows x64 oder macOS Universal (Intel und Apple Silicon); für macOS wird macOS 11 als Build-Ziel verwendet. Tatsächliche Host-Kompatibilität muss getestet werden.
+- JUCE 9.0.4 wird bei der CMake-Konfiguration bezogen, falls keine lokale JUCE-Kopie bereitgestellt wird.
+- Für Musik bei gestopptem DAW-Transport muss der Host weiterhin Plugin-Audio verarbeiten (z. B. REAPERs *Run FX when stopped*).
+- Viele laute gleichzeitige Samples können die Summe übersteuern; ein Peak-Limiter im DAW-Ausgang wird empfohlen.
+- Kein eingebauter LUFS-Angleich, Peak-Limiter, Mikrofon-Sidechain oder bidirektionales OSC-Feedback.
+- Der CI-Build bestätigt die Kompilierung, **nicht** die Praxisfunktion in verschiedenen DAWs.
+- Mac-Builds aus GitHub Actions sind bisher nur **ad-hoc signiert, nicht Apple-notarisiert**.
+
+## Status und Lizenzhinweis
+
+Diese Fassung ist ein **Release-Kandidat**, keine abschließend freigegebene Produktversion. Vor einem öffentlichen Binary-Release sind die Tests und die Lizenzentscheidung in der [Release-Checkliste](DOKUMENTATION/RELEASE_CHECKLIST_DE.md) verbindlich zu klären.
+
+Das Programm verwendet JUCE 9, dessen Module unter **AGPLv3 oder einer kommerziellen JUCE-Lizenz** bereitgestellt werden. Für einen nicht unter AGPLv3 veröffentlichten Build kann eine kommerzielle Lizenz erforderlich sein. Die Lizenz der LautFunk-eigenen Quellen wird vor dem offiziellen Release ausdrücklich festgelegt. Siehe [Lizenzprüfung](DOKUMENTATION/RECHT_LIZENZEN_DE.md).
+
+## Hintergrund
+
+Die Bank-/Pad-Bedienung ist in ihrer Funktion vom [Ultraschall Soundboard](https://github.com/Ultraschall/ultraschall-soundboard) inspiriert. Der hier verwendete Soundboard-C++-Code wurde eigenständig erstellt und enthält keine aus dem Ultraschall-Projekt übernommenen Quelldateien.
