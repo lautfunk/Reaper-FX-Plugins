@@ -2,6 +2,13 @@
 
 Dieses Changelog unterscheidet bereits veröffentlichte Fassungen von Entwicklungsständen. Ein erfolgreicher CI-Build ist keine öffentliche Freigabe.
 
+## [2.3.1] – Wartungsrelease: Herkunft und Dokumentation
+
+- **Kein neuer Funktionsumfang und keine Änderungen an den Audio-Algorithmen.** Weiterhin dieselbe VST3-Plugin-ID `LfS3` wie bei v2.3.0.
+- Die Windows- und macOS-ZIP-Pakete enthalten jetzt `THIRD_PARTY_NOTICES.md` einschließlich der ursprünglichen MIT-Lizenz des Ultraschall Soundboards (Copyright © 2014–2021 Daniel Lindenfelser).
+- Veröffentlichungsstatus, Installationshinweise, Testplan und Herkunftsnachweis konsistent aktualisiert.
+- Offizieller Release mit Windows-x64- und macOS-Universal-Builds sowie SHA-256-Prüfsummen. Die macOS-Ausgabe bleibt ad-hoc signiert und nicht Apple-notarisiert.
+
 ## [2.3.0] – stabile Veröffentlichung
 
 - Getestete Playlist-/Soundboard-Funktionen, optionale Ausgangsbusse, MIDI und OSC.
