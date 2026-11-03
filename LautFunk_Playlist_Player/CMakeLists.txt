@@ -27,7 +27,7 @@ juce_add_plugin(LautFunkPlaylistPlayer
     PRODUCT_NAME "LautFunk Playlist Soundboard DEV"
     DESCRIPTION "Independent music playlist and live soundboard for REAPER"
     IS_SYNTH TRUE
-    NEEDS_MIDI_INPUT FALSE
+    NEEDS_MIDI_INPUT TRUE
     NEEDS_MIDI_OUTPUT FALSE
     IS_MIDI_EFFECT FALSE
     EDITOR_WANTS_KEYBOARD_FOCUS TRUE
