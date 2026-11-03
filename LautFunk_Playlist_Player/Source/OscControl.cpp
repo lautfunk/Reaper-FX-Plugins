@@ -21,7 +21,7 @@ void LautFunkOscControl::stop()
 {
     if (enabled)
         receiver.disconnect();
-    socket.shutdown();
+    socket.reset();
     enabled = false;
 }
 
@@ -50,15 +50,16 @@ bool LautFunkOscControl::setEnabled(bool shouldEnable, int requestedPort)
     // Explicitly bind to IPv4 loopback. This does not expose the soundboard
     // to LAN or Internet devices; remote control needs a separate opt-in
     // transport in a future version.
-    if (!socket.bindToPort(port, "127.0.0.1"))
+    socket = std::make_unique<juce::DatagramSocket>(false);
+    if (!socket->bindToPort(port, "127.0.0.1"))
     {
         status = "OSC: Port " + juce::String(port) + " belegt / nicht verfügbar";
         return false;
     }
 
-    if (!receiver.connectToSocket(socket))
+    if (!receiver.connectToSocket(*socket))
     {
-        socket.shutdown();
+        socket.reset();
         status = "OSC: Empfang konnte nicht gestartet werden";
         return false;
     }
