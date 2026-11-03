@@ -1,57 +1,59 @@
-name: One-time cleanup of v2.3.2 temporary branches
+name: Finalize temporary v2.3.2 branch cleanup
 
 on:
   push:
     branches: [main]
     paths:
       - '.github/workflows/temporary-v2.3.2-branch-cleanup.yml'
-  workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
-  delete-confirmed-temporary-branches:
-    name: Delete only the two approved v2.3.2 temporary branches
+  finalize:
     runs-on: ubuntu-latest
     env:
       GH_TOKEN: ${{ github.token }}
     steps:
-      - name: Verify release and delete exact temporary refs
+      - name: Verify stable release and remove housekeeping refs and temporary workflow
         shell: bash
         run: |
           set -euo pipefail
-          official_tag="playlist-soundboard-v2.3.2"
-          expected_release_sha="a9d706aac77f2887a559a6afccf8528e85f32a6c"
-          tag_sha="$(gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$official_tag" --jq '.object.sha')"
-          if [[ "$tag_sha" != "$expected_release_sha" ]]; then
-            echo "::error::Release tag moved; no branches deleted."
-            exit 1
-          fi
-          gh release view "$official_tag" --repo "$GITHUB_REPOSITORY" --json isDraft,isPrerelease --jq '.isDraft == false and .isPrerelease == false' | grep -Fxq true
+          repo="$GITHUB_REPOSITORY"
+          tag=playlist-soundboard-v2.3.2
+          tag_sha="$(gh api "repos/$repo/git/ref/tags/$tag" --jq '.object.sha')"
+          [[ "$tag_sha" == "a9d706aac77f2887a559a6afccf8528e85f32a6c" ]]
+          gh release view "$tag" --repo "$repo" --json isDraft,isPrerelease --jq '.isDraft == false and .isPrerelease == false' | grep -Fxq true
+          main_sha="$(gh api "repos/$repo/git/ref/heads/main" --jq '.object.sha')"
+          [[ "$main_sha" == "$GITHUB_SHA" ]]
 
-          # Validate both exact ref SHAs before any branch is deleted.
-          for branch in "fix/playlist-utf8-text-v2.3.2" "release/playlist-soundboard-v2.3.2-utf8"; do
+          # Preflight: validate both previously created maintenance branches.
+          for branch in "maintenance/delete-v2.3.2-temporary-branches" "maintenance/fix-v2.3.2-branch-cleanup-check"; do
             case "$branch" in
-              "fix/playlist-utf8-text-v2.3.2") expected="a2deabd9364a114985aca07c69be6e231184425b" ;;
-              "release/playlist-soundboard-v2.3.2-utf8") expected="933c8052140ff1a9bd402875319d653be7e256e7" ;;
-              *) echo "::error::Unexpected branch"; exit 1 ;;
+              "maintenance/delete-v2.3.2-temporary-branches") expected="ec3eae89b498fb696a5eb46633f591894fa04cc5" ;;
+              "maintenance/fix-v2.3.2-branch-cleanup-check") expected="890841c823f66c1fd22141a2a9430c236841ddde" ;;
+              *) exit 1 ;;
             esac
-            current="$(gh api "repos/$GITHUB_REPOSITORY/git/ref/heads/$branch" --jq '.object.sha')"
-            if [[ "$current" != "$expected" ]]; then
-              echo "::error::Branch moved: $branch. Nothing deleted."
-              exit 1
-            fi
+            actual="$(gh api "repos/$repo/git/ref/heads/$branch" --jq '.object.sha')"
+            [[ "$actual" == "$expected" ]] || { echo "::error::Maintenance ref changed: $branch"; exit 1; }
           done
 
-          for branch in "fix/playlist-utf8-text-v2.3.2" "release/playlist-soundboard-v2.3.2-utf8"; do
-            gh api --method DELETE "repos/$GITHUB_REPOSITORY/git/refs/heads/$branch"
-            if gh api "repos/$GITHUB_REPOSITORY/git/ref/heads/$branch" >/dev/null 2>&1; then
-              echo "::error::Branch still exists: $branch"
-              exit 1
-            fi
-            echo "Deleted: $branch"
-          done
-          echo "Published v2.3.2 and main were not modified."
+          # The finalizer branch must be from the merged PR for this exact workflow change.
+          last_pr="$(gh api "repos/$repo/commits/$GITHUB_SHA/pulls" --jq '[.[] | select(.head.ref == "maintenance/finalize-v2.3.2-cleanup" and .merged_at != null)] | first | .head.sha')"
+          [[ -n "$last_pr" && "$last_pr" != "null" ]] || { echo "::error::Finalizer PR not found"; exit 1; }
+          current_finalizer="$(gh api "repos/$repo/git/ref/heads/maintenance/finalize-v2.3.2-cleanup" --jq '.object.sha')"
+          [[ "$last_pr" == "$current_finalizer" ]] || { echo "::error::Finalizer branch changed"; exit 1; }
 
-# One-time cleanup. Remove this workflow immediately after successful use.
+          for branch in "maintenance/delete-v2.3.2-temporary-branches" "maintenance/fix-v2.3.2-branch-cleanup-check" "maintenance/finalize-v2.3.2-cleanup"; do
+            gh api -X DELETE "repos/$repo/git/refs/heads/$branch"
+            echo "Deleted housekeeping branch: $branch"
+          done
+
+          # Commit the removal of this ONE-TIME workflow directly to main using
+          # the normal (non-force) GitHub Contents API. No release/tag is touched.
+          wf=".github/workflows/temporary-v2.3.2-branch-cleanup.yml"
+          file_sha="$(gh api "repos/$repo/contents/$wf" --jq '.sha')"
+          gh api -X DELETE "repos/$repo/contents/$wf" \
+            -f message="Remove completed one-time v2.3.2 maintenance workflow" \
+            -f sha="$file_sha" -f branch=main --jq '.commit.sha'
+          echo "Removed finished one-time workflow. Release $tag is intact."
