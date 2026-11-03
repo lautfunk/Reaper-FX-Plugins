@@ -32,6 +32,7 @@ Im Downloadpaket liegen die **deutsche Bedienungsanleitung**, Installations- und
 Der **vollständige LautFunk-C++-Quellcode** sowie CMake-Konfiguration und Buildskripte liegen im Repository unter `LautFunk_Playlist_Player/`. Von GitHub werden für dieses Release außerdem automatisch die Quellcode-Archive **Source code (zip)** und **Source code (tar.gz)** angeboten.
 
 - **Eigene LautFunk-Quellen:** MIT, siehe `LICENSE`.
+- **Ultraschall Soundboard:** Funktionale Inspiration, ursprünglich MIT (Copyright © 2014–2021 Daniel Lindenfelser); vollständige Herkunfts- und Lizenzhinweise unter `THIRD_PARTY_NOTICES.md`.
 - **JUCE 9.0.4:** separate JUCE-Lizenz; der Entwickler gibt an, die kostenlose JUCE-Starter-Lizenz zu verwenden. Deren Rechte gehen nicht durch die MIT-Lizenz des LautFunk-Codes auf Dritte über.
 - **Bitfocus Companion / Stream Deck:** keine offizielle Partnerschaft.
 
