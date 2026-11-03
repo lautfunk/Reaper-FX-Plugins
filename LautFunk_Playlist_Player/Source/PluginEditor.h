@@ -39,6 +39,7 @@ private:
     static juce::String secondsToText(double);
 
     void showMode(bool soundboard);
+    void showRoutingMenu();
     int visiblePadToSlot(int index) const;
     void updateBoard();
     void updatePadSelection();
@@ -62,7 +63,9 @@ private:
     juce::String lastBankSignature;
     int lastDisplayedBankId = -1;
 
-    juce::TextButton playlistTab { "PLAYLIST" }, soundboardTab { "SOUNDBOARD" };
+    juce::TextButton playlistTab { "PLAYLIST" }, soundboardTab { "SOUNDBOARD" },
+                     routingButton { "AUDIO-ROUTING" };
+    juce::Label routingStatusLabel;
     juce::ListBox list { "Playlist", this };
     juce::TextButton addButton { "+ Dateien" }, importButton { "M3U8 laden" },
                      exportButton { "M3U8 speichern" }, removeButton { "Entfernen" },
