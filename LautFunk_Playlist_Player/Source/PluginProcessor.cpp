@@ -3,7 +3,8 @@
 
 LautFunkPlaylistProcessor::LautFunkPlaylistProcessor()
   : juce::AudioProcessor(BusesProperties().withOutput("Stereo Out", juce::AudioChannelSet::stereo(), true)),
-    soundboard(formats, readerThread)
+    soundboard(formats, readerThread),
+    oscControl(*this)
 {
     volumeParam = new juce::AudioParameterFloat(
         juce::ParameterID { "volume", 1 }, "Player Volume (dB)",
@@ -31,6 +32,8 @@ LautFunkPlaylistProcessor::LautFunkPlaylistProcessor()
 
 LautFunkPlaylistProcessor::~LautFunkPlaylistProcessor()
 {
+    // Disconnect the OSC listener before the audio sources are destroyed.
+    oscControl.setEnabled(false, oscControl.getPort());
     stopTimer();
     cancelPendingUpdate();
     playingWanted = false;
@@ -561,6 +564,8 @@ void LautFunkPlaylistProcessor::getStateInformation(juce::MemoryBlock& dest)
     root.setProperty("duckDepth", duckDepthParam->get(), nullptr);
     root.setProperty("duckAttack", duckAttackParam->get(), nullptr);
     root.setProperty("duckRelease", duckReleaseParam->get(), nullptr);
+    root.setProperty("oscEnabled", oscControl.isEnabled(), nullptr);
+    root.setProperty("oscPort", oscControl.getPort(), nullptr);
     root.addChild(soundboard.saveState(), -1, nullptr);
     if (auto xml = root.createXml())
         juce::AudioProcessor::copyXmlToBinary(*xml, dest);
@@ -625,6 +630,9 @@ void LautFunkPlaylistProcessor::handleAsyncUpdate()
     restoreParam(duckDepthParam, juce::jlimit(0.f, 30.f, static_cast<float>(state.getProperty("duckDepth", 12.f))));
     restoreParam(duckAttackParam, juce::jlimit(1.f, 500.f, static_cast<float>(state.getProperty("duckAttack", 35.f))));
     restoreParam(duckReleaseParam, juce::jlimit(20.f, 3000.f, static_cast<float>(state.getProperty("duckRelease", 650.f))));
+    // Restored only on the message thread, after host state callbacks.
+    oscControl.setEnabled(static_cast<bool>(state.getProperty("oscEnabled", false)),
+                          static_cast<int>(state.getProperty("oscPort", 9001)));
     const auto savedGain = juce::jlimit(-60.0f, 6.0f, (float) state.getProperty("volume", -12.0f));
     volumeParam->setValueNotifyingHost(volumeParam->convertTo0to1(savedGain));
     if (getCurrentIndex() >= 0)
