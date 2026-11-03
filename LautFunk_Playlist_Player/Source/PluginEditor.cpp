@@ -503,6 +503,11 @@ void LautFunkPlaylistEditor::timerCallback()
 
 void LautFunkPlaylistEditor::updateControls()
 {
+    const auto& osc = processor.getOscControl();
+    oscEnabledButton.setToggleState(osc.isEnabled(), juce::dontSendNotification);
+    if (!oscPortEditor.hasKeyboardFocus(true))
+        oscPortEditor.setText(juce::String(osc.getPort()), false);
+    oscStatusLabel.setText(osc.getStatus(), juce::dontSendNotification);
     duckEnabledButton.setToggleState(processor.duckEnabledParam->get(), juce::dontSendNotification);
     if (!duckDepthSlider.isMouseButtonDown())
         duckDepthSlider.setValue(processor.duckDepthParam->get(), juce::dontSendNotification);
@@ -751,6 +756,26 @@ void LautFunkPlaylistEditor::chooseBankFile(bool importing)
                     file.replaceWithText(xml->toString());
             }
         });
+}
+
+void LautFunkPlaylistEditor::configureOscFromUi()
+{
+    const int requestedPort = oscPortEditor.getText().getIntValue();
+    auto& osc = processor.getOscControl();
+    const bool requestedEnabled = oscEnabledButton.getToggleState();
+
+    if (requestedPort < 1024 || requestedPort > 65535)
+    {
+        oscEnabledButton.setToggleState(osc.isEnabled(), juce::dontSendNotification);
+        oscStatusLabel.setText("OSC: Port 1024-65535 eingeben", juce::dontSendNotification);
+        return;
+    }
+
+    const bool success = osc.setEnabled(requestedEnabled, requestedPort);
+    oscEnabledButton.setToggleState(osc.isEnabled(), juce::dontSendNotification);
+    oscStatusLabel.setText(osc.getStatus(), juce::dontSendNotification);
+    if (!success)
+        oscStatusLabel.setTooltip("Port ist möglicherweise bereits von einer anderen Plugin-Instanz belegt.");
 }
 
 void LautFunkPlaylistEditor::chooseSampleFolder()
