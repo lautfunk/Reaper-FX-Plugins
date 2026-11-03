@@ -1,6 +1,6 @@
 # Installation – LautFunk Playlist Player & Soundboard
 
-Stand: **v2.3.0-rc1** (Release-Kandidat, keine freigegebene stabile Version).
+Stand: **v2.3.0** (stabile Veröffentlichung).
 
 ## Unterstützte Pakete
 
@@ -11,7 +11,7 @@ Es gibt aktuell weder einen VST2- noch einen AU-, CLAP- oder eigenständigen Sta
 
 ## Windows
 
-1. Die Windows-x64-ZIP-Datei aus dem freigegebenen GitHub Release oder einem Test-Workflow herunterladen.
+1. Die Windows-x64-ZIP-Datei aus dem freigegebenen GitHub Release oder einem früheren Test-Workflow herunterladen.
 2. Falls von GitHub Actions: ZIP zunächst entpacken; darin liegt noch ein zweites ZIP, das ebenfalls entpackt werden muss.
 3. Den **gesamten** Ordner `LautFunk Playlist Soundboard.vst3` nach
 

@@ -6,7 +6,7 @@ Die von LautFunk selbst entwickelten Quellen stehen unter der **[MIT-Lizenz](LIC
 
 **Direkt zu den wichtigsten Bereichen:** [Plugin-Übersicht](#enthaltene-plugins) · [Playlist Player & Soundboard](#playlist-soundboard-vst3) · [JSFX-Installation](#installation) · [VST3-Installation](LautFunk_Playlist_Player/DOKUMENTATION/INSTALLATION_DE.md) · [Quellcode und Lizenz](#quellcode-und-lizenz) · [GitHub Releases](https://github.com/lautfunk/Reaper-FX-Plugins/releases)
 
-**Veröffentlichungsstatus:** Der [Playlist Player v1.0](https://github.com/lautfunk/Reaper-FX-Plugins/releases/tag/playlist-v1.0.0) ist bereits veröffentlicht. Der erweiterte **Playlist Player & Soundboard v2.3.0-rc1** befindet sich derzeit in der Freigabeprüfung; dies ist **noch keine offizielle v2.3-Version**. Die [Release-Kandidaten](https://github.com/lautfunk/Reaper-FX-Plugins/actions) werden als GitHub-Actions-Artefakte bereitgestellt.
+**Aktuelle Version:** [LautFunk Playlist Player & Soundboard v2.3.0](https://github.com/lautfunk/Reaper-FX-Plugins/releases/tag/playlist-soundboard-v2.3.0) – kostenloses VST3 für Windows x64 und macOS Universal. Die ursprüngliche [Playlist v1.0](https://github.com/lautfunk/Reaper-FX-Plugins/releases/tag/playlist-v1.0.0) bleibt als ältere Version erhältlich.
 
 ---
 
@@ -83,7 +83,7 @@ Der Playlist Player & Soundboard vereint eine eigenständig abspielende WAV-/MP3
 
 **Audioausgänge:** Im Normalbetrieb werden Musik und Samples **gemeinsam auf Stereo 1/2** ausgegeben. Der optionale Expertenmodus führt Musik über 1/2 und Samples über 3/4; dafür ist DAW-Mehrkanalrouting erforderlich. Ohne dieses Routing nutzt man weiterhin den Stereo-Mix.
 
-**Versionen:** Die ursprüngliche Playlist-v1.0 ist über [GitHub Releases](https://github.com/lautfunk/Reaper-FX-Plugins/releases/tag/playlist-v1.0.0) verfügbar. Die v2.3 mit Soundboard und separaten Ausgängen wurde in REAPER als Routing-Testfassung erprobt. Die endgültig benannte **v2.3.0-rc1** wird vor einem öffentlichen Release separat geprüft. Die zwischenzeitlichen Entwicklungsfassungen behalten ihre abweichenden Plugin-IDs und sind **keine automatischen Upgrades** älterer REAPER-Projekte.
+**Versionen:** Die ursprüngliche Playlist-v1.0 ist über [GitHub Releases](https://github.com/lautfunk/Reaper-FX-Plugins/releases/tag/playlist-v1.0.0) verfügbar. Die v2.3 mit Soundboard und separaten Ausgängen wurde in REAPER als Routing-Testfassung erprobt. Die endgültige **v2.3.0** wurde in REAPER getestet und für die Veröffentlichung freigegeben. Die zwischenzeitlichen Entwicklungsfassungen behalten ihre abweichenden Plugin-IDs und sind **keine automatischen Upgrades** älterer REAPER-Projekte.
 
 Dokumente: [Benutzerhandbuch](LautFunk_Playlist_Player/README_DE.md) · [Installation für Windows/macOS](LautFunk_Playlist_Player/DOKUMENTATION/INSTALLATION_DE.md) · [Routing in REAPER](LautFunk_Playlist_Player/DOKUMENTATION/REAPER_ROUTING_DE.md) · [MIDI/OSC-Befehle](LautFunk_Playlist_Player/README_DE.md#lokale-osc--stream-deck-steuerung) · [Changelog](LautFunk_Playlist_Player/CHANGELOG.md) · [Testplan](LautFunk_Playlist_Player/DOKUMENTATION/TESTPLAN_DE.md) · [Release-Checkliste](LautFunk_Playlist_Player/DOKUMENTATION/RELEASE_CHECKLIST_DE.md).
 
@@ -110,10 +110,9 @@ Dokumente: [Benutzerhandbuch](LautFunk_Playlist_Player/README_DE.md) · [Install
 | --- | --- | --- |
 | Playlist Player **v1.0.0** | Veröffentlicht | Windows x64 und macOS Universal als VST3 |
 | Playlist Player & Soundboard **v2.0–v2.2 DEV** | Entwicklungsfassungen | Soundbänke, Ducking, MIDI und OSC schrittweise ergänzt |
-| Playlist Player & Soundboard **v2.3.0-rc1** | Release-Kandidat | Optional getrennte Ausgänge; finale Plugin-ID, Dokumentation und Buildpakete in Prüfung |
-| **v2.3.0** | Noch nicht veröffentlicht | Erst nach Abschluss der Release-Checkliste und Prüfung der finalen Pakete |
+| Playlist Player & Soundboard **v2.3.0** | **Stabile Veröffentlichung** | Windows x64, macOS Universal, MIT-Quellcode, optional getrennte Ausgänge, MIDI und OSC |
 
-**macOS-Hinweis:** Die bisherigen GitHub-Testpakete sind ad-hoc signiert und **nicht Apple-notarisiert**. Das wird bei einem öffentlichen Release transparent angegeben.
+**macOS-Hinweis:** Die macOS-Version ist ad-hoc signiert und **nicht Apple-notarisiert**. Das wird bei einem öffentlichen Release transparent angegeben.
 
 ---
 

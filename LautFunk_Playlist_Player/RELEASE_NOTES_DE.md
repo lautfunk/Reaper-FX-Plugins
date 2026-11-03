@@ -42,7 +42,7 @@ Der **vollständige LautFunk-C++-Quellcode** sowie CMake-Konfiguration und Build
 - Ducking betrifft die **Playlist**, nicht Mikrofone; kein Mikrofon-Sidechain-Ducking.
 - OSC nur lokal, standardmäßig deaktiviert; **kein bidirektionales Stream-Deck-Feedback**.
 - Optionaler Ausgang 3/4 muss in der DAW hörbar geroutet werden, sonst bleiben Samples auf diesem Ausgang stumm; bei Bedarf auf Standard-Stereo zurückschalten.
-- Windows-Funktion in REAPER getestet; andere Hosts und macOS sollten gesondert geprüft werden.
+- Windows-Funktion in REAPER einschließlich finaler Plugin-ID vom Betreiber getestet; andere Hosts und macOS sollten gesondert geprüft werden.
 - Wegen der neuen stabilen Plugin-ID werden frühere DEV-Versionen in bestehenden DAW-Projekten **nicht automatisch ersetzt**.
 
 ## Hilfe und Feedback

@@ -1,0 +1,153 @@
+name: Publish LautFunk Playlist Soundboard v2.3.0
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/lautfunk-playlist-v2.3-publish.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: lautfunk-v2.3.0-official-release
+  cancel-in-progress: false
+
+env:
+  PROJECT_DIR: LautFunk_Playlist_Player
+  VERSION_LABEL: v2.3.0
+  BUNDLE_NAME: LautFunk Playlist Soundboard.vst3
+
+jobs:
+  windows:
+    name: Windows x64 - VST3 and documentation
+    runs-on: windows-2022
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@v4
+      - name: Enable long paths
+        run: git config --global core.longpaths true
+      - name: Configure JUCE CMake
+        run: |
+          cmake -S "$env:PROJECT_DIR" -B "$env:PROJECT_DIR/build-release-rc-win" -G "Visual Studio 17 2022" -A x64 "-DFETCHCONTENT_BASE_DIR=$env:RUNNER_TEMP/lfdeps"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Build Windows VST3
+        run: |
+          cmake --build "$env:PROJECT_DIR/build-release-rc-win" --config Release --target LautFunkPlaylistPlayer_VST3 --parallel 2
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Package Windows ZIP and SHA256
+        run: |
+          $bundle = Join-Path "$env:PROJECT_DIR/build-release-rc-win/LautFunkPlaylistPlayer_artefacts/Release/VST3" $env:BUNDLE_NAME
+          if (-not (Test-Path -LiteralPath $bundle -PathType Container)) { throw "VST3 missing: $bundle" }
+          $stage = Join-Path $env:RUNNER_TEMP "lautfunk-package"
+          New-Item -ItemType Directory -Force -Path $stage, "dist" | Out-Null
+          Copy-Item -LiteralPath $bundle -Destination $stage -Recurse -Force
+          Copy-Item -LiteralPath "$env:PROJECT_DIR/LICENSE" -Destination $stage
+          Copy-Item -LiteralPath "$env:PROJECT_DIR/README_DE.md" -Destination $stage
+          Copy-Item -LiteralPath "$env:PROJECT_DIR/CHANGELOG.md" -Destination $stage
+          Copy-Item -LiteralPath "$env:PROJECT_DIR/RELEASE_NOTES_DE.md" -Destination $stage
+          Copy-Item -LiteralPath "$env:PROJECT_DIR/DOKUMENTATION" -Destination $stage -Recurse
+          $filename = "LautFunk-Playlist-Soundboard-$env:VERSION_LABEL-Windows-x64.zip"
+          $zip = Join-Path "dist" $filename
+          Compress-Archive -Path (Join-Path $stage "*") -DestinationPath $zip -CompressionLevel Optimal -Force
+          if (-not (Test-Path -LiteralPath $zip)) { throw "ZIP not created" }
+          $hash = (Get-FileHash -LiteralPath $zip -Algorithm SHA256).Hash.ToLowerInvariant()
+          "$hash  $filename" | Set-Content -Encoding ascii -Path "dist/SHA256-Windows.txt"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: LautFunk-v2.3.0-Windows-x64
+          path: dist/*
+          if-no-files-found: error
+          retention-days: 30
+
+  macos:
+    name: macOS Universal - VST3 and documentation
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure Universal JUCE CMake
+        shell: bash
+        run: |
+          cmake -S "$PROJECT_DIR" -B "$PROJECT_DIR/build-release-rc-mac" -G Xcode '-DCMAKE_OSX_ARCHITECTURES=arm64;x86_64' -DCMAKE_OSX_DEPLOYMENT_TARGET=11.0 -DCMAKE_XCODE_ATTRIBUTE_CODE_SIGNING_ALLOWED=NO "-DFETCHCONTENT_BASE_DIR=$RUNNER_TEMP/lfdeps"
+      - name: Build macOS VST3
+        shell: bash
+        run: |
+          cmake --build "$PROJECT_DIR/build-release-rc-mac" --config Release --target LautFunkPlaylistPlayer_VST3 --parallel 2
+      - name: Validate architectures, sign ad-hoc, package ZIP and SHA256
+        shell: bash
+        run: |
+          bundle="$PROJECT_DIR/build-release-rc-mac/LautFunkPlaylistPlayer_artefacts/Release/VST3/$BUNDLE_NAME"
+          binary="$bundle/Contents/MacOS/LautFunk Playlist Soundboard"
+          test -d "$bundle" && test -f "$binary"
+          lipo -archs "$binary" | grep -qw arm64
+          lipo -archs "$binary" | grep -qw x86_64
+          # This test build is ad-hoc signed only, NOT Apple notarized.
+          codesign --force --deep --sign - --timestamp=none "$bundle"
+          mkdir -p stage dist
+          ditto "$bundle" "stage/$BUNDLE_NAME"
+          cp "$PROJECT_DIR/LICENSE" "$PROJECT_DIR/README_DE.md" "$PROJECT_DIR/CHANGELOG.md" "$PROJECT_DIR/RELEASE_NOTES_DE.md" stage/
+          cp -R "$PROJECT_DIR/DOKUMENTATION" stage/
+          filename="LautFunk-Playlist-Soundboard-$VERSION_LABEL-macOS-Universal.zip"
+          (cd stage && ditto -c -k --sequesterRsrc . "../dist/$filename")
+          test -s "dist/$filename"
+          (cd dist && shasum -a 256 "$filename" > SHA256-macOS.txt)
+      - uses: actions/upload-artifact@v4
+        with:
+          name: LautFunk-v2.3.0-macOS-Universal
+          path: dist/*
+          if-no-files-found: error
+          retention-days: 30
+
+
+  publish:
+    name: Publish official GitHub release with source archives
+    needs: [windows, macos]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      TAG: playlist-soundboard-v2.3.0
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: LautFunk-v2.3.0-*
+          path: release-assets
+          merge-multiple: true
+      - name: Validate package contents and generate combined SHA256
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd release-assets
+          win="LautFunk-Playlist-Soundboard-v2.3.0-Windows-x64.zip"
+          mac="LautFunk-Playlist-Soundboard-v2.3.0-macOS-Universal.zip"
+          test -s "$win" && test -s "$mac"
+          unzip -Z -1 "$win" | grep -Fq 'LautFunk Playlist Soundboard.vst3'
+          unzip -Z -1 "$mac" | grep -Fq 'LautFunk Playlist Soundboard.vst3'
+          unzip -Z -1 "$win" | grep -q 'LICENSE'
+          unzip -Z -1 "$mac" | grep -q 'LICENSE'
+          sha256sum "$win" "$mac" > SHA256SUMS.txt
+          sha256sum -c SHA256SUMS.txt
+      - name: Create permanent v2.3.0 release
+        shell: bash
+        run: |
+          set -euo pipefail
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "Release $TAG already exists; refusing to overwrite."
+            exit 1
+          fi
+          gh release create "$TAG" \
+            "release-assets/LautFunk-Playlist-Soundboard-v2.3.0-Windows-x64.zip" \
+            "release-assets/LautFunk-Playlist-Soundboard-v2.3.0-macOS-Universal.zip" \
+            "release-assets/SHA256SUMS.txt" \
+            --title "LautFunk Playlist Player & Soundboard v2.3.0" \
+            --notes-file "$PROJECT_DIR/RELEASE_NOTES_DE.md" \
+            --target "$GITHUB_SHA" \
+            --latest
+
+# GitHub automatically provides source-code ZIP and tar.gz archives for the tag.
+# Both platform builds must succeed before the publish job may create the release.
