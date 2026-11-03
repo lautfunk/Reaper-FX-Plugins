@@ -1,0 +1,57 @@
+name: One-time cleanup of v2.3.2 temporary branches
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/temporary-v2.3.2-branch-cleanup.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  delete-confirmed-temporary-branches:
+    name: Delete only the two approved v2.3.2 temporary branches
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Verify release and delete exact temporary refs
+        shell: bash
+        run: |
+          set -euo pipefail
+          official_tag="playlist-soundboard-v2.3.2"
+          expected_release_sha="a9d706aac77f2887a559a6afccf8528e85f32a6c"
+          tag_sha="$(gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$official_tag" --jq '.object.sha')"
+          if [[ "$tag_sha" != "$expected_release_sha" ]]; then
+            echo "::error::Release tag moved; no branches deleted."
+            exit 1
+          fi
+          gh release view "$official_tag" --json isDraft,isPrerelease --jq '.isDraft == false and .isPrerelease == false' | grep -Fxq true
+
+          # Validate both exact ref SHAs before any branch is deleted.
+          for branch in "fix/playlist-utf8-text-v2.3.2" "release/playlist-soundboard-v2.3.2-utf8"; do
+            case "$branch" in
+              "fix/playlist-utf8-text-v2.3.2") expected="a2deabd9364a114985aca07c69be6e231184425b" ;;
+              "release/playlist-soundboard-v2.3.2-utf8") expected="933c8052140ff1a9bd402875319d653be7e256e7" ;;
+              *) echo "::error::Unexpected branch"; exit 1 ;;
+            esac
+            current="$(gh api "repos/$GITHUB_REPOSITORY/git/ref/heads/$branch" --jq '.object.sha')"
+            if [[ "$current" != "$expected" ]]; then
+              echo "::error::Branch moved: $branch. Nothing deleted."
+              exit 1
+            fi
+          done
+
+          for branch in "fix/playlist-utf8-text-v2.3.2" "release/playlist-soundboard-v2.3.2-utf8"; do
+            gh api --method DELETE "repos/$GITHUB_REPOSITORY/git/refs/heads/$branch"
+            if gh api "repos/$GITHUB_REPOSITORY/git/ref/heads/$branch" >/dev/null 2>&1; then
+              echo "::error::Branch still exists: $branch"
+              exit 1
+            fi
+            echo "Deleted: $branch"
+          done
+          echo "Published v2.3.2 and main were not modified."
+
+# One-time cleanup. Remove this workflow immediately after successful use.
