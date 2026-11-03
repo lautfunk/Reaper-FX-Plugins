@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.22)
-project(LautFunkPlaylistPlayer VERSION 2.3.1 LANGUAGES C CXX)
+project(LautFunkPlaylistPlayer VERSION 2.3.2 LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
