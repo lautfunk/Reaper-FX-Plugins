@@ -3,6 +3,7 @@
 #include <atomic>
 #include <array>
 #include "SoundboardEngine.h"
+#include "OscControl.h"
 
 class LautFunkPlaylistProcessor final : public juce::AudioProcessor,
                                           private juce::Timer,
@@ -64,6 +65,8 @@ public:
         bool approximate = false;
     };
     RemainingTime getRemainingTime() const;
+    LautFunkOscControl& getOscControl() { return oscControl; }
+    const LautFunkOscControl& getOscControl() const { return oscControl; }
     SoundboardEngine& getSoundboard() { return soundboard; }
     const SoundboardEngine& getSoundboard() const { return soundboard; }
     int getMidiBank() const { return midiBankId.load(); }
@@ -124,6 +127,7 @@ private:
     juce::AudioFormatManager formats;
     juce::TimeSliceThread readerThread { "LautFunk Playlist Streaming" };
     SoundboardEngine soundboard;
+    LautFunkOscControl oscControl;
     juce::AudioTransportSource transport;
     std::unique_ptr<juce::AudioFormatReaderSource> fileSource;
     juce::SmoothedValue<float, juce::ValueSmoothingTypes::Linear> gain;
