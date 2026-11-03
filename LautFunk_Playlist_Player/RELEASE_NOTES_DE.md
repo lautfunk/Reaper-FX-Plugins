@@ -1,8 +1,17 @@
-# LautFunk Playlist Player & Soundboard v2.3.0
+# LautFunk Playlist Player & Soundboard v2.3.1
 
 **Kostenloses Open-Source-VST3 für Podcasts, Livestreams, Hörspiele und Musik.**
 
 Der Player kombiniert einen unabhängigen Musik-Playlist-Player mit einem flexiblen Soundboard. Die selbst entwickelten LautFunk-Quellcodes stehen unter der **MIT-Lizenz**; die JUCE-Bibliothek unterliegt ihren eigenen Lizenzbedingungen.
+
+## Neu in v2.3.1 – Lizenz- und Dokumentationspflege
+
+Dies ist ein **Wartungsrelease ohne neue Audio-Funktionen**. Die VST3-Plugin-ID (`LfS3`) bleibt gegenüber v2.3.0 unverändert, damit die stabile Plugin-Instanz in bestehenden REAPER-Projekten wiedererkannt wird.
+
+- Das **Ultraschall Soundboard** ist als funktionale Vorlage/Inspiration namentlich genannt. Die Original-MIT-Lizenz mit **Copyright (c) 2014–2021 Daniel Lindenfelser** wird in `THIRD_PARTY_NOTICES.md` aufbewahrt und liegt jetzt **beiden Download-ZIPs bei**.
+- Veraltete Hinweise aus der Release-Candidate-Phase wurden aus Handbuch, Installation, Routing- und Testdokumentation entfernt.
+- Windows x64 und macOS Universal werden mit demselben Source-Commit gebaut; die Downloadpakete werden vor Veröffentlichung auf die vollständigen Lizenzhinweise geprüft.
+- Das originale [v2.3.0-Release](https://github.com/lautfunk/Reaper-FX-Plugins/releases/tag/playlist-soundboard-v2.3.0) bleibt als frühere Version verfügbar.
 
 ## Funktionen
 
@@ -17,15 +26,15 @@ Der Player kombiniert einen unabhängigen Musik-Playlist-Player mit einem flexib
 
 ## Download und Installation
 
-**Windows x64:** `LautFunk-Playlist-Soundboard-v2.3.0-Windows-x64.zip`
+**Windows x64:** `LautFunk-Playlist-Soundboard-v2.3.1-Windows-x64.zip`
 
 Den enthaltenen VST3-Ordner nach `C:\Program Files\Common Files\VST3\` kopieren und in REAPER oder einer anderen VST3-fähigen DAW scannen.
 
-**macOS Universal (Intel + Apple Silicon):** `LautFunk-Playlist-Soundboard-v2.3.0-macOS-Universal.zip`
+**macOS Universal (Intel + Apple Silicon):** `LautFunk-Playlist-Soundboard-v2.3.1-macOS-Universal.zip`
 
 Das VST3-Bundle nach `~/Library/Audio/Plug-Ins/VST3/` kopieren. **Wichtig:** Das bereitgestellte macOS-Paket ist lediglich *ad-hoc signiert und nicht Apple-notarisiert*. macOS kann deshalb Sicherheitswarnungen anzeigen oder den Start blockieren.
 
-Im Downloadpaket liegen die **deutsche Bedienungsanleitung**, Installations- und Routing-Hilfe, **Changelog**, **MIT-Lizenz** und Lizenzinformationen. Die `SHA256SUMS.txt` unter den Release-Dateien enthält die SHA-256-Prüfsummen beider ZIPs.
+In **beiden Downloadpaketen** liegen die **deutsche Bedienungsanleitung**, Installations- und Routing-Hilfe, **Changelog**, die LautFunk-**MIT-Lizenz** und **THIRD_PARTY_NOTICES.md** einschließlich des vollständigen ursprünglichen Ultraschall-MIT-Lizenztextes. Die `SHA256SUMS.txt` unter den Release-Dateien enthält die SHA-256-Prüfsummen beider ZIPs.
 
 ## Quellcode / Lizenz
 
@@ -48,6 +57,6 @@ Der **vollständige LautFunk-C++-Quellcode** sowie CMake-Konfiguration und Build
 
 ## Hilfe und Feedback
 
-Bitte Fehler mit Betriebssystem, DAW-Version, Plugin-Version, Routing-Modus und reproduzierbaren Schritten als [GitHub Issue](https://github.com/lautfunk/Reaper-FX-Plugins/issues) melden. Die [ausführliche Dokumentation](LautFunk_Playlist_Player/README_DE.md) und der [Testplan](LautFunk_Playlist_Player/DOKUMENTATION/TESTPLAN_DE.md) stehen im Repository.
+Bitte Fehler mit Betriebssystem, DAW-Version, Plugin-Version, Routing-Modus und reproduzierbaren Schritten als [GitHub Issue](https://github.com/lautfunk/Reaper-FX-Plugins/issues) melden. Die [ausführliche Dokumentation](https://github.com/lautfunk/Reaper-FX-Plugins/blob/main/LautFunk_Playlist_Player/README_DE.md) und der [Testplan](https://github.com/lautfunk/Reaper-FX-Plugins/blob/main/LautFunk_Playlist_Player/DOKUMENTATION/TESTPLAN_DE.md) stehen im Repository.
 
 **Veröffentlichung:** kostenlos und quelloffen. Keine Garantie oder Gewährleistung über die MIT-Lizenz hinaus.
