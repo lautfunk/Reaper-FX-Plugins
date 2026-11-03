@@ -389,7 +389,7 @@ void LautFunkPlaylistEditor::paint(juce::Graphics& g)
     g.drawText("PLAYLIST PLAYER & SOUNDBOARD", 22, 36, w - 290, 35, juce::Justification::centredLeft);
     g.setColour(muted);
     g.setFont(juce::FontOptions(12.0f));
-    g.drawText("VST3  |  2.3.2 RC1", w - 280, 37, 256, 30, juce::Justification::centredRight);
+    g.drawText("VST3  |  2.3.2", w - 280, 37, 256, 30, juce::Justification::centredRight);
 
     g.setColour(panel);
     if (!showingBoard)
