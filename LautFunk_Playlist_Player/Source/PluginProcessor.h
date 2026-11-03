@@ -1,6 +1,7 @@
 #pragma once
 #include <JuceHeader.h>
 #include <atomic>
+#include <array>
 #include "SoundboardEngine.h"
 
 class LautFunkPlaylistProcessor final : public juce::AudioProcessor,
@@ -20,7 +21,7 @@ public:
     juce::AudioProcessorEditor* createEditor() override;
     bool hasEditor() const override { return true; }
     const juce::String getName() const override { return JucePlugin_Name; }
-    bool acceptsMidi() const override { return false; }
+    bool acceptsMidi() const override { return true; }
     bool producesMidi() const override { return false; }
     bool isMidiEffect() const override { return false; }
     double getTailLengthSeconds() const override { return 0.0; }
@@ -65,6 +66,14 @@ public:
     RemainingTime getRemainingTime() const;
     SoundboardEngine& getSoundboard() { return soundboard; }
     const SoundboardEngine& getSoundboard() const { return soundboard; }
+    int getMidiBank() const { return midiBankId.load(); }
+    void setMidiBank(int bankId);
+    void selectMidiBankRelative(int direction);
+    bool isDucking() const { return duckingActive.load(); }
+    juce::AudioParameterBool* duckEnabledParam = nullptr;
+    juce::AudioParameterFloat* duckDepthParam = nullptr;
+    juce::AudioParameterFloat* duckAttackParam = nullptr;
+    juce::AudioParameterFloat* duckReleaseParam = nullptr;
 
     juce::Array<juce::File> getTrackFiles() const;
     juce::Array<double> getTrackDurations() const;
@@ -85,6 +94,21 @@ private:
     void handleAsyncUpdate() override;
     bool loadIndex(int index, bool autoStart);
     void advanceAtEnd();
+    enum class MidiAction : uint8_t { trigger, stopPad, fadePad, bankPrev, bankNext,
+                                    bankProgram, stopAll, fadeAll, playlistToggle,
+                                    playlistStop, playlistNext, playlistPrevious };
+    struct MidiCommand { MidiAction action; int value = 0; };
+    static constexpr int midiQueueSize = 256;
+    juce::AbstractFifo midiFifo { midiQueueSize };
+    std::array<MidiCommand, midiQueueSize> midiCommands {};
+    void queueMidi(const MidiCommand& command) noexcept;
+    void handleMidiCommands();
+    void handleMidiMessage(const juce::MidiMessage& message) noexcept;
+    std::atomic<int> midiBankId { 1 };
+    std::atomic<bool> duckingActive { false };
+    juce::SmoothedValue<float, juce::ValueSmoothingTypes::Linear> duckGain;
+    double hostRate = 48000.0;
+    bool duckTargetActive = false;
 
     mutable juce::CriticalSection playlistLock;
     juce::Array<juce::File> tracks;
