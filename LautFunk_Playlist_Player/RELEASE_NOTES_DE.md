@@ -1,17 +1,18 @@
-# LautFunk Playlist Player & Soundboard v2.3.1
+# LautFunk Playlist Player & Soundboard v2.3.2
 
 **Kostenloses Open-Source-VST3 für Podcasts, Livestreams, Hörspiele und Musik.**
 
 Der Player kombiniert einen unabhängigen Musik-Playlist-Player mit einem flexiblen Soundboard. Die selbst entwickelten LautFunk-Quellcodes stehen unter der **MIT-Lizenz**; die JUCE-Bibliothek unterliegt ihren eigenen Lizenzbedingungen.
 
-## Neu in v2.3.1 – Lizenz- und Dokumentationspflege
+## Neu in v2.3.2 – Zeichenkodierung in der Oberfläche behoben
 
-Dies ist ein **Wartungsrelease ohne neue Audio-Funktionen**. Die VST3-Plugin-ID (`LfS3`) bleibt gegenüber v2.3.0 unverändert, damit die stabile Plugin-Instanz in bestehenden REAPER-Projekten wiedererkannt wird.
+Die Beschriftung **LAUTSTÄRKE** und weitere Texte mit Umlauten wurden in den bisherigen Versionen gelegentlich falsch als „Ã“ mit Kästchen dargestellt. Ursache war die Interpretation normaler C++-Textliterale als ASCII durch JUCE.
 
-- Das **Ultraschall Soundboard** ist als funktionale Vorlage/Inspiration namentlich genannt. Die Original-MIT-Lizenz mit **Copyright (c) 2014–2021 Daniel Lindenfelser** wird in `THIRD_PARTY_NOTICES.md` aufbewahrt und liegt jetzt **beiden Download-ZIPs bei**.
-- Veraltete Hinweise aus der Release-Candidate-Phase wurden aus Handbuch, Installation, Routing- und Testdokumentation entfernt.
-- Windows x64 und macOS Universal werden mit demselben Source-Commit gebaut; die Downloadpakete werden vor Veröffentlichung auf die vollständigen Lizenzhinweise geprüft.
-- Das originale [v2.3.0-Release](https://github.com/lautfunk/Reaper-FX-Plugins/releases/tag/playlist-soundboard-v2.3.0) bleibt als frühere Version verfügbar.
+- Alle **17 betroffenen Stellen** in den Plugin-C++-Quellen verwenden jetzt `juce::String::fromUTF8` und explizite, plattformunabhängige UTF-8-Byte-Escapes. Das betrifft auch Menüs, Dateidialoge, Statusmeldungen und Unicode-Symbole.
+- Ein automatisierter Regressionstest stellt sicher, dass die UI-Strings sowohl unter Windows als auch unter macOS korrekt kodiert sind.
+- Die **VST3-Plugin-ID `LfS3` bleibt erhalten**, ebenso Musik-Playlist, 24-Pad-Soundboard, Ducking, MIDI, OSC und Stereo-/Mehrkanalrouting. Es gibt **keine Änderung der Audioalgorithmen**.
+- Die vollständige MIT-Lizenz und `THIRD_PARTY_NOTICES.md` mit Original-MIT-Lizenz und Copyright des Ultraschall Soundboards liegen weiterhin beiden Downloadpaketen bei.
+- Die früheren Releases [v2.3.1](https://github.com/lautfunk/Reaper-FX-Plugins/releases/tag/playlist-soundboard-v2.3.1) und [v2.3.0](https://github.com/lautfunk/Reaper-FX-Plugins/releases/tag/playlist-soundboard-v2.3.0) bleiben verfügbar.
 
 ## Funktionen
 
@@ -26,11 +27,11 @@ Dies ist ein **Wartungsrelease ohne neue Audio-Funktionen**. Die VST3-Plugin-ID 
 
 ## Download und Installation
 
-**Windows x64:** `LautFunk-Playlist-Soundboard-v2.3.1-Windows-x64.zip`
+**Windows x64:** `LautFunk-Playlist-Soundboard-v2.3.2-Windows-x64.zip`
 
 Den enthaltenen VST3-Ordner nach `C:\Program Files\Common Files\VST3\` kopieren und in REAPER oder einer anderen VST3-fähigen DAW scannen.
 
-**macOS Universal (Intel + Apple Silicon):** `LautFunk-Playlist-Soundboard-v2.3.1-macOS-Universal.zip`
+**macOS Universal (Intel + Apple Silicon):** `LautFunk-Playlist-Soundboard-v2.3.2-macOS-Universal.zip`
 
 Das VST3-Bundle nach `~/Library/Audio/Plug-Ins/VST3/` kopieren. **Wichtig:** Das bereitgestellte macOS-Paket ist lediglich *ad-hoc signiert und nicht Apple-notarisiert*. macOS kann deshalb Sicherheitswarnungen anzeigen oder den Start blockieren.
 

@@ -1,6 +1,6 @@
 # Release-Checkliste – LautFunk Playlist Player & Soundboard
 
-Diese Checkliste gilt für **stabile v2.3.x-Veröffentlichungen**. Die Version **v2.3.0** wurde am 3. November 2026 veröffentlicht und nach Angaben des Betreibers zuvor in REAPER geprüft. Das **Wartungsrelease v2.3.1** bringt keine neuen Audio-Funktionen: Es korrigiert die Dokumentation, ergänzt die Herkunfts-/Lizenztexte in den Downloadpaketen und behält die stabile VST3-Plugin-ID bei.
+Diese Checkliste gilt für **stabile v2.3.x-Veröffentlichungen**. Die Version **v2.3.0** wurde am 3. November 2026 veröffentlicht und nach Angaben des Betreibers zuvor in REAPER geprüft. **v2.3.1** ergänzte die ursprünglichen Lizenzhinweise in den Downloadpaketen. Das folgende **Wartungsrelease v2.3.2** korrigiert falsch dargestellte Umlaute und Unicode-Symbole. Die Audioalgorithmen und die stabile VST3-Plugin-ID bleiben unverändert.
 
 ## 1. Vor jeder Veröffentlichung
 
@@ -31,12 +31,12 @@ Die Build-Pipeline überprüft die Existenz des VST3 und die Anwesenheit des urs
 
 ## 4. Tag, Assets und Prüfsummen
 
-Für v2.3.1 gilt:
+Für v2.3.2 gilt:
 
 ```text
-Tag: playlist-soundboard-v2.3.1
-LautFunk-Playlist-Soundboard-v2.3.1-Windows-x64.zip
-LautFunk-Playlist-Soundboard-v2.3.1-macOS-Universal.zip
+Tag: playlist-soundboard-v2.3.2
+LautFunk-Playlist-Soundboard-v2.3.2-Windows-x64.zip
+LautFunk-Playlist-Soundboard-v2.3.2-macOS-Universal.zip
 SHA256SUMS.txt
 ```
 
@@ -55,7 +55,8 @@ Die ausführlichen Prüfpunkte stehen im [TESTPLAN_DE.md](TESTPLAN_DE.md), insbe
 3. Playlist, Soundboard-Pads, WAV/MP3, Ducking, MIDI und lokales OSC auf Funktion prüfen.
 4. Projekt speichern, schließen und neu öffnen.
 5. Bei einem Wechsel von v2.3.0 auf v2.3.1 ein Backup anlegen und die unveränderte Plugin-ID sicherstellen.
-6. Kein offizielles macOS-Praxiszertifikat und keine Tests anderer DAWs behaupten, wenn sie nicht durchgeführt wurden.
+6. Bei v2.3.2 die Zeichenanzeige von **LAUTSTÄRKE** und weiteren Umlaut-Texten prüfen. Der UTF-8-Regressionstest muss für Windows und macOS erfolgreich sein.
+7. Kein offizielles macOS-Praxiszertifikat und keine Tests anderer DAWs behaupten, wenn sie nicht durchgeführt wurden.
 
 ## 6. Nach dem Release
 

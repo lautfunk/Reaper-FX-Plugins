@@ -1,6 +1,6 @@
-# Testplan – stabile v2.3-Produktlinie (v2.3.1)
+# Testplan – stabile v2.3-Produktlinie (v2.3.2)
 
-Die v2.3.0-Funktionen wurden vom Projektbetreiber in REAPER getestet und freigegeben. **v2.3.1 enthält nur Versions-, Dokumentations- und Paketänderungen; die Audio-Algorithmen und die Plugin-ID bleiben unverändert.** Ein grüner GitHub-Actions-Build bestätigt die Kompilierung und die verpackten Dateien, aber nicht alle Praxis- oder Sicherheitsfälle. Die nachfolgende Liste ist ein wiederverwendbarer Prüfplan; nicht abgehakte Punkte sind keine behaupteten abgeschlossenen Tests.
+Die v2.3.0-Funktionen wurden vom Projektbetreiber in REAPER getestet und freigegeben. **v2.3.2 behebt die Zeichenkodierung in der Oberfläche; die Audio-Algorithmen und die Plugin-ID bleiben unverändert.** Ein grüner GitHub-Actions-Build bestätigt die Kompilierung und die verpackten Dateien, aber nicht alle Praxis- oder Sicherheitsfälle. Die nachfolgende Liste ist ein wiederverwendbarer Prüfplan; nicht abgehakte Punkte sind keine behaupteten abgeschlossenen Tests.
 
 ## A. Automatisierte Builds
 
@@ -11,7 +11,14 @@ Die v2.3.0-Funktionen wurden vom Projektbetreiber in REAPER getestet und freigeg
 - [ ] Versionsname und Plugin-ID sind passend zur geplanten Freigabe.
 - [ ] SHA256-Prüfsummen der Freigabe-Dateien dokumentiert.
 
-## B. Basisfunktion
+## B. Unicode-Oberfläche und Regression
+
+- [x] Automatischer Python-Test verifiziert UTF-8-Byte-Escapes im C++-Quelltext.
+- [ ] **Im fertigen VST3 prüfen:** „LAUTSTÄRKE“ erscheint korrekt, ohne „Ã“ und Kästchen.
+- [ ] Weitere Texte in Menüs, Dateiauswahl, Playlist und Statusmeldungen prüfen (ä, ö, ü, Ä, Symbole).
+- [ ] REAPER-Projekt mit v2.3.1-Plugin sichern und Aktualisierung auf v2.3.2 mit unveränderter Plugin-ID testen.
+
+## C. Basisfunktion
 
 - [ ] Plugin in frischem REAPER-Projekt ohne Fehlermeldung öffnen.
 - [ ] Ein Sample starten, ohne dass die REAPER-Timeline läuft; Host-Audio-Verarbeitung bei Stop prüfen.

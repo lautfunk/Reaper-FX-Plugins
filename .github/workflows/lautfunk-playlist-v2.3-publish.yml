@@ -1,4 +1,4 @@
-name: Publish LautFunk Playlist Soundboard v2.3.1
+name: Publish LautFunk Playlist Soundboard v2.3.2
 
 on:
   push:
@@ -11,12 +11,12 @@ permissions:
   contents: write
 
 concurrency:
-  group: lautfunk-v2.3.1-official-release
+  group: lautfunk-v2.3.2-official-release
   cancel-in-progress: false
 
 env:
   PROJECT_DIR: LautFunk_Playlist_Player
-  VERSION_LABEL: v2.3.1
+  VERSION_LABEL: v2.3.2
   BUNDLE_NAME: LautFunk Playlist Soundboard.vst3
 
 jobs:
@@ -28,6 +28,8 @@ jobs:
         shell: pwsh
     steps:
       - uses: actions/checkout@v4
+      - name: Verify UTF-8 labels before building
+        run: python "$env:PROJECT_DIR/tests/test_utf8_ui_literals.py"
       - name: Enable long paths
         run: git config --global core.longpaths true
       - name: Configure JUCE CMake
@@ -59,7 +61,7 @@ jobs:
           "$hash  $filename" | Set-Content -Encoding ascii -Path "dist/SHA256-Windows.txt"
       - uses: actions/upload-artifact@v4
         with:
-          name: LautFunk-v2.3.1-Windows-x64
+          name: LautFunk-v2.3.2-Windows-x64
           path: dist/*
           if-no-files-found: error
           retention-days: 30
@@ -69,6 +71,9 @@ jobs:
     runs-on: macos-15
     steps:
       - uses: actions/checkout@v4
+      - name: Verify UTF-8 labels before building
+        shell: bash
+        run: python3 "$PROJECT_DIR/tests/test_utf8_ui_literals.py"
       - name: Configure Universal JUCE CMake
         shell: bash
         run: |
@@ -97,7 +102,7 @@ jobs:
           (cd dist && shasum -a 256 "$filename" > SHA256-macOS.txt)
       - uses: actions/upload-artifact@v4
         with:
-          name: LautFunk-v2.3.1-macOS-Universal
+          name: LautFunk-v2.3.2-macOS-Universal
           path: dist/*
           if-no-files-found: error
           retention-days: 30
@@ -111,12 +116,12 @@ jobs:
       contents: write
     env:
       GH_TOKEN: ${{ github.token }}
-      TAG: playlist-soundboard-v2.3.1
+      TAG: playlist-soundboard-v2.3.2
     steps:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
-          pattern: LautFunk-v2.3.1-*
+          pattern: LautFunk-v2.3.2-*
           path: release-assets
           merge-multiple: true
       - name: Validate package contents and generate combined SHA256
@@ -124,8 +129,8 @@ jobs:
         run: |
           set -euo pipefail
           cd release-assets
-          win="LautFunk-Playlist-Soundboard-v2.3.1-Windows-x64.zip"
-          mac="LautFunk-Playlist-Soundboard-v2.3.1-macOS-Universal.zip"
+          win="LautFunk-Playlist-Soundboard-v2.3.2-Windows-x64.zip"
+          mac="LautFunk-Playlist-Soundboard-v2.3.2-macOS-Universal.zip"
           test -s "$win" && test -s "$mac"
           unzip -Z -1 "$win" | grep -Fq 'LautFunk Playlist Soundboard.vst3'
           unzip -Z -1 "$mac" | grep -Fq 'LautFunk Playlist Soundboard.vst3'
@@ -139,7 +144,7 @@ jobs:
           done
           sha256sum "$win" "$mac" > SHA256SUMS.txt
           sha256sum -c SHA256SUMS.txt
-      - name: Create permanent v2.3.1 release
+      - name: Create permanent v2.3.2 release
         shell: bash
         run: |
           set -euo pipefail
@@ -148,10 +153,10 @@ jobs:
             exit 1
           fi
           gh release create "$TAG" \
-            "release-assets/LautFunk-Playlist-Soundboard-v2.3.1-Windows-x64.zip" \
-            "release-assets/LautFunk-Playlist-Soundboard-v2.3.1-macOS-Universal.zip" \
+            "release-assets/LautFunk-Playlist-Soundboard-v2.3.2-Windows-x64.zip" \
+            "release-assets/LautFunk-Playlist-Soundboard-v2.3.2-macOS-Universal.zip" \
             "release-assets/SHA256SUMS.txt" \
-            --title "LautFunk Playlist Player & Soundboard v2.3.1" \
+            --title "LautFunk Playlist Player & Soundboard v2.3.2" \
             --notes-file "$PROJECT_DIR/RELEASE_NOTES_DE.md" \
             --target "$GITHUB_SHA" \
             --latest

@@ -1,6 +1,6 @@
 # Installation – LautFunk Playlist Player & Soundboard
 
-Stand: **v2.3.1** (stabiles Wartungsrelease, unveränderte Plugin-ID gegenüber v2.3.0).
+Stand: **v2.3.2** (Wartungsrelease zur Umlaut-Darstellung mit unveränderter Plugin-ID gegenüber v2.3.0 und v2.3.1).
 
 ## Unterstützte Pakete
 
@@ -11,7 +11,7 @@ Es gibt aktuell weder einen VST2- noch einen AU-, CLAP- oder eigenständigen Sta
 
 ## Windows
 
-1. Die Windows-x64-ZIP-Datei der [offiziellen v2.3.1-Veröffentlichung](https://github.com/lautfunk/Reaper-FX-Plugins/releases/tag/playlist-soundboard-v2.3.1) herunterladen und **einmal** entpacken. Die enthaltenen Dateien `LICENSE` und `THIRD_PARTY_NOTICES.md` mitlesen.
+1. Die Windows-x64-ZIP-Datei der [offiziellen v2.3.2-Veröffentlichung](https://github.com/lautfunk/Reaper-FX-Plugins/releases/tag/playlist-soundboard-v2.3.2) herunterladen und **einmal** entpacken. Die enthaltenen Dateien `LICENSE` und `THIRD_PARTY_NOTICES.md` mitlesen.
 2. Den **gesamten** Ordner `LautFunk Playlist Soundboard.vst3` nach
 
    ```text
@@ -37,7 +37,7 @@ Es gibt aktuell weder einen VST2- noch einen AU-, CLAP- oder eigenständigen Sta
    kopieren; alternativ systemweit nach `/Library/Audio/Plug-Ins/VST3/`.
 3. Die DAW neu starten und VST3-Scan durchführen.
 
-**Wichtig:** Auch die offizielle macOS-v2.3.1 ist **nur ad-hoc signiert und nicht Apple-notarisiert**. Gatekeeper kann eine Sicherheitswarnung anzeigen oder das VST3 blockieren. Lade ausschließlich von der offiziellen Release-Seite herunter und prüfe die Herkunft, bevor du eine etwaige Ausnahme in den macOS-Sicherheitseinstellungen zulässt.
+**Wichtig:** Auch die offizielle macOS-v2.3.2 ist **nur ad-hoc signiert und nicht Apple-notarisiert**. Gatekeeper kann eine Sicherheitswarnung anzeigen oder das VST3 blockieren. Lade ausschließlich von der offiziellen Release-Seite herunter und prüfe die Herkunft, bevor du eine etwaige Ausnahme in den macOS-Sicherheitseinstellungen zulässt.
 
 ## Erstkonfiguration
 
@@ -49,7 +49,7 @@ Es gibt aktuell weder einen VST2- noch einen AU-, CLAP- oder eigenständigen Sta
 
 ## Mit alten DEV-Fassungen
 
-Die älteren v2.0-, v2.1-, v2.2- und Routing-/RC-Entwicklungsfassungen verwenden **andere Plugin-IDs** als die stabile Produktlinie. **v2.3.0 und v2.3.1 haben dagegen dieselbe Plugin-ID**: Ein Austausch der VST3-Datei aktualisiert die stabile Installation. Vorher ein REAPER-Projekt-Backup anfertigen; ältere DEV-/RC-Effekte werden nicht automatisch ersetzt.
+Die älteren v2.0-, v2.1-, v2.2- und Routing-/RC-Entwicklungsfassungen verwenden **andere Plugin-IDs** als die stabile Produktlinie. **v2.3.0, v2.3.1 und v2.3.2 haben dagegen dieselbe Plugin-ID**: Ein Austausch der VST3-Datei aktualisiert die stabile Installation und behebt in v2.3.2 falsch dargestellte Umlaute wie in **LAUTSTÄRKE**. Die DAW vor dem Austausch schließen und anschließend das Plugin erneut scannen. Vorher ein REAPER-Projekt-Backup anfertigen; ältere DEV-/RC-Effekte werden nicht automatisch ersetzt.
 
 Vor dem Wechsel: REAPER-Projekt sichern, alte Plugin-Presets exportieren und Audiodateipfade prüfen.
 
