@@ -41,7 +41,7 @@ Die Entscheidung, Plugins kostenlos anzubieten, ist unabhängig davon: Eine MIT-
 
 - **JUCE 9.0.4**: © jeweilige Rechteinhaber, separate Lizenzbedingungen (siehe Links oben).
 - **VST3**: Das Plugin verwendet JUCEs VST3-Unterstützung; vor Veröffentlichung aktuelle Hinweise zur Steinberg-VST3-Lizenzierung und etwaigen Markenregeln prüfen.
-- **Ultraschall Soundboard**: Nur konzeptionelle Inspiration; laut Projektangaben wurden keine Ultraschall-Quellcodedateien übernommen. Repo: https://github.com/Ultraschall/ultraschall-soundboard
+- **Ultraschall Soundboard**: Funktionale Vorlage/Inspiration; ursprüngliches Projekt unter MIT (Copyright © 2014–2021 Daniel Lindenfelser). Eine Prüfung fand keine längeren exakt identischen Kern-C++-Abschnitte, kann andere Arten von Übernahmen jedoch nicht ausschließen. Lizenztext und Herkunftshinweis sind vorsorglich vollständig dokumentiert: [../THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md).
 - Keine Samples, Fotos, Musikstücke oder Logos von Dritten ohne entsprechende Rechte in Beispielpakete aufnehmen.
 - **Bitfocus Companion / Elgato Stream Deck**: Lediglich Kompatibilität bzw. manuelle OSC-Anbindung; keine offizielle Partnerschaft oder Produktfreigabe behaupten.
 
