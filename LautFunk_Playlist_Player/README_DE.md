@@ -94,3 +94,59 @@ Die Datei `GITHUB_SETUP_DE.md` im ZIP beschreibt einen separaten Git-Entwicklung
 ## Ursprung
 
 Die getrennte Bank-/Pad-Bedienung ist funktional vom [Ultraschall Soundboard](https://github.com/Ultraschall/ultraschall-soundboard) inspiriert. Der Soundboard-Code in diesem Verzeichnis wurde neu geschrieben und enthält keine aus Ultraschall kopierten Quellcodedateien.
+
+---
+
+## Live-Steuerung (Entwicklungsstand v2.1)
+
+### Automatisches Playlist-Ducking
+
+Die Musik-Ducking-Option im Soundboard-Tab kann jederzeit ein- und ausgeschaltet werden. Sobald mindestens ein Soundboard-Sample läuft, wird **nur die Playlist-Musik** um den eingestellten Betrag abgesenkt. Die Samples selbst bleiben unverändert. Nach dem letzten Sample fährt die Musik mit einstellbarer Release-Zeit wieder hoch.
+
+- **Musik-Ducking**: global ein/aus, standardmäßig an.
+- **Absenkung**: 0–30 dB; Standard 12 dB.
+- **Attack**: 1–500 ms; Standard 35 ms.
+- **Release**: 20–3000 ms; Standard 650 ms.
+
+Die Parameter werden mit dem REAPER-Projekt gespeichert. Es handelt sich um Soundboard-zu-Playlist-Ducking innerhalb des Plugins, **nicht** um Mikrofon-/Sidechain-Ducking.
+
+### Komplette Sample-Ordner importieren
+
+Im Soundboard auf **Ordner importieren** klicken und einen Ordner wählen. Die WAV- und MP3-Dateien werden alphabetisch auf freie Pads in der aktuellen Bank verteilt. Bereits belegte Pads bleiben erhalten. Sind mehr Dateien vorhanden als freie Plätze, entstehen automatisch zusätzliche Soundbänke mit jeweils 24 Slots. Standardmäßig werden nur Dateien direkt im gewählten Ordner berücksichtigt, keine Unterordner.
+
+### Soundbank-Dateien
+
+Über **Bank-Datei → Bank speichern ...** lässt sich die aktuelle Bank als `.lfsb` exportieren; **Bank laden ...** importiert sie als neue Bank. Gespeichert werden Namen, Slot-Zuordnung, Gain, Loop und Fade. Audiodateien selbst werden nicht eingebettet, sondern über Dateipfade referenziert.
+
+### MIDI-Tastenbelegung
+
+Das VST3 akzeptiert MIDI-Noten aller Kanäle:
+
+| MIDI-Event | Aktion |
+| --- | --- |
+| Note 36–59 (C2–B3 nach üblicher Bezeichnung, je nach DAW-Oktavendarstellung) | Pads 1–24 auslösen |
+| Note 60–83 | Pads 1–24 sofort stoppen |
+| Note 84–107 | Pads 1–24 ausblenden |
+| Program Change 0–N | Soundbank 1–(N+1) auswählen |
+| CC 110, Wert ≥64 | Vorherige Bank |
+| CC 111, Wert ≥64 | Nächste Bank |
+| CC 112, Wert ≥64 | Stop All |
+| CC 113, Wert ≥64 | Fade All |
+| CC 114, Wert ≥64 | Playlist Play/Pause |
+| CC 115, Wert ≥64 | Nächster Playlist-Titel |
+| CC 116, Wert ≥64 | Vorheriger Playlist-Titel |
+| CC 117, Wert ≥64 | Playlist stoppen |
+
+Die MIDI-Notennummer ist maßgeblich, da unterschiedliche Programme Oktaven unterschiedlich benennen. Wenn dein Keyboard einen anderen Notenbereich liefert, kannst du die Noten in REAPER vor dem Plugin transponieren. MIDI-Befehle werden über den REAPER-MIDI-Eingang des Plugins verarbeitet und über den Message-Thread ausgeführt. Es ist deshalb kein Sample-genaues Timing garantiert.
+
+### Tastaturkürzel bei fokussierter Soundboard-Oberfläche
+
+- **1 bis 0, - und =**: Die zwölf sichtbaren Pads auslösen.
+- **Bild hoch / Bild runter**: Soundbank zurück / weiter.
+- **Escape**: Stop All.
+
+Diese Tastenkürzel funktionieren nur, wenn REAPER die Tastatureingaben an das Plugin-Fenster weiterleitet.
+
+### Einschränkungen
+
+Die neue Live-Erweiterung ist eine **Entwicklungsfassung** und benötigt Praxistests in REAPER. OSC/Stream-Deck-Fernsteuerung, Mikrofon-Sidechain-Ducking, getrennte Audioausgänge und LUFS-Abgleich sind noch nicht implementiert.
