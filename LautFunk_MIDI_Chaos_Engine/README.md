@@ -1,6 +1,6 @@
 # LautFunk MIDI Chaos Engine 61 — v1.4.1 POLYTRANCE + SPEED UI
 
-**Status: Entwicklungs-/Testversion (DEV).** JSFX (EEL2) mit optionaler Lua-ReaScript-Brücke für REAPER. **Kein VST3 und kein Klangerzeuger.** Die Engine erzeugt MIDI-Nachrichten für nachfolgende Synthesizer.
+**Status: BETA (v1.4.1) – erfolgreicher Anwender-Praxistest in REAPER gemeldet; detaillierte Tests einzelner Funktionen und Plattformen stehen noch aus.** JSFX (EEL2) mit optionaler Lua-ReaScript-Brücke für REAPER. **Kein VST3 und kein Klangerzeuger.** Die Engine erzeugt MIDI-Nachrichten für nachfolgende Synthesizer.
 
 ## Funktionen
 
@@ -21,12 +21,20 @@
 4. Auf derselben REAPER-Spur **MIDI Chaos Engine vor den Synthesizer** (z. B. [FartSynth 61](../LautFunk_FartSynth_61_v1.0.jsfx)) setzen.
 5. Wiedergabe starten und die globale Geschwindigkeitssteuerung oben in der GUI einstellen.
 
-Weiterführend: [Installation](DOKUMENTATION/INSTALLATION_DE.md) · [Testplan](DOKUMENTATION/TESTPLAN_DE.md) · [Changelog](CHANGELOG.md).
+## Anleitungen (Deutsch)
+
+- [**Bedienungsanleitung** – alle Reiter, globale Geschwindigkeit, MIDI-Workflow und Modulation](DOKUMENTATION/BEDIENUNGSANLEITUNG_DE.md)
+- [**Installation** – Dateiablage, JSFX und optionale Lua-Brücke](DOKUMENTATION/INSTALLATION_DE.md)
+- [**Musikalische Beispiele** – Techno, Trance, Goa, Psytrance und Ambient](DOKUMENTATION/BEISPIELE_PRESETS_DE.md)
+- [**Fehlerbehebung** – kein Ton, Tempo-Sync, MIDI-Kanäle, Lua und hängende Noten](DOKUMENTATION/FEHLERBEHEBUNG_DE.md)
+- [**Testplan und bestätigter Teststatus**](DOKUMENTATION/TESTPLAN_DE.md)
+- [**Changelog und Versionshistorie**](CHANGELOG.md)
+
 
 ## Technische Grenzen
 
 Die MIDI-Steuerung von Filter, Hüllkurven, Glide usw. hängt vom angesteuerten Synthesizer ab. Die Lua-Brücke kann nur veröffentlichte REAPER-FX-Parameter zuordnen und muss während der Host-Modulation laufen. MPE-Unterstützung ist instrumentabhängig. Ein eigenständiges Audio-Gate und universelle herstellerspezifische SysEx-Profile sind **nicht** enthalten.
 
-**Testhinweis:** Quellcode und Paketstruktur sind statisch geprüft. Weder EEL2-Kompilierung noch MIDI-/Audio-Verhalten in REAPER sind hier vollständig verifiziert. Bitte bestehende Projekte sichern und zunächst mit einer Kopie testen.
+**Testhinweis:** Der Entwickler/Anwender hat am 21.11.2026 berichtet, dass das Plug-in in REAPER erfolgreich funktioniert. Konkrete Einzeltests (z. B. Lua-Brücke, alle 14 GUI-Reiter, 560-Step-Zyklus und Plattformen) wurden nicht separat bestätigt. Für die Beta weiterhin Projektkopien und Backups empfehlen.
 
 Lizenz: [MIT](../LICENSE).

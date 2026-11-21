@@ -46,12 +46,12 @@ Die von LautFunk selbst entwickelten Quellen stehen unter der **[MIT-Lizenz](LIC
   - [Installation und Render-Skript](#softguard-installation)
   - [Messung und technische Grenzen](#softguard-grenzen)
 - [LautFunk FartSynth 61 v1.0](#fartsynth)
-- [LautFunk MIDI Chaos Engine 61 v1.4.1 (Entwicklung)](LautFunk_MIDI_Chaos_Engine/README.md)
   - [Modus „ALLE 12“](#fartsynth-alle-12)
   - [Modus „EIN CHARAKTER“](#fartsynth-ein-charakter)
   - [FartSynth-Regler](#fartsynth-regler)
   - [MIDI-Steuerung](#fartsynth-midi)
   - [Technische Prüfung](#fartsynth-pruefung)
+- [LautFunk MIDI Chaos Engine 61 v1.4.1 (Beta)](LautFunk_MIDI_Chaos_Engine/README.md)
 - [JSFX-Installation](#installation)
 - [Typische JSFX-Installationspfade](#installationspfade)
 - [Plugins in REAPER laden](#plugins-laden)
@@ -70,10 +70,10 @@ Die von LautFunk selbst entwickelten Quellen stehen unter der **[MIT-Lizenz](LIC
 | **Voice Transformer v1.0** | JSFX | Echtzeit-Veränderung von Pitch, Formanten und Stimmcharakter | [JSFX](LautFunk_Voice_Transformer_v1.0.jsfx) · [Details](#voice-transformer) |
 | **SoftGuard v1.1** | JSFX + optionales Lua-ReaScript | Sanfte Sprecherpegel-Regelung und Soft-Knee-Limiter | [JSFX](LautFunk_SoftGuard.jsfx) · [Render-Skript](LautFunk_Render_Ziele.lua) · [Details](#softguard) |
 | **FartSynth 61 v1.0** | JSFX | MIDI-Synthesizer mit 61 Tasten und zwölf Klangcharakteren | [JSFX](LautFunk_FartSynth_61_v1.0.jsfx) · [Details](#fartsynth) |
-| **MIDI Chaos Engine 61 v1.4.1 (DEV)** | JSFX + optionales Lua-ReaScript | Generativer MIDI-Sequencer mit Chaos-, Music-, Hypnotic-, Polymeter- und Tempo-Sync-Modi | [Projekt & Dokumentation](LautFunk_MIDI_Chaos_Engine/README.md) · [JSFX](LautFunk_MIDI_Chaos_Engine/Effects/LautFunk/LautFunk_MIDI_Chaos_Engine_v1.jsfx) |
+| **MIDI Chaos Engine 61 v1.4.1 (BETA)** | JSFX + optionales Lua-ReaScript | Generativer MIDI-Sequencer mit Chaos-, Music-, Hypnotic-, Polymeter- und Tempo-Sync-Modi | [Projekt & Dokumentation](LautFunk_MIDI_Chaos_Engine/README.md) · [JSFX](LautFunk_MIDI_Chaos_Engine/Effects/LautFunk/LautFunk_MIDI_Chaos_Engine_v1.jsfx) |
 | **Playlist Player & Soundboard** | **VST3** | Musikplaylist, Soundbänke, Ducking, MIDI, lokale OSC-Steuerung, optional getrennte Ausgänge | [C++-Quellcode](LautFunk_Playlist_Player/Source) · [VST3-Anleitung](LautFunk_Playlist_Player/README_DE.md) |
 
-**MIDI-Neuzugang:** [LautFunk MIDI Chaos Engine 61 v1.4.1](LautFunk_MIDI_Chaos_Engine/README.md) ist eine Entwicklungsfassung. Die Engine erzeugt MIDI, keinen eigenen Klang, und wird in REAPER vor einem Instrument wie dem FartSynth platziert. Ein vollständiger REAPER-Funktionstest steht noch aus.
+**MIDI-Neuzugang:** [LautFunk MIDI Chaos Engine 61 v1.4.1](LautFunk_MIDI_Chaos_Engine/README.md) ist eine Beta-Version mit positivem allgemeinem Anwender-Praxistest in REAPER. Die Engine erzeugt MIDI, keinen eigenen Klang, und wird in REAPER vor einem Instrument wie dem FartSynth platziert. Detaillierte Regressionstests einzelner Funktionen stehen noch aus. [Ausführliche deutsche Bedienungsanleitung](LautFunk_MIDI_Chaos_Engine/DOKUMENTATION/BEDIENUNGSANLEITUNG_DE.md).
 
 **Unterschied:** JSFX-Dateien werden direkt im REAPER-Effektverzeichnis installiert und brauchen **kein VST3**. Der Playlist Player & Soundboard ist ein **eigenständiges VST3**, dessen Installation über den VST3-Ordner erfolgt. Er ist auch für weitere VST3-Hosts konzipiert; die tatsächlich bestätigte Funktionskompatibilität richtet sich nach den dokumentierten Tests.
 
