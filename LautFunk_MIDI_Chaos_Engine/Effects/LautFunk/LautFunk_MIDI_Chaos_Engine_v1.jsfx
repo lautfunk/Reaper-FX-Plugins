@@ -1,0 +1,3011 @@
+desc:LautFunk / MIDI Chaos Engine 61 v1.4.1 POLYTRANCE SPEED UI (Custom UI)
+tags:MIDI generator synthesizer controller
+options:gmem=LautFunk_Chaos_Engine gfx_hz=30 want_all_kb
+in_pin:Audio L (optional sidechain)
+in_pin:Audio R (optional sidechain)
+out_pin:Audio L (pass-through)
+out_pin:Audio R (pass-through)
+
+slider1:1<0,1,1>-Engine
+slider2:0<0,4,1{Hybrid,Random,Logistic,Lorenz,Evolution}>-Generator
+slider3:0<0,1,1{Transport,Free running}>-Clock
+slider4:12345<1,9999999,1>-Seed
+slider5:36<0,67,1>-Lowest note
+slider6:0<0,7,1{Chromatic,Minor pent,Minor,Major,Phrygian,Dorian,Whole tone,Harmonic minor}>-Scale
+slider7:0<0,11,1>-Root
+slider8:68<0,100,1>-Chaos
+slider9:42<0,100,1>-Evolution
+slider10:65<0,100,1>-Density
+slider11:10<0,80,1>-Swing
+slider12:20<0,100,1>-Humanize
+slider13:240<15,3000,1>-Length ms
+slider14:48<0,100,1>-Length variation
+slider15:30<1,127,1>-Velocity min
+slider16:119<1,127,1>-Velocity max
+slider17:8<1,16,1>-Polyphony
+slider18:1<1,16,1>-Output bus
+slider19:1<1,16,1>-Output channel
+slider20:1<0,1,1>-Pass MIDI input
+slider21:0<0,1,1>-MPE channel spread
+slider22:0<0,1,1>-MIDI feedback
+slider23:0<0,1,1>-Program change
+slider24:2<0,100,1>-Program chance
+slider25:25<5,60,1>-Mod update Hz
+slider26:0<0,1,1>-Global pitch
+slider27:20<0,100,1>-Pitch depth
+slider28:0<0,1,1>-Channel pressure
+slider29:0<0,1,1>-Poly pressure
+slider30:0<0,1,1>-Audio response
+slider31:45<0,100,1>-Audio sensitivity
+slider32:0<0,1,1>-Autopilot
+slider33:20<0,100,1>-Ratchet
+slider34:0<0,100,1>-Scale morph
+slider35:3<0,7,1>-Second scale
+slider36:0<0,1,1>-Scene morph
+slider37:1<1,8,1>-Scene A
+slider38:2<1,8,1>-Scene B
+slider39:0<0,1,1>-Rigid rhythm
+slider40:0<0,1,1>-RPN/NRPN permission
+slider41:0<0,1,1>-SysEx permission
+slider42:1<1,16,1>-Bridge group ID
+slider43:0<0,1,1>-External note trigger
+slider44:0<0,100,1>-Morph position
+slider45:0<0,1,1>-Bend to voices
+slider46:40<0,100,1>-Swarm attraction
+slider47:35<0,100,1>-Feedback influence
+slider48:0<0,100,1>-Burst chance
+slider49:0<0,127,1>-Program offset
+slider50:50<0,100,1>-Velocity evolution
+slider51:1<0,1,1>-Engine 1 On
+slider52:4<0.25,16,0.25>-Engine 1 Steps/beat
+slider53:85<0,100,1>-Engine 1 Gate chance
+slider54:100<25,250,1>-Engine 1 Duration %
+slider55:1<1,16,1>-Engine 1 Channel
+slider56:50<0,100,1>-Engine 1 Pitch spread
+slider57:5<0,16,1>-Engine 1 Euclid hits
+slider58:8<1,16,1>-Engine 1 Euclid steps
+slider59:0<0,1,1>-Engine 2 On
+slider60:3<0.25,16,0.25>-Engine 2 Steps/beat
+slider61:70<0,100,1>-Engine 2 Gate chance
+slider62:100<25,250,1>-Engine 2 Duration %
+slider63:2<1,16,1>-Engine 2 Channel
+slider64:50<0,100,1>-Engine 2 Pitch spread
+slider65:3<0,16,1>-Engine 2 Euclid hits
+slider66:8<1,16,1>-Engine 2 Euclid steps
+slider67:0<0,1,1>-Engine 3 On
+slider68:5<0.25,16,0.25>-Engine 3 Steps/beat
+slider69:65<0,100,1>-Engine 3 Gate chance
+slider70:100<25,250,1>-Engine 3 Duration %
+slider71:3<1,16,1>-Engine 3 Channel
+slider72:50<0,100,1>-Engine 3 Pitch spread
+slider73:7<0,16,1>-Engine 3 Euclid hits
+slider74:11<1,16,1>-Engine 3 Euclid steps
+slider75:0<0,1,1>-Engine 4 On
+slider76:7<0.25,16,0.25>-Engine 4 Steps/beat
+slider77:60<0,100,1>-Engine 4 Gate chance
+slider78:100<25,250,1>-Engine 4 Duration %
+slider79:4<1,16,1>-Engine 4 Channel
+slider80:50<0,100,1>-Engine 4 Pitch spread
+slider81:4<0,16,1>-Engine 4 Euclid hits
+slider82:9<1,16,1>-Engine 4 Euclid steps
+slider83:1<0,1,1>-Lane 01 On
+slider84:0<0,7,1>-Lane 01 Output type
+slider85:1<0,16383,1>-Lane 01 CC/Param
+slider86:10<0,127,1>-Lane 01 Min
+slider87:117<0,127,1>-Lane 01 Max
+slider88:0.13<0.01,20,0.01>-Lane 01 Rate Hz
+slider89:0<0,5,1>-Lane 01 Shape
+slider90:1<0,1,1>-Lane 02 On
+slider91:0<0,7,1>-Lane 02 Output type
+slider92:74<0,16383,1>-Lane 02 CC/Param
+slider93:10<0,127,1>-Lane 02 Min
+slider94:117<0,127,1>-Lane 02 Max
+slider95:0.28<0.01,20,0.01>-Lane 02 Rate Hz
+slider96:1<0,5,1>-Lane 02 Shape
+slider97:1<0,1,1>-Lane 03 On
+slider98:0<0,7,1>-Lane 03 Output type
+slider99:11<0,16383,1>-Lane 03 CC/Param
+slider100:10<0,127,1>-Lane 03 Min
+slider101:117<0,127,1>-Lane 03 Max
+slider102:0.57<0.01,20,0.01>-Lane 03 Rate Hz
+slider103:2<0,5,1>-Lane 03 Shape
+slider104:1<0,1,1>-Lane 04 On
+slider105:0<0,7,1>-Lane 04 Output type
+slider106:71<0,16383,1>-Lane 04 CC/Param
+slider107:10<0,127,1>-Lane 04 Min
+slider108:117<0,127,1>-Lane 04 Max
+slider109:1.1<0.01,20,0.01>-Lane 04 Rate Hz
+slider110:3<0,5,1>-Lane 04 Shape
+slider111:0<0,1,1>-Lane 05 On
+slider112:0<0,7,1>-Lane 05 Output type
+slider113:7<0,16383,1>-Lane 05 CC/Param
+slider114:10<0,127,1>-Lane 05 Min
+slider115:117<0,127,1>-Lane 05 Max
+slider116:0.05<0.01,20,0.01>-Lane 05 Rate Hz
+slider117:4<0,5,1>-Lane 05 Shape
+slider118:0<0,1,1>-Lane 06 On
+slider119:0<0,7,1>-Lane 06 Output type
+slider120:10<0,16383,1>-Lane 06 CC/Param
+slider121:10<0,127,1>-Lane 06 Min
+slider122:117<0,127,1>-Lane 06 Max
+slider123:0.32<0.01,20,0.01>-Lane 06 Rate Hz
+slider124:5<0,5,1>-Lane 06 Shape
+slider125:0<0,1,1>-Lane 07 On
+slider126:0<0,7,1>-Lane 07 Output type
+slider127:91<0,16383,1>-Lane 07 CC/Param
+slider128:10<0,127,1>-Lane 07 Min
+slider129:117<0,127,1>-Lane 07 Max
+slider130:0.48<0.01,20,0.01>-Lane 07 Rate Hz
+slider131:0<0,5,1>-Lane 07 Shape
+slider132:0<0,1,1>-Lane 08 On
+slider133:0<0,7,1>-Lane 08 Output type
+slider134:93<0,16383,1>-Lane 08 CC/Param
+slider135:10<0,127,1>-Lane 08 Min
+slider136:117<0,127,1>-Lane 08 Max
+slider137:1.4<0.01,20,0.01>-Lane 08 Rate Hz
+slider138:1<0,5,1>-Lane 08 Shape
+slider139:0<0,1,1>-Lane 09 On
+slider140:0<0,7,1>-Lane 09 Output type
+slider141:2<0,16383,1>-Lane 09 CC/Param
+slider142:10<0,127,1>-Lane 09 Min
+slider143:117<0,127,1>-Lane 09 Max
+slider144:0.13<0.01,20,0.01>-Lane 09 Rate Hz
+slider145:2<0,5,1>-Lane 09 Shape
+slider146:0<0,1,1>-Lane 10 On
+slider147:0<0,7,1>-Lane 10 Output type
+slider148:4<0,16383,1>-Lane 10 CC/Param
+slider149:10<0,127,1>-Lane 10 Min
+slider150:117<0,127,1>-Lane 10 Max
+slider151:0.28<0.01,20,0.01>-Lane 10 Rate Hz
+slider152:3<0,5,1>-Lane 10 Shape
+slider153:0<0,1,1>-Lane 11 On
+slider154:0<0,7,1>-Lane 11 Output type
+slider155:5<0,16383,1>-Lane 11 CC/Param
+slider156:10<0,127,1>-Lane 11 Min
+slider157:117<0,127,1>-Lane 11 Max
+slider158:0.57<0.01,20,0.01>-Lane 11 Rate Hz
+slider159:4<0,5,1>-Lane 11 Shape
+slider160:0<0,1,1>-Lane 12 On
+slider161:0<0,7,1>-Lane 12 Output type
+slider162:12<0,16383,1>-Lane 12 CC/Param
+slider163:10<0,127,1>-Lane 12 Min
+slider164:117<0,127,1>-Lane 12 Max
+slider165:1.1<0.01,20,0.01>-Lane 12 Rate Hz
+slider166:5<0,5,1>-Lane 12 Shape
+slider167:0<0,1,1>-Lane 13 On
+slider168:7<0,7,1>-Lane 13 Output type
+slider169:0<0,16383,1>-Lane 13 CC/Param
+slider170:10<0,127,1>-Lane 13 Min
+slider171:117<0,127,1>-Lane 13 Max
+slider172:0.05<0.01,20,0.01>-Lane 13 Rate Hz
+slider173:0<0,5,1>-Lane 13 Shape
+slider174:0<0,1,1>-Lane 14 On
+slider175:7<0,7,1>-Lane 14 Output type
+slider176:0<0,16383,1>-Lane 14 CC/Param
+slider177:10<0,127,1>-Lane 14 Min
+slider178:117<0,127,1>-Lane 14 Max
+slider179:0.32<0.01,20,0.01>-Lane 14 Rate Hz
+slider180:1<0,5,1>-Lane 14 Shape
+slider181:0<0,1,1>-Lane 15 On
+slider182:7<0,7,1>-Lane 15 Output type
+slider183:0<0,16383,1>-Lane 15 CC/Param
+slider184:10<0,127,1>-Lane 15 Min
+slider185:117<0,127,1>-Lane 15 Max
+slider186:0.48<0.01,20,0.01>-Lane 15 Rate Hz
+slider187:2<0,5,1>-Lane 15 Shape
+slider188:0<0,1,1>-Lane 16 On
+slider189:7<0,7,1>-Lane 16 Output type
+slider190:0<0,16383,1>-Lane 16 CC/Param
+slider191:10<0,127,1>-Lane 16 Min
+slider192:117<0,127,1>-Lane 16 Max
+slider193:1.4<0.01,20,0.01>-Lane 16 Rate Hz
+slider194:3<0,5,1>-Lane 16 Shape
+slider195:100<0,100,1>-Key 36 probability
+slider196:100<0,100,1>-Key 37 probability
+slider197:100<0,100,1>-Key 38 probability
+slider198:100<0,100,1>-Key 39 probability
+slider199:100<0,100,1>-Key 40 probability
+slider200:100<0,100,1>-Key 41 probability
+slider201:100<0,100,1>-Key 42 probability
+slider202:100<0,100,1>-Key 43 probability
+slider203:100<0,100,1>-Key 44 probability
+slider204:100<0,100,1>-Key 45 probability
+slider205:100<0,100,1>-Key 46 probability
+slider206:100<0,100,1>-Key 47 probability
+slider207:100<0,100,1>-Key 48 probability
+slider208:100<0,100,1>-Key 49 probability
+slider209:100<0,100,1>-Key 50 probability
+slider210:100<0,100,1>-Key 51 probability
+slider211:100<0,100,1>-Key 52 probability
+slider212:100<0,100,1>-Key 53 probability
+slider213:100<0,100,1>-Key 54 probability
+slider214:100<0,100,1>-Key 55 probability
+slider215:100<0,100,1>-Key 56 probability
+slider216:100<0,100,1>-Key 57 probability
+slider217:100<0,100,1>-Key 58 probability
+slider218:100<0,100,1>-Key 59 probability
+slider219:100<0,100,1>-Key 60 probability
+slider220:100<0,100,1>-Key 61 probability
+slider221:100<0,100,1>-Key 62 probability
+slider222:100<0,100,1>-Key 63 probability
+slider223:100<0,100,1>-Key 64 probability
+slider224:100<0,100,1>-Key 65 probability
+slider225:100<0,100,1>-Key 66 probability
+slider226:100<0,100,1>-Key 67 probability
+slider227:100<0,100,1>-Key 68 probability
+slider228:100<0,100,1>-Key 69 probability
+slider229:100<0,100,1>-Key 70 probability
+slider230:100<0,100,1>-Key 71 probability
+slider231:100<0,100,1>-Key 72 probability
+slider232:100<0,100,1>-Key 73 probability
+slider233:100<0,100,1>-Key 74 probability
+slider234:100<0,100,1>-Key 75 probability
+slider235:100<0,100,1>-Key 76 probability
+slider236:100<0,100,1>-Key 77 probability
+slider237:100<0,100,1>-Key 78 probability
+slider238:100<0,100,1>-Key 79 probability
+slider239:100<0,100,1>-Key 80 probability
+slider240:100<0,100,1>-Key 81 probability
+slider241:100<0,100,1>-Key 82 probability
+slider242:100<0,100,1>-Key 83 probability
+slider243:100<0,100,1>-Key 84 probability
+slider244:100<0,100,1>-Key 85 probability
+slider245:100<0,100,1>-Key 86 probability
+slider246:100<0,100,1>-Key 87 probability
+slider247:100<0,100,1>-Key 88 probability
+slider248:100<0,100,1>-Key 89 probability
+slider249:100<0,100,1>-Key 90 probability
+slider250:100<0,100,1>-Key 91 probability
+slider251:100<0,100,1>-Key 92 probability
+slider252:100<0,100,1>-Key 93 probability
+slider253:100<0,100,1>-Key 94 probability
+slider254:100<0,100,1>-Key 95 probability
+slider255:100<0,100,1>-Key 96 probability
+slider256:0.125<0.05,8,0.005>-Global note speed (seconds)
+@init
+ext_noinit=1;
+ext_midi_bus=1;
+PMIN=16000;PMAX=16300;PSTEP=16600;
+PMIN[1]=0;PMAX[1]=1;PSTEP[1]=1;
+PMIN[2]=0;PMAX[2]=4;PSTEP[2]=1;
+PMIN[3]=0;PMAX[3]=1;PSTEP[3]=1;
+PMIN[4]=1;PMAX[4]=10000000;PSTEP[4]=1;
+PMIN[5]=0;PMAX[5]=67;PSTEP[5]=1;
+PMIN[6]=0;PMAX[6]=7;PSTEP[6]=1;
+PMIN[7]=0;PMAX[7]=11;PSTEP[7]=1;
+PMIN[8]=0;PMAX[8]=100;PSTEP[8]=1;
+PMIN[9]=0;PMAX[9]=100;PSTEP[9]=1;
+PMIN[10]=0;PMAX[10]=100;PSTEP[10]=1;
+PMIN[11]=0;PMAX[11]=80;PSTEP[11]=1;
+PMIN[12]=0;PMAX[12]=100;PSTEP[12]=1;
+PMIN[13]=15;PMAX[13]=3000;PSTEP[13]=1;
+PMIN[14]=0;PMAX[14]=100;PSTEP[14]=1;
+PMIN[15]=1;PMAX[15]=127;PSTEP[15]=1;
+PMIN[16]=1;PMAX[16]=127;PSTEP[16]=1;
+PMIN[17]=1;PMAX[17]=16;PSTEP[17]=1;
+PMIN[18]=1;PMAX[18]=16;PSTEP[18]=1;
+PMIN[19]=1;PMAX[19]=16;PSTEP[19]=1;
+PMIN[20]=0;PMAX[20]=1;PSTEP[20]=1;
+PMIN[21]=0;PMAX[21]=1;PSTEP[21]=1;
+PMIN[22]=0;PMAX[22]=1;PSTEP[22]=1;
+PMIN[23]=0;PMAX[23]=1;PSTEP[23]=1;
+PMIN[24]=0;PMAX[24]=100;PSTEP[24]=1;
+PMIN[25]=5;PMAX[25]=60;PSTEP[25]=1;
+PMIN[26]=0;PMAX[26]=1;PSTEP[26]=1;
+PMIN[27]=0;PMAX[27]=100;PSTEP[27]=1;
+PMIN[28]=0;PMAX[28]=1;PSTEP[28]=1;
+PMIN[29]=0;PMAX[29]=1;PSTEP[29]=1;
+PMIN[30]=0;PMAX[30]=1;PSTEP[30]=1;
+PMIN[31]=0;PMAX[31]=100;PSTEP[31]=1;
+PMIN[32]=0;PMAX[32]=1;PSTEP[32]=1;
+PMIN[33]=0;PMAX[33]=100;PSTEP[33]=1;
+PMIN[34]=0;PMAX[34]=100;PSTEP[34]=1;
+PMIN[35]=0;PMAX[35]=7;PSTEP[35]=1;
+PMIN[36]=0;PMAX[36]=1;PSTEP[36]=1;
+PMIN[37]=1;PMAX[37]=8;PSTEP[37]=1;
+PMIN[38]=1;PMAX[38]=8;PSTEP[38]=1;
+PMIN[39]=0;PMAX[39]=1;PSTEP[39]=1;
+PMIN[40]=0;PMAX[40]=1;PSTEP[40]=1;
+PMIN[41]=0;PMAX[41]=1;PSTEP[41]=1;
+PMIN[42]=1;PMAX[42]=16;PSTEP[42]=1;
+PMIN[43]=0;PMAX[43]=1;PSTEP[43]=1;
+PMIN[44]=0;PMAX[44]=100;PSTEP[44]=1;
+PMIN[45]=0;PMAX[45]=1;PSTEP[45]=1;
+PMIN[46]=0;PMAX[46]=100;PSTEP[46]=1;
+PMIN[47]=0;PMAX[47]=100;PSTEP[47]=1;
+PMIN[48]=0;PMAX[48]=100;PSTEP[48]=1;
+PMIN[49]=0;PMAX[49]=127;PSTEP[49]=1;
+PMIN[50]=0;PMAX[50]=100;PSTEP[50]=1;
+PMIN[51]=0;PMAX[51]=1;PSTEP[51]=1;
+PMIN[52]=0.25;PMAX[52]=16;PSTEP[52]=0.25;
+PMIN[53]=0;PMAX[53]=100;PSTEP[53]=1;
+PMIN[54]=25;PMAX[54]=250;PSTEP[54]=1;
+PMIN[55]=1;PMAX[55]=16;PSTEP[55]=1;
+PMIN[56]=0;PMAX[56]=100;PSTEP[56]=1;
+PMIN[57]=0;PMAX[57]=16;PSTEP[57]=1;
+PMIN[58]=1;PMAX[58]=16;PSTEP[58]=1;
+PMIN[59]=0;PMAX[59]=1;PSTEP[59]=1;
+PMIN[60]=0.25;PMAX[60]=16;PSTEP[60]=0.25;
+PMIN[61]=0;PMAX[61]=100;PSTEP[61]=1;
+PMIN[62]=25;PMAX[62]=250;PSTEP[62]=1;
+PMIN[63]=1;PMAX[63]=16;PSTEP[63]=1;
+PMIN[64]=0;PMAX[64]=100;PSTEP[64]=1;
+PMIN[65]=0;PMAX[65]=16;PSTEP[65]=1;
+PMIN[66]=1;PMAX[66]=16;PSTEP[66]=1;
+PMIN[67]=0;PMAX[67]=1;PSTEP[67]=1;
+PMIN[68]=0.25;PMAX[68]=16;PSTEP[68]=0.25;
+PMIN[69]=0;PMAX[69]=100;PSTEP[69]=1;
+PMIN[70]=25;PMAX[70]=250;PSTEP[70]=1;
+PMIN[71]=1;PMAX[71]=16;PSTEP[71]=1;
+PMIN[72]=0;PMAX[72]=100;PSTEP[72]=1;
+PMIN[73]=0;PMAX[73]=16;PSTEP[73]=1;
+PMIN[74]=1;PMAX[74]=16;PSTEP[74]=1;
+PMIN[75]=0;PMAX[75]=1;PSTEP[75]=1;
+PMIN[76]=0.25;PMAX[76]=16;PSTEP[76]=0.25;
+PMIN[77]=0;PMAX[77]=100;PSTEP[77]=1;
+PMIN[78]=25;PMAX[78]=250;PSTEP[78]=1;
+PMIN[79]=1;PMAX[79]=16;PSTEP[79]=1;
+PMIN[80]=0;PMAX[80]=100;PSTEP[80]=1;
+PMIN[81]=0;PMAX[81]=16;PSTEP[81]=1;
+PMIN[82]=1;PMAX[82]=16;PSTEP[82]=1;
+PMIN[83]=0;PMAX[83]=1;PSTEP[83]=1;
+PMIN[84]=0;PMAX[84]=7;PSTEP[84]=1;
+PMIN[85]=0;PMAX[85]=16383;PSTEP[85]=1;
+PMIN[86]=0;PMAX[86]=127;PSTEP[86]=1;
+PMIN[87]=0;PMAX[87]=127;PSTEP[87]=1;
+PMIN[88]=0.01;PMAX[88]=20;PSTEP[88]=0.01;
+PMIN[89]=0;PMAX[89]=5;PSTEP[89]=1;
+PMIN[90]=0;PMAX[90]=1;PSTEP[90]=1;
+PMIN[91]=0;PMAX[91]=7;PSTEP[91]=1;
+PMIN[92]=0;PMAX[92]=16383;PSTEP[92]=1;
+PMIN[93]=0;PMAX[93]=127;PSTEP[93]=1;
+PMIN[94]=0;PMAX[94]=127;PSTEP[94]=1;
+PMIN[95]=0.01;PMAX[95]=20;PSTEP[95]=0.01;
+PMIN[96]=0;PMAX[96]=5;PSTEP[96]=1;
+PMIN[97]=0;PMAX[97]=1;PSTEP[97]=1;
+PMIN[98]=0;PMAX[98]=7;PSTEP[98]=1;
+PMIN[99]=0;PMAX[99]=16383;PSTEP[99]=1;
+PMIN[100]=0;PMAX[100]=127;PSTEP[100]=1;
+PMIN[101]=0;PMAX[101]=127;PSTEP[101]=1;
+PMIN[102]=0.01;PMAX[102]=20;PSTEP[102]=0.01;
+PMIN[103]=0;PMAX[103]=5;PSTEP[103]=1;
+PMIN[104]=0;PMAX[104]=1;PSTEP[104]=1;
+PMIN[105]=0;PMAX[105]=7;PSTEP[105]=1;
+PMIN[106]=0;PMAX[106]=16383;PSTEP[106]=1;
+PMIN[107]=0;PMAX[107]=127;PSTEP[107]=1;
+PMIN[108]=0;PMAX[108]=127;PSTEP[108]=1;
+PMIN[109]=0.01;PMAX[109]=20;PSTEP[109]=0.01;
+PMIN[110]=0;PMAX[110]=5;PSTEP[110]=1;
+PMIN[111]=0;PMAX[111]=1;PSTEP[111]=1;
+PMIN[112]=0;PMAX[112]=7;PSTEP[112]=1;
+PMIN[113]=0;PMAX[113]=16383;PSTEP[113]=1;
+PMIN[114]=0;PMAX[114]=127;PSTEP[114]=1;
+PMIN[115]=0;PMAX[115]=127;PSTEP[115]=1;
+PMIN[116]=0.01;PMAX[116]=20;PSTEP[116]=0.01;
+PMIN[117]=0;PMAX[117]=5;PSTEP[117]=1;
+PMIN[118]=0;PMAX[118]=1;PSTEP[118]=1;
+PMIN[119]=0;PMAX[119]=7;PSTEP[119]=1;
+PMIN[120]=0;PMAX[120]=16383;PSTEP[120]=1;
+PMIN[121]=0;PMAX[121]=127;PSTEP[121]=1;
+PMIN[122]=0;PMAX[122]=127;PSTEP[122]=1;
+PMIN[123]=0.01;PMAX[123]=20;PSTEP[123]=0.01;
+PMIN[124]=0;PMAX[124]=5;PSTEP[124]=1;
+PMIN[125]=0;PMAX[125]=1;PSTEP[125]=1;
+PMIN[126]=0;PMAX[126]=7;PSTEP[126]=1;
+PMIN[127]=0;PMAX[127]=16383;PSTEP[127]=1;
+PMIN[128]=0;PMAX[128]=127;PSTEP[128]=1;
+PMIN[129]=0;PMAX[129]=127;PSTEP[129]=1;
+PMIN[130]=0.01;PMAX[130]=20;PSTEP[130]=0.01;
+PMIN[131]=0;PMAX[131]=5;PSTEP[131]=1;
+PMIN[132]=0;PMAX[132]=1;PSTEP[132]=1;
+PMIN[133]=0;PMAX[133]=7;PSTEP[133]=1;
+PMIN[134]=0;PMAX[134]=16383;PSTEP[134]=1;
+PMIN[135]=0;PMAX[135]=127;PSTEP[135]=1;
+PMIN[136]=0;PMAX[136]=127;PSTEP[136]=1;
+PMIN[137]=0.01;PMAX[137]=20;PSTEP[137]=0.01;
+PMIN[138]=0;PMAX[138]=5;PSTEP[138]=1;
+PMIN[139]=0;PMAX[139]=1;PSTEP[139]=1;
+PMIN[140]=0;PMAX[140]=7;PSTEP[140]=1;
+PMIN[141]=0;PMAX[141]=16383;PSTEP[141]=1;
+PMIN[142]=0;PMAX[142]=127;PSTEP[142]=1;
+PMIN[143]=0;PMAX[143]=127;PSTEP[143]=1;
+PMIN[144]=0.01;PMAX[144]=20;PSTEP[144]=0.01;
+PMIN[145]=0;PMAX[145]=5;PSTEP[145]=1;
+PMIN[146]=0;PMAX[146]=1;PSTEP[146]=1;
+PMIN[147]=0;PMAX[147]=7;PSTEP[147]=1;
+PMIN[148]=0;PMAX[148]=16383;PSTEP[148]=1;
+PMIN[149]=0;PMAX[149]=127;PSTEP[149]=1;
+PMIN[150]=0;PMAX[150]=127;PSTEP[150]=1;
+PMIN[151]=0.01;PMAX[151]=20;PSTEP[151]=0.01;
+PMIN[152]=0;PMAX[152]=5;PSTEP[152]=1;
+PMIN[153]=0;PMAX[153]=1;PSTEP[153]=1;
+PMIN[154]=0;PMAX[154]=7;PSTEP[154]=1;
+PMIN[155]=0;PMAX[155]=16383;PSTEP[155]=1;
+PMIN[156]=0;PMAX[156]=127;PSTEP[156]=1;
+PMIN[157]=0;PMAX[157]=127;PSTEP[157]=1;
+PMIN[158]=0.01;PMAX[158]=20;PSTEP[158]=0.01;
+PMIN[159]=0;PMAX[159]=5;PSTEP[159]=1;
+PMIN[160]=0;PMAX[160]=1;PSTEP[160]=1;
+PMIN[161]=0;PMAX[161]=7;PSTEP[161]=1;
+PMIN[162]=0;PMAX[162]=16383;PSTEP[162]=1;
+PMIN[163]=0;PMAX[163]=127;PSTEP[163]=1;
+PMIN[164]=0;PMAX[164]=127;PSTEP[164]=1;
+PMIN[165]=0.01;PMAX[165]=20;PSTEP[165]=0.01;
+PMIN[166]=0;PMAX[166]=5;PSTEP[166]=1;
+PMIN[167]=0;PMAX[167]=1;PSTEP[167]=1;
+PMIN[168]=0;PMAX[168]=7;PSTEP[168]=1;
+PMIN[169]=0;PMAX[169]=16383;PSTEP[169]=1;
+PMIN[170]=0;PMAX[170]=127;PSTEP[170]=1;
+PMIN[171]=0;PMAX[171]=127;PSTEP[171]=1;
+PMIN[172]=0.01;PMAX[172]=20;PSTEP[172]=0.01;
+PMIN[173]=0;PMAX[173]=5;PSTEP[173]=1;
+PMIN[174]=0;PMAX[174]=1;PSTEP[174]=1;
+PMIN[175]=0;PMAX[175]=7;PSTEP[175]=1;
+PMIN[176]=0;PMAX[176]=16383;PSTEP[176]=1;
+PMIN[177]=0;PMAX[177]=127;PSTEP[177]=1;
+PMIN[178]=0;PMAX[178]=127;PSTEP[178]=1;
+PMIN[179]=0.01;PMAX[179]=20;PSTEP[179]=0.01;
+PMIN[180]=0;PMAX[180]=5;PSTEP[180]=1;
+PMIN[181]=0;PMAX[181]=1;PSTEP[181]=1;
+PMIN[182]=0;PMAX[182]=7;PSTEP[182]=1;
+PMIN[183]=0;PMAX[183]=16383;PSTEP[183]=1;
+PMIN[184]=0;PMAX[184]=127;PSTEP[184]=1;
+PMIN[185]=0;PMAX[185]=127;PSTEP[185]=1;
+PMIN[186]=0.01;PMAX[186]=20;PSTEP[186]=0.01;
+PMIN[187]=0;PMAX[187]=5;PSTEP[187]=1;
+PMIN[188]=0;PMAX[188]=1;PSTEP[188]=1;
+PMIN[189]=0;PMAX[189]=7;PSTEP[189]=1;
+PMIN[190]=0;PMAX[190]=16383;PSTEP[190]=1;
+PMIN[191]=0;PMAX[191]=127;PSTEP[191]=1;
+PMIN[192]=0;PMAX[192]=127;PSTEP[192]=1;
+PMIN[193]=0.01;PMAX[193]=20;PSTEP[193]=0.01;
+PMIN[194]=0;PMAX[194]=5;PSTEP[194]=1;
+PMIN[195]=0;PMAX[195]=100;PSTEP[195]=1;
+PMIN[196]=0;PMAX[196]=100;PSTEP[196]=1;
+PMIN[197]=0;PMAX[197]=100;PSTEP[197]=1;
+PMIN[198]=0;PMAX[198]=100;PSTEP[198]=1;
+PMIN[199]=0;PMAX[199]=100;PSTEP[199]=1;
+PMIN[200]=0;PMAX[200]=100;PSTEP[200]=1;
+PMIN[201]=0;PMAX[201]=100;PSTEP[201]=1;
+PMIN[202]=0;PMAX[202]=100;PSTEP[202]=1;
+PMIN[203]=0;PMAX[203]=100;PSTEP[203]=1;
+PMIN[204]=0;PMAX[204]=100;PSTEP[204]=1;
+PMIN[205]=0;PMAX[205]=100;PSTEP[205]=1;
+PMIN[206]=0;PMAX[206]=100;PSTEP[206]=1;
+PMIN[207]=0;PMAX[207]=100;PSTEP[207]=1;
+PMIN[208]=0;PMAX[208]=100;PSTEP[208]=1;
+PMIN[209]=0;PMAX[209]=100;PSTEP[209]=1;
+PMIN[210]=0;PMAX[210]=100;PSTEP[210]=1;
+PMIN[211]=0;PMAX[211]=100;PSTEP[211]=1;
+PMIN[212]=0;PMAX[212]=100;PSTEP[212]=1;
+PMIN[213]=0;PMAX[213]=100;PSTEP[213]=1;
+PMIN[214]=0;PMAX[214]=100;PSTEP[214]=1;
+PMIN[215]=0;PMAX[215]=100;PSTEP[215]=1;
+PMIN[216]=0;PMAX[216]=100;PSTEP[216]=1;
+PMIN[217]=0;PMAX[217]=100;PSTEP[217]=1;
+PMIN[218]=0;PMAX[218]=100;PSTEP[218]=1;
+PMIN[219]=0;PMAX[219]=100;PSTEP[219]=1;
+PMIN[220]=0;PMAX[220]=100;PSTEP[220]=1;
+PMIN[221]=0;PMAX[221]=100;PSTEP[221]=1;
+PMIN[222]=0;PMAX[222]=100;PSTEP[222]=1;
+PMIN[223]=0;PMAX[223]=100;PSTEP[223]=1;
+PMIN[224]=0;PMAX[224]=100;PSTEP[224]=1;
+PMIN[225]=0;PMAX[225]=100;PSTEP[225]=1;
+PMIN[226]=0;PMAX[226]=100;PSTEP[226]=1;
+PMIN[227]=0;PMAX[227]=100;PSTEP[227]=1;
+PMIN[228]=0;PMAX[228]=100;PSTEP[228]=1;
+PMIN[229]=0;PMAX[229]=100;PSTEP[229]=1;
+PMIN[230]=0;PMAX[230]=100;PSTEP[230]=1;
+PMIN[231]=0;PMAX[231]=100;PSTEP[231]=1;
+PMIN[232]=0;PMAX[232]=100;PSTEP[232]=1;
+PMIN[233]=0;PMAX[233]=100;PSTEP[233]=1;
+PMIN[234]=0;PMAX[234]=100;PSTEP[234]=1;
+PMIN[235]=0;PMAX[235]=100;PSTEP[235]=1;
+PMIN[236]=0;PMAX[236]=100;PSTEP[236]=1;
+PMIN[237]=0;PMAX[237]=100;PSTEP[237]=1;
+PMIN[238]=0;PMAX[238]=100;PSTEP[238]=1;
+PMIN[239]=0;PMAX[239]=100;PSTEP[239]=1;
+PMIN[240]=0;PMAX[240]=100;PSTEP[240]=1;
+PMIN[241]=0;PMAX[241]=100;PSTEP[241]=1;
+PMIN[242]=0;PMAX[242]=100;PSTEP[242]=1;
+PMIN[243]=0;PMAX[243]=100;PSTEP[243]=1;
+PMIN[244]=0;PMAX[244]=100;PSTEP[244]=1;
+PMIN[245]=0;PMAX[245]=100;PSTEP[245]=1;
+PMIN[246]=0;PMAX[246]=100;PSTEP[246]=1;
+PMIN[247]=0;PMAX[247]=100;PSTEP[247]=1;
+PMIN[248]=0;PMAX[248]=100;PSTEP[248]=1;
+PMIN[249]=0;PMAX[249]=100;PSTEP[249]=1;
+PMIN[250]=0;PMAX[250]=100;PSTEP[250]=1;
+PMIN[251]=0;PMAX[251]=100;PSTEP[251]=1;
+PMIN[252]=0;PMAX[252]=100;PSTEP[252]=1;
+PMIN[253]=0;PMAX[253]=100;PSTEP[253]=1;
+PMIN[254]=0;PMAX[254]=100;PSTEP[254]=1;
+PMIN[255]=0;PMAX[255]=100;PSTEP[255]=1;
+PMIN[256]=0.05;PMAX[256]=8;PSTEP[256]=0.005;
+// Named memory ranges, no pointers outside the JSFX address space.
+V_ON=1000; V_PITCH=1200; V_CH=1400; V_BUS=1600; V_DUE=1800; V_ENG=2000; V_VEL=2200;
+MOD_PHASE=3000; MOD_HOLD=3050; MOD_LFO=3100; MOD_WALK=3150; MOD_PREV=3200; MOD_SENT=3250;
+KEY_HIST=4000; ENGINE_NEXT=5000; ENGINE_STEP=5050; ENGINE_LAST=5100;
+CHAOS_X=5200; LORENZ_X=5250; LORENZ_Y=5300; LORENZ_Z=5350;
+AGENT_POS=5400;AGENT_VEL=5450;
+SCENE_BASE=10000; SCENE_VALID=12200; MIDI_TMP=13000;
+M_CFG=18000; M_SCENE=18200; M_SCALE=19000; M_CHORD=19400; M_CHORDCOUNT=19700; M_MOTIF=20000; M_APREV=20300;
+M_SEQ=21000; M_GATE=21200; M_VEL=21400; M_CASCADE=22000; M_PREVVOICE=22100;
+M_SEQSC=23000;M_GATESC=24200;M_VELSC=25400;M_CASC_SC=26600;M_MOTSC=27000;
+// Hypnotic suspended harmony, pedal point, voicing drift, canon and order morph.
+M_EXT=32000; M_EXTSC=32100;
+// POLYTRANCE: independent 16:7:5 tracks, CC macro matrix, arrangement and snapshots.
+P_CTL=36000;P_NOTE=36200;P_GATE=36400;P_VEL=36600;P_PROB=36800;
+P_NEXT=37000;P_STEP=37100;P_LASTCC=37200;
+P_SCTL=38000;P_SNOTE=39000;P_SGATE=40000;P_SVEL=41000;P_SPROB=42000;
+P_ARR=44000;P_SARR=45000;
+CAN_ON=33000;CAN_AT=33100;CAN_PITCH=33200;CAN_ACC=33300;CAN_DUR=33400;CAN_ENG=33500;
+
+// Musical lookup tables: pitch intervals, chord vocab, and defaults.
+M_SCALE[0]=0;
+M_SCALE[1]=2;
+M_SCALE[2]=4;
+M_SCALE[3]=5;
+M_SCALE[4]=7;
+M_SCALE[5]=9;
+M_SCALE[6]=11;
+M_SCALE[7]=0;
+M_SCALE[8]=2;
+M_SCALE[9]=3;
+M_SCALE[10]=5;
+M_SCALE[11]=7;
+M_SCALE[12]=8;
+M_SCALE[13]=10;
+M_SCALE[14]=0;
+M_SCALE[15]=2;
+M_SCALE[16]=3;
+M_SCALE[17]=5;
+M_SCALE[18]=7;
+M_SCALE[19]=9;
+M_SCALE[20]=10;
+M_SCALE[21]=0;
+M_SCALE[22]=1;
+M_SCALE[23]=3;
+M_SCALE[24]=5;
+M_SCALE[25]=7;
+M_SCALE[26]=8;
+M_SCALE[27]=10;
+M_SCALE[28]=0;
+M_SCALE[29]=2;
+M_SCALE[30]=3;
+M_SCALE[31]=5;
+M_SCALE[32]=7;
+M_SCALE[33]=8;
+M_SCALE[34]=11;
+M_SCALE[35]=0;
+M_SCALE[36]=2;
+M_SCALE[37]=4;
+M_SCALE[38]=6;
+M_SCALE[39]=7;
+M_SCALE[40]=9;
+M_SCALE[41]=11;
+M_SCALE[42]=0;
+M_SCALE[43]=2;
+M_SCALE[44]=4;
+M_SCALE[45]=5;
+M_SCALE[46]=7;
+M_SCALE[47]=9;
+M_SCALE[48]=10;
+M_SCALE[49]=0;
+M_SCALE[50]=1;
+M_SCALE[51]=4;
+M_SCALE[52]=5;
+M_SCALE[53]=7;
+M_SCALE[54]=8;
+M_SCALE[55]=10;
+M_SCALE[56]=0;
+M_SCALE[57]=2;
+M_SCALE[58]=3;
+M_SCALE[59]=6;
+M_SCALE[60]=7;
+M_SCALE[61]=8;
+M_SCALE[62]=11;
+M_SCALE[63]=0;
+M_SCALE[64]=2;
+M_SCALE[65]=3;
+M_SCALE[66]=5;
+M_SCALE[67]=7;
+M_SCALE[68]=9;
+M_SCALE[69]=11;
+M_SCALE[70]=0;
+M_SCALE[71]=1;
+M_SCALE[72]=3;
+M_SCALE[73]=5;
+M_SCALE[74]=6;
+M_SCALE[75]=8;
+M_SCALE[76]=10;
+M_SCALE[77]=0;
+M_SCALE[78]=1;
+M_SCALE[79]=4;
+M_SCALE[80]=6;
+M_SCALE[81]=7;
+M_SCALE[82]=9;
+M_SCALE[83]=11;
+M_SCALE[84]=0;
+M_SCALE[85]=2;
+M_SCALE[86]=4;
+M_SCALE[87]=5;
+M_SCALE[88]=7;
+M_SCALE[89]=8;
+M_SCALE[90]=11;
+M_SCALE[91]=0;
+M_SCALE[92]=2;
+M_SCALE[93]=3;
+M_SCALE[94]=6;
+M_SCALE[95]=7;
+M_SCALE[96]=9;
+M_SCALE[97]=10;
+M_CHORDCOUNT[0]=0;
+M_CHORDCOUNT[1]=3;
+M_CHORD[8]=0;
+M_CHORD[9]=4;
+M_CHORD[10]=7;
+M_CHORDCOUNT[2]=3;
+M_CHORD[16]=0;
+M_CHORD[17]=3;
+M_CHORD[18]=7;
+M_CHORDCOUNT[3]=4;
+M_CHORD[24]=0;
+M_CHORD[25]=4;
+M_CHORD[26]=7;
+M_CHORD[27]=11;
+M_CHORDCOUNT[4]=4;
+M_CHORD[32]=0;
+M_CHORD[33]=3;
+M_CHORD[34]=7;
+M_CHORD[35]=10;
+M_CHORDCOUNT[5]=4;
+M_CHORD[40]=0;
+M_CHORD[41]=4;
+M_CHORD[42]=7;
+M_CHORD[43]=10;
+M_CHORDCOUNT[6]=3;
+M_CHORD[48]=0;
+M_CHORD[49]=2;
+M_CHORD[50]=7;
+M_CHORDCOUNT[7]=3;
+M_CHORD[56]=0;
+M_CHORD[57]=5;
+M_CHORD[58]=7;
+M_CHORDCOUNT[8]=4;
+M_CHORD[64]=0;
+M_CHORD[65]=4;
+M_CHORD[66]=7;
+M_CHORD[67]=14;
+M_CHORDCOUNT[9]=5;
+M_CHORD[72]=0;
+M_CHORD[73]=3;
+M_CHORD[74]=7;
+M_CHORD[75]=10;
+M_CHORD[76]=14;
+M_CHORDCOUNT[10]=5;
+M_CHORD[80]=0;
+M_CHORD[81]=4;
+M_CHORD[82]=7;
+M_CHORD[83]=11;
+M_CHORD[84]=14;
+M_CHORDCOUNT[11]=5;
+M_CHORD[88]=0;
+M_CHORD[89]=4;
+M_CHORD[90]=7;
+M_CHORD[91]=10;
+M_CHORD[92]=14;
+M_CHORDCOUNT[12]=3;
+M_CHORD[96]=0;
+M_CHORD[97]=7;
+M_CHORD[98]=12;
+M_CHORDCOUNT[13]=3;
+M_CHORD[104]=0;
+M_CHORD[105]=3;
+M_CHORD[106]=6;
+M_CHORDCOUNT[14]=3;
+M_CHORD[112]=0;
+M_CHORD[113]=4;
+M_CHORD[114]=8;
+M_CHORDCOUNT[15]=3;
+M_CHORD[120]=0;
+M_CHORD[121]=5;
+M_CHORD[122]=10;
+M_CHORDCOUNT[16]=4;
+M_CHORD[128]=0;
+M_CHORD[129]=3;
+M_CHORD[130]=7;
+M_CHORD[131]=9;
+M_CHORDCOUNT[17]=4;
+M_CHORD[136]=0;
+M_CHORD[137]=4;
+M_CHORD[138]=7;
+M_CHORD[139]=9;
+M_CHORDCOUNT[18]=4;
+M_CHORD[144]=0;
+M_CHORD[145]=4;
+M_CHORD[146]=7;
+M_CHORD[147]=17;
+M_CHORDCOUNT[19]=4;
+M_CHORD[152]=0;
+M_CHORD[153]=2;
+M_CHORD[154]=3;
+M_CHORD[155]=7;
+M_CHORDCOUNT[20]=5;
+M_CHORD[160]=0;
+M_CHORD[161]=4;
+M_CHORD[162]=7;
+M_CHORD[163]=10;
+M_CHORD[164]=13;
+M_CHORDCOUNT[21]=4;
+M_CHORD[168]=0;
+M_CHORD[169]=3;
+M_CHORD[170]=7;
+M_CHORD[171]=11;
+M_CHORDCOUNT[22]=4;
+M_CHORD[176]=0;
+M_CHORD[177]=1;
+M_CHORD[178]=7;
+M_CHORD[179]=12;
+M_CHORDCOUNT[23]=4;
+M_CHORD[184]=0;
+M_CHORD[185]=7;
+M_CHORD[186]=14;
+M_CHORD[187]=19;
+M_CHORDCOUNT[24]=6;
+M_CHORD[192]=0;
+M_CHORD[193]=3;
+M_CHORD[194]=7;
+M_CHORD[195]=10;
+M_CHORD[196]=14;
+M_CHORD[197]=17;
+M_CHORDCOUNT[25]=6;
+M_CHORD[200]=0;
+M_CHORD[201]=4;
+M_CHORD[202]=7;
+M_CHORD[203]=11;
+M_CHORD[204]=14;
+M_CHORD[205]=21;
+M_CFG[63]<1101 ? (
+M_CFG[0]=0; M_CFG[1]=0; M_CFG[2]=1; M_CFG[3]=6; M_CFG[4]=1;
+M_CFG[5]=0; M_CFG[6]=1; M_CFG[7]=4; M_CFG[8]=0; M_CFG[9]=0;
+M_CFG[10]=0; M_CFG[11]=0; M_CFG[12]=60; M_CFG[13]=1; M_CFG[14]=75;
+M_CFG[15]=8; M_CFG[16]=12; M_CFG[17]=65; M_CFG[18]=35;
+M_CFG[19]=75; M_CFG[20]=18; M_CFG[21]=5; M_CFG[22]=1;
+M_CFG[23]=40; M_CFG[24]=25; M_CFG[25]=0; M_CFG[26]=0;
+M_CFG[27]=65; M_CFG[28]=35; M_CFG[29]=30; M_CFG[30]=0;
+M_CFG[32]=0;M_CFG[33]=5;M_CFG[34]=2;M_CFG[35]=6;
+M_CFG[36]=0;M_CFG[37]=5;M_CFG[38]=2;M_CFG[39]=6;
+M_CFG[40]=0;M_CFG[41]=0;M_CFG[42]=0;M_CFG[43]=0;
+M_CFG[44]=0; M_CFG[45]=0; M_CFG[46]=0; M_CFG[47]=0;
+M_CFG[63]=1101;
+);
+// Versioned migration: never wipe a user's existing harmony settings.
+M_CFG[63]<1200 ? (
+ M_CFG[24]=1;M_CFG[25]=85;M_CFG[26]=55;M_CFG[27]=25;
+ M_CFG[28]=65;M_CFG[29]=35;M_CFG[30]=45;M_CFG[31]=0;
+ M_CFG[44]=1;M_CFG[45]=1;M_CFG[46]=1;M_CFG[47]=1;
+ M_CFG[48]=7;M_CFG[49]=11;M_CFG[50]=5;M_CFG[51]=13;
+ M_CFG[52]=9;M_CFG[53]=5;M_CFG[54]=7;M_CFG[55]=11;
+ M_CFG[56]=0;M_CFG[57]=3;M_CFG[58]=4;M_CFG[59]=0;
+ M_CFG[60]=2;M_CFG[61]=1;M_CFG[62]=8;
+ M_CFG[63]=1200;
+ j=0;loop(4,
+    k=0;loop(32,
+      // 0, minor third, fifth and occasional scale-second; 99 means intentional rest.
+      M_SEQ[j*32+k]= k%7==0 ? 0 : k%7==2 ? 4 : k%7==4 ? 1 : k%7==6 ? 0 : 99;
+      M_GATE[j*32+k]= k%9==0 ? 100 : k%9==3 ? 100 : k%9==6 ? 100 : k%9==1 ? 30 : k%9==7 ? 24 : 0;
+      M_VEL[j*32+k]= k%9==0 ? 122 : k%9==3 ? 106 : k%9==6 ? 116 : 65;
+      k+=1;
+    );j+=1;
+ );
+ M_CASCADE[0]=0;M_CASCADE[1]=0;M_CASCADE[2]=3;M_CASCADE[3]=0;
+ M_CASCADE[4]=5;M_CASCADE[5]=0;M_CASCADE[6]=-2;M_CASCADE[7]=0;
+);
+
+// Independent migration: keeps old projects' M_CFG, scene slots and MIDI automation.
+M_EXT[31]<1300 ? (
+ M_EXT[0]=0; // 0=off; 1=sus2;2=sus4;3=quartal;4=power;5=phrygian cluster
+ M_EXT[1]=0; // 0=allow progressions;1=static drone;2=oscillating mode;3=modal wander
+ M_EXT[2]=0;M_EXT[3]=28; // b2 motif enable, fill probability
+ M_EXT[4]=0;M_EXT[5]=1; // pedal point enable and density 1..8
+ M_EXT[6]=58;M_EXT[7]=110; // relative anchor and lead accents
+ M_EXT[8]=0;M_EXT[9]=8; // voicing drift, 8-bar interval
+ M_EXT[10]=0;M_EXT[11]=4; // order morph enable and duration bars
+ M_EXT[12]=0;M_EXT[13]=30;M_EXT[14]=4; // ratchets enable, chance, retrigger count
+ M_EXT[15]=0;M_EXT[16]=1;M_EXT[17]=2;M_EXT[18]=60; // canon on, delay unit, transpose, level
+ M_EXT[19]=0;M_EXT[20]=5; // optional rare tritone mutation, chance
+ M_EXT[21]=0;M_EXT[22]=0; // sound gate not supported; reserved; NO fake audio gate
+ M_EXT[31]=1300;
+);
+
+
+// Non-destructive migration: old v1.3 projects keep their notes, scenes and parameters.
+P_CTL[63]<1400 ? (
+  P_CTL[0]=0; // POLYTRANCE OFF until activated explicitly
+  P_CTL[1]=1; // 32-bar flow enabled
+  P_CTL[2]=0; // 0=reference, 1=phase drift, 2=spiral, 3=shadow, 4=quantum
+  P_CTL[3]=32; // Arrangement period (bars; fixed 8 x 4 stages for v1.4)
+  P_CTL[4]=0; // 0=never reset 560-step phase on bar 33
+  P_CTL[5]=55;P_CTL[6]=35; // Pressure & Space macros
+  P_CTL[7]=18; // creative movement amount
+  P_CTL[8]=0; // per-lane speed drift, 0 preserves exact 16:7:5 loop
+  P_CTL[9]=0; // transpose all tracks in semitones
+  P_CTL[10]=0; // 0=current tempo 16th, 1=8th, 2=32nd
+  P_CTL[11]=0; // gentle echo switch; 0=off
+  P_CTL[12]=0; // hard MIDI panic on reset (no arbitrary SYSEX)
+  P_CTL[13]=0; // hold original harmony: if on, mutations cannot escape E Phrygian
+  P_CTL[14]=0; // reserved
+  P_CTL[15]=0; // reserved
+  P_CTL[16]=16;P_CTL[17]=7;P_CTL[18]=5; // length per lane
+  P_CTL[20]=1;P_CTL[21]=1;P_CTL[22]=1; // enabled per lane
+  P_CTL[24]=1;P_CTL[25]=2;P_CTL[26]=3; // output channels, 1-based
+  P_CTL[28]=100;P_CTL[29]=100;P_CTL[30]=100; // velocity scale
+  P_CTL[32]=100;P_CTL[33]=100;P_CTL[34]=100; // gate scale
+  P_CTL[36]=0;P_CTL[37]=0;P_CTL[38]=0; // lane transposition in semitones
+  P_CTL[40]=0;P_CTL[41]=0;P_CTL[42]=0; // per-lane swing (0..35%)
+  P_CTL[44]=74;P_CTL[45]=71;P_CTL[46]=75;P_CTL[47]=91;P_CTL[48]=93; // MIDI CC mappings
+  P_CTL[50]=0; // extra ghost notes level
+  P_CTL[51]=0; // mutation gates probability
+  P_CTL[52]=30; // evolving tension amount
+  P_CTL[53]=100; // locked anchors
+  P_CTL[54]=25; // mutation depth
+  P_CTL[55]=60; // intensity / audio spacing
+  P_CTL[56]=0; // channel 1 slide on step 15/16 (CC65 & CC5)
+  P_CTL[57]=35; // CC5 portamento time
+  P_CTL[58]=0; // reserved
+  P_CTL[59]=0; // reserved
+  P_CTL[60]=1; // send MIDI CC expression
+  P_CTL[61]=0; // debug option
+  P_CTL[62]=0; // scene reserve
+  P_CTL[63]=1400;
+  P_NOTE[0]=40;P_GATE[0]=25;P_VEL[0]=70;P_PROB[0]=100;
+  P_NOTE[1]=53;P_GATE[1]=65;P_VEL[1]=105;P_PROB[1]=100;
+  P_NOTE[2]=40;P_GATE[2]=20;P_VEL[2]=55;P_PROB[2]=100;
+  P_NOTE[3]=40;P_GATE[3]=30;P_VEL[3]=80;P_PROB[3]=100;
+  P_NOTE[4]=-1;P_GATE[4]=0;P_VEL[4]=0;P_PROB[4]=0;
+  P_NOTE[5]=55;P_GATE[5]=45;P_VEL[5]=95;P_PROB[5]=100;
+  P_NOTE[6]=40;P_GATE[6]=20;P_VEL[6]=60;P_PROB[6]=100;
+  P_NOTE[7]=59;P_GATE[7]=85;P_VEL[7]=115;P_PROB[7]=100;
+  P_NOTE[8]=40;P_GATE[8]=25;P_VEL[8]=70;P_PROB[8]=100;
+  P_NOTE[9]=53;P_GATE[9]=30;P_VEL[9]=90;P_PROB[9]=100;
+  P_NOTE[10]=40;P_GATE[10]=20;P_VEL[10]=55;P_PROB[10]=100;
+  P_NOTE[11]=60;P_GATE[11]=75;P_VEL[11]=120;P_PROB[11]=40;
+  P_NOTE[12]=40;P_GATE[12]=25;P_VEL[12]=65;P_PROB[12]=100;
+  P_NOTE[13]=-1;P_GATE[13]=0;P_VEL[13]=0;P_PROB[13]=0;
+  P_NOTE[14]=41;P_GATE[14]=95;P_VEL[14]=100;P_PROB[14]=100;
+  P_NOTE[15]=40;P_GATE[15]=20;P_VEL[15]=50;P_PROB[15]=100;
+  P_NOTE[32]=59;P_GATE[32]=20;P_VEL[32]=85;P_PROB[32]=100;
+  P_NOTE[33]=-1;P_GATE[33]=0;P_VEL[33]=0;P_PROB[33]=0;
+  P_NOTE[34]=62;P_GATE[34]=55;P_VEL[34]=105;P_PROB[34]=100;
+  P_NOTE[35]=64;P_GATE[35]=25;P_VEL[35]=70;P_PROB[35]=100;
+  P_NOTE[36]=-1;P_GATE[36]=0;P_VEL[36]=0;P_PROB[36]=0;
+  P_NOTE[37]=65;P_GATE[37]=70;P_VEL[37]=115;P_PROB[37]=50;
+  P_NOTE[38]=57;P_GATE[38]=35;P_VEL[38]=80;P_PROB[38]=100;
+  P_NOTE[64]=76;P_GATE[64]=10;P_VEL[64]=95;P_PROB[64]=100;
+  P_NOTE[65]=-1;P_GATE[65]=0;P_VEL[65]=0;P_PROB[65]=0;
+  P_NOTE[66]=-1;P_GATE[66]=0;P_VEL[66]=0;P_PROB[66]=0;
+  P_NOTE[67]=77;P_GATE[67]=15;P_VEL[67]=115;P_PROB[67]=40;
+  P_NOTE[68]=71;P_GATE[68]=10;P_VEL[68]=70;P_PROB[68]=100;
+  P_ARR[0]=25;
+  P_ARR[1]=0;
+  P_ARR[2]=0;
+  P_ARR[3]=0;
+  P_ARR[4]=0;
+  P_ARR[5]=15;
+  P_ARR[6]=0;
+  P_ARR[7]=16;
+  P_ARR[8]=0;
+  P_ARR[9]=40;
+  P_ARR[10]=35;
+  P_ARR[11]=0;
+  P_ARR[12]=65;
+  P_ARR[13]=0;
+  P_ARR[14]=55;
+  P_ARR[15]=15;
+  P_ARR[16]=16;
+  P_ARR[17]=0;
+  P_ARR[18]=55;
+  P_ARR[19]=60;
+  P_ARR[20]=0;
+  P_ARR[21]=100;
+  P_ARR[22]=0;
+  P_ARR[23]=50;
+  P_ARR[24]=40;
+  P_ARR[25]=16;
+  P_ARR[26]=0;
+  P_ARR[27]=70;
+  P_ARR[28]=70;
+  P_ARR[29]=15;
+  P_ARR[30]=100;
+  P_ARR[31]=18;
+  P_ARR[32]=60;
+  P_ARR[33]=55;
+  P_ARR[34]=16;
+  P_ARR[35]=0;
+  P_ARR[36]=70;
+  P_ARR[37]=75;
+  P_ARR[38]=80;
+  P_ARR[39]=100;
+  P_ARR[40]=75;
+  P_ARR[41]=35;
+  P_ARR[42]=70;
+  P_ARR[43]=12;
+  P_ARR[44]=0;
+  P_ARR[45]=85;
+  P_ARR[46]=85;
+  P_ARR[47]=100;
+  P_ARR[48]=100;
+  P_ARR[49]=100;
+  P_ARR[50]=65;
+  P_ARR[51]=95;
+  P_ARR[52]=16;
+  P_ARR[53]=12;
+  P_ARR[54]=45;
+  P_ARR[55]=70;
+  P_ARR[56]=90;
+  P_ARR[57]=100;
+  P_ARR[58]=100;
+  P_ARR[59]=10;
+  P_ARR[60]=45;
+  P_ARR[61]=16;
+  P_ARR[62]=12;
+  P_ARR[63]=25;
+  P_ARR[64]=30;
+  P_ARR[65]=0;
+  P_ARR[66]=65;
+  P_ARR[67]=0;
+  P_ARR[68]=80;
+  P_ARR[69]=15;
+  P_ARR[70]=16;
+  P_ARR[71]=0;
+);
+
+function rng() (
+  rng_state=(rng_state*16807)%2147483647;
+  rng_state/2147483647;
+);
+function clamp(v,a,b) ( max(a,min(b,v)); );
+function iround(x) (floor(x+.5));
+function cc7(x) (iround(clamp(x,0,127)););
+function pv(n) local(a,b,t) (
+  (n>3 && n!=36 && n!=37 && n!=38 && n!=42 && slider36>.5 &&
+    SCENE_VALID[iround(slider37)-1]>.5 && SCENE_VALID[iround(slider38)-1]>.5) ? (
+    a=SCENE_BASE+(iround(slider37)-1)*256+n;
+    b=SCENE_BASE+(iround(slider38)-1)*256+n;
+    t=clamp(morph_phase,0,1);
+    a[0]*(1-t)+b[0]*t;
+  ) : slider(n);
+);
+function note_allowed(n,scale) local(pc) (
+  pc=(n-iround(pv(7))+120)%12;
+  scale==0 ? 1 :
+  scale==1 ? (pc==0||pc==3||pc==5||pc==7||pc==10) :
+  scale==2 ? (pc==0||pc==2||pc==3||pc==5||pc==7||pc==8||pc==10) :
+  scale==3 ? (pc==0||pc==2||pc==4||pc==5||pc==7||pc==9||pc==11) :
+  scale==4 ? (pc==0||pc==1||pc==3||pc==5||pc==7||pc==8||pc==10) :
+  scale==5 ? (pc==0||pc==2||pc==3||pc==5||pc==7||pc==9||pc==10) :
+  scale==6 ? (pc==0||pc==2||pc==4||pc==6||pc==8||pc==10) :
+              (pc==0||pc==2||pc==3||pc==5||pc==7||pc==8||pc==11);
+);
+function save_scene(n) local(k,pos) (
+  pos=SCENE_BASE+n*256;
+  k=1;
+  loop(255, (pos+k)[0]=slider(k); k+=1; );
+  SCENE_VALID[n]=1;
+  k=0;loop(63,(M_SCENE+n*64+k)[0]=M_CFG[k];k+=1;);
+  M_SCENE[n*64+63]=slider256;
+  k=0;loop(31,M_EXTSC[n*32+k]=M_EXT[k];k+=1;);
+  M_EXTSC[n*32+31]=1300;
+  k=0;loop(63,P_SCTL[n*64+k]=P_CTL[k];k+=1;);
+  P_SCTL[n*64+63]=1400;
+  k=0;loop(96,
+    P_SNOTE[n*96+k]=P_NOTE[k];P_SGATE[n*96+k]=P_GATE[k];
+    P_SVEL[n*96+k]=P_VEL[k];P_SPROB[n*96+k]=P_PROB[k];k+=1;
+  );
+  k=0;loop(72,P_SARR[n*72+k]=P_ARR[k];k+=1;);
+  k=0;loop(128,
+    M_SEQSC[n*128+k]=M_SEQ[k];
+    M_GATESC[n*128+k]=M_GATE[k];
+    M_VELSC[n*128+k]=M_VEL[k];k+=1;
+  );
+  k=0;loop(8,M_CASC_SC[n*8+k]=M_CASCADE[k];k+=1;);
+  k=0;loop(256,M_MOTSC[n*256+k]=M_MOTIF[k];k+=1;);
+  sliderchange(-1);
+);
+function load_scene(n) local(k,pos) (
+  SCENE_VALID[n]>.5 ? (
+    pos=SCENE_BASE+n*256; k=1;
+    loop(255,
+      (k!=1 && k!=36 && k!=37 && k!=38 && k!=42) ? (
+        slider(k)=(pos+k)[0];
+        sliderchange(slider(k));
+      );
+      k+=1;
+    );
+    k=0;loop(63,M_CFG[k]=(M_SCENE+n*64+k)[0];k+=1;);
+    slider256=max(.05,M_SCENE[n*64+63]);sliderchange(-1);
+    M_EXTSC[n*32+31]==1300 ? (
+      k=0;loop(31,M_EXT[k]=M_EXTSC[n*32+k];k+=1;);
+    );
+    P_SCTL[n*64+63]==1400 ? (
+      k=0;loop(63,P_CTL[k]=P_SCTL[n*64+k];k+=1;);
+      k=0;loop(96,
+        P_NOTE[k]=P_SNOTE[n*96+k];P_GATE[k]=P_SGATE[n*96+k];
+        P_VEL[k]=P_SVEL[n*96+k];P_PROB[k]=P_SPROB[n*96+k];k+=1;
+      );
+      k=0;loop(72,P_ARR[k]=P_SARR[n*72+k];k+=1;);
+    );
+    k=0;loop(128,
+      M_SEQ[k]=M_SEQSC[n*128+k];
+      M_GATE[k]=M_GATESC[n*128+k];
+      M_VEL[k]=M_VELSC[n*128+k];k+=1;
+    );
+    k=0;loop(8,M_CASCADE[k]=M_CASC_SC[n*8+k];k+=1;);
+    k=0;loop(256,M_MOTIF[k]=M_MOTSC[n*256+k];k+=1;);
+    reset_request=1;
+    sliderchange(-1);
+  );
+);
+function panic(offs) local(i,j,oldbus) (
+  i=0;
+  loop(128,
+    V_ON[i]>.5 ? (
+      midi_bus=V_BUS[i];
+      midisend(offs,$x80+V_CH[i],V_PITCH[i],0);
+      V_ON[i]=0;
+    );
+    i+=1;
+  );
+  oldbus=last_bus;
+  midi_bus=oldbus;
+  j=0;
+  loop(16,
+    midisend(offs,$xB0+j,123,0);
+    midisend(offs,$xB0+j,120,0);
+    midisend(offs,$xE0+j,0,64);
+    midisend(offs,$xD0+j,0);
+    j+=1;
+  );
+  voices=0;
+);
+function release_voice(slot,offs) (
+  V_ON[slot]>.5 ? (
+    midi_bus=V_BUS[slot];
+    midisend(offs,$x80+V_CH[slot],V_PITCH[slot],0);
+    V_ON[slot]=0;
+    voices=max(0,voices-1);
+  );
+);
+function find_voice() local(j,choice,oldest) (
+  choice=-1; oldest=1000000000000; j=0;
+  loop(128,
+    V_ON[j]<.5 && choice<0 ? choice=j;
+    j+=1;
+  );
+  choice<0 ? (
+    j=0;
+    loop(128,
+      V_DUE[j]<oldest ? (choice=j;oldest=V_DUE[j];);
+      j+=1;
+    );
+  );
+  choice;
+);
+function find_mpe_channel() local(c,k,busy,answer) (
+  answer=-1; c=1;
+  while(c<16 && answer<0) (
+    busy=0; k=0;
+    loop(128, V_ON[k]>.5 && V_CH[k]==c ? busy=1; k+=1; );
+    !busy ? answer=c;
+    c+=1;
+  );
+  answer;
+);
+function source_random(e) local(z,zz) (
+  CHAOS_X[e]=clamp(3.7+.298*pv(8)/100,3.6,3.999)*CHAOS_X[e]*(1-CHAOS_X[e]);
+  CHAOS_X[e]=clamp(CHAOS_X[e],.0001,.9999);
+  // Bounded Lorenz flow, deterministic with custom seed.
+  z=LORENZ_X[e];zz=LORENZ_Y[e];
+  LORENZ_X[e]+= .007*10*(zz-z);
+  LORENZ_Y[e]+= .007*(z*(28-LORENZ_Z[e])-zz);
+  LORENZ_Z[e]+= .007*(z*zz-2.66666667*LORENZ_Z[e]);
+  abs(LORENZ_X[e])>80 || abs(LORENZ_Y[e])>80 || abs(LORENZ_Z[e])>80 ? (
+    LORENZ_X[e]=1+e*.1;LORENZ_Y[e]=.4;LORENZ_Z[e]=8;
+  );
+  pv(2)<.5 ? (.5*rng()+.5*CHAOS_X[e]) :
+  pv(2)<1.5 ? rng() :
+  pv(2)<2.5 ? CHAOS_X[e] :
+  pv(2)<3.5 ? clamp(.5+LORENZ_X[e]/50,0,1) :
+  rng() < pv(9)/100 ? rng() : CHAOS_X[e];
+);
+function swarm_next(e) local(a,left,right,goal,delta,move) (
+  a=floor(rng()*16);
+  left=AGENT_POS[(a+15)%16];
+  right=AGENT_POS[(a+1)%16];
+  goal=(left+right+ENGINE_LAST[(e+3)%4])/3;
+  // Attraction & repulsion: each agent can follow or avoid its neighbors.
+  delta=goal-AGENT_POS[a];
+  move=(rng()<.76 ? delta : -delta)*pv(46)/100*.17;
+  AGENT_VEL[a]=clamp(AGENT_VEL[a]*.63+move+(rng()-.5)*6,-10,10);
+  AGENT_POS[a]=clamp(AGENT_POS[a]+AGENT_VEL[a],0,60);
+  AGENT_POS[a];
+);
+
+// ========== LAUTFUNK MUSICAL INTELLIGENCE ==========
+// Index meanings are documented in README. All values are serialized and scene-saved.
+function sc_int(d,mode) local(oc,ix) (
+  d=iround(d);mode=iround(clamp(mode,0,13));
+  oc=floor(d/7);ix=d-oc*7;
+  oc*12+M_SCALE[mode*7+ix];
+);
+function chord_root_degree(prog,ix,major) local(d) (
+  ix=iround(ix)%8;
+  prog=iround(prog);
+  prog==0 ? d=(ix%4==0?0:ix%4==1?5:ix%4==2?2:6) :
+  prog==1 ? d=(ix%4==0?0:ix%4==1?5:ix%4==2?3:4) :
+  prog==2 ? d=(ix%4==0?0:ix%4==1?3:ix%4==2?6:2) :
+  prog==3 ? d=(ix%4==0?0:ix%4==1?6:ix%4==2?5:6) :
+  prog==4 ? d=(ix%4==0?0:ix%4==1?1:ix%4==2?0:6) :
+  prog==5 ? d=(ix%4==0?0:ix%4==1?5:ix%4==2?1:6) :
+  prog==6 ? d=(ix%4==0?0:ix%4==1?4:ix%4==2?5:3) :
+  prog==7 ? d=(ix%4==0?5:ix%4==1?3:ix%4==2?0:4) :
+  prog==8 ? d=(ix%4==0?0:ix%4==1?3:ix%4==2?0:4) :
+  prog==9 ? d=0 :
+  prog==10 ? d=((ix*5+iround(slider4))%7) :
+  prog==11 ? d=iround(M_CFG[32+ix]) :
+  prog==12 ? d=(ix%4==0?0:ix%4==1?3:ix%4==2?5:4) :
+  prog==13 ? d=(ix%4==0?0:ix%4==1?1:ix%4==2?6:0) :
+  prog==14 ? d=(ix%4==0?0:ix%4==1?4:ix%4==2?3:5) :
+               d=(ix%4==0?0:ix%4==1?2:ix%4==2?6:4);
+  clamp(d,0,6);
+);
+function chord_n(q) (
+  q=iround(clamp(q,0,25));
+  q==0 ? 4 : M_CHORDCOUNT[q];
+);
+function chord_int(q,t,degree,mode) (
+  q=iround(clamp(q,0,25));
+  q==0 ? (sc_int(degree+t*2,mode)-sc_int(degree,mode)) : M_CHORD[q*8+t];
+);
+function gdivision(which) (
+  which=iround(clamp(which,0,14));
+  which==0 ? 16 : which==1 ? 8 : which==2 ? 4 : which==3 ? 2 :
+  which==4 ? 1 : which==5 ? .5 : which==6 ? .25 : which==7 ? .125 :
+  which==8 ? .0625 : which==9 ? (1/3) : which==10 ? (1/6) :
+  which==11 ? (1/12) : which==12 ? .75 : which==13 ? .375 : .1875;
+);
+// Rate-shift phases use the current REAPER timeline when transport is running.
+function m_beat_at(at) (
+  slider3<.5 && (play_state&1) ? beat_position+(at-clock_samples)/srate*max(20,tempo)/60 :
+    (run_samples+max(0,at-clock_samples))/srate*max(20,tempo)/60;
+);
+function pattern_style(st,e) local(p,ans) (
+  p=iround(M_CFG[24]);ans=1;
+  p==1 ? ans=(st%2==0) :
+  p==2 ? ans=((st*5)%13)<8 :
+  p==3 ? ans=(st%4==2) :
+  p==4 ? ans=(st%8==0||st%8==3||st%8==6) :
+  p==5 ? ans=(st%8==0||st%8==6) :
+  p==6 ? ans=(st%11==0||st%11==4||st%11==7) :
+  p==7 ? ans=(st%16<4||st%16==8||st%16==12);
+  ans;
+);
+function rhythmic_breath(at) local(b,cycles) (
+  b=m_beat_at(at);cycles=max(1,M_CFG[62])*4;
+  .5+.5*sin(2*$pi*b/cycles);
+);
+function cascade_degrees(at) local(b,i) (
+  b=m_beat_at(at);
+  i=floor(max(0,b)/(max(1,M_CFG[60])*4))%8;
+  M_CASCADE[i];
+);
+function note_in_key(n,mode,key) local(o,k,pc,best,d,bestd,nn) (
+  best=n;bestd=99;
+  o=-2;
+  loop(6,
+    k=0;loop(7,
+      nn=key+o*12+M_SCALE[iround(clamp(mode,0,13))*7+k];
+      d=abs(nn-n);
+      d<bestd ? (best=nn;bestd=d;);
+      k+=1;
+    );o+=1;
+  );
+  best;
+);
+// Open/thirdless voicings: suspensions, stacked fourths and power chords.
+function open_count() (
+  M_EXT[0]==3 ? 4 : M_EXT[0]==4 ? 3 : M_EXT[0]==5 ? 3 : 3;
+);
+function open_interval(i) (
+  M_EXT[0]==1 ? (i==0?0:i==1?2:7) :
+  M_EXT[0]==2 ? (i==0?0:i==1?5:7) :
+  M_EXT[0]==3 ? (i*5) :
+  M_EXT[0]==4 ? (i==0?0:i==1?7:12) :
+  M_EXT[0]==5 ? (i==0?0:i==1?1:7) : 0;
+);
+// Anti-cadence avoids forced V-I: static root, two poles or limited modal wander.
+function modal_degree(chordix,deg) (
+  M_EXT[1]==1 ? 0 :
+  M_EXT[1]==2 ? (chordix%4==2 ? 1 : 0) :
+  M_EXT[1]==3 ? (chordix%4==0?0:chordix%4==1?3:chordix%4==2?1:5) : deg;
+);
+function morph_arp_mode(beat,pat) local(segment) (
+  M_EXT[10]>.5 ? (
+    segment=floor(max(0,beat)/(4*max(1,M_EXT[11])))%4;
+    segment==0 ? 0 : segment==1 ? 2 : segment==2 ? 1 : 3;
+  ) : pat;
+);
+function canon_interval() (
+ M_EXT[17]<.5 ? 0 : M_EXT[17]<1.5 ? 7 : 12;
+);
+function canon_delay_samples() (
+ // One sixteenth or a dotted eighth; REAPER project BPM applies.
+ srate*(60/max(20,tempo))/4*(M_EXT[16]<1.5?1:3);
+);
+function schedule_canon(e,pitch,event_t,dur,accent) local(j,slot,found) (
+ found=-1;j=0;
+ while(j<64 && found<0) (CAN_ON[j]<.5 ? found=j;j+=1;);
+ found>=0 ? (
+   slot=found;CAN_ON[slot]=1;CAN_AT[slot]=event_t+canon_delay_samples();
+   CAN_PITCH[slot]=pitch+canon_interval();CAN_ACC[slot]=accent*clamp(M_EXT[18]/100,.05,1);
+   CAN_DUR[slot]=dur*.72;CAN_ENG[slot]=e;
+ );
+);
+function cascade_offset(at,mode,deg,root) local(v) (
+  v=cascade_degrees(at);
+  M_CFG[61]==0 ? v :
+  M_CFG[61]==1 ? sc_int(v,mode) :
+  sc_int(deg+v,mode)-sc_int(deg,mode);
+);
+function locked_anchor(st) (st%8==0||st%8==3||st%8==6;);
+// Pitch and modulation have independent polymetric step counts.
+function step_pitch(e,st) local(len) (
+  len=iround(clamp(M_CFG[48+e],3,32));
+  M_SEQ[e*32+(st%len)];
+);
+function gate_prob(e,st) local(len) (
+  len=iround(clamp(M_CFG[52+e],3,32));
+  M_GATE[e*32+(st%len)];
+);
+function vel_contour(e,st) local(len) (
+  len=iround(clamp(M_CFG[52+e],3,32));
+  M_VEL[e*32+(st%len)]/127;
+);
+function music_ratio(e) (max(.0625,pv(52+e*8))/4;);
+function music_spacing(e) local(sec,beat,period,phase,role) (
+  sec=M_CFG[2]<.5 ? slider256 : gdivision(M_CFG[3])*60/max(20,tempo);
+  // For arp role, switch rates briefly every N bars. No additional notes are invented.
+  role=iround(M_CFG[40+e]);role<=0 ? role=e+1;
+  M_CFG[56]>.5 && role==2 && M_CFG[2]>.5 ? (
+    beat=m_beat_at(ENGINE_NEXT[e]);period=max(1,M_CFG[58])*4;
+    phase=beat-period*floor(beat/period);
+    phase<2 ? sec/=max(1,iround(M_CFG[57]));
+  );
+  max(srate*.005,srate*sec/max(.0625,music_ratio(e)));
+);
+function harmonic_beat(evt) (
+  ((slider3>.5 || (play_state&1)==0) ? run_samples/srate*max(20,tempo)/60 : beat_position)
+  +(evt-clock_samples)/srate*max(20,tempo)/60;
+);
+function key_base() local(k,low) (
+  low=iround(pv(5));k=iround(pv(7));
+  low+(k-low%12+12)%12;
+);
+function clamp_key(p) local(low,high) (
+  low=iround(pv(5));high=low+60;
+  while(p<low) (p+=12;);
+  while(p>high) (p-=12;);
+  iround(clamp(p,low,high));
+);
+function arp_ix(pattern,st,n,e) local(ix,v) (
+  n=max(1,n);st=iround(st);pattern=iround(pattern);
+  pattern==0 ? ix=st%n :
+  pattern==1 ? ix=n-1-(st%n) :
+  pattern==2 ? ix=abs((st%(max(1,n*2-2)))-(n-1)) :
+  pattern==3 ? ix=floor(rng()*n) :
+  pattern==4 ? ix=(st*2)%n :
+  pattern==5 ? ix=(st%2 ? n-1 : 0) :
+  pattern==6 ? ix=(st%8==0?0:st%8==3?2:st%8==6?1:(st/2))%n :
+  pattern==7 ? ix=(st*st+st+1)%n :
+  pattern==8 ? ix=(st+floor(st/8))%n :
+  pattern==9 ? ix=(st%3==0?0:st%3==1?n-1:1)%n :
+  pattern==10 ? ix=(st%4==0?0:st%4==1?2:st%4==2?1:3)%n :
+  pattern==11 ? (
+    v=M_APREV[e]; v+=rng()<.5?-1:1;ix=iround(clamp(v,0,n-1));
+  ) :
+  pattern==12 ? ix=(st%4==0?0:st%4==1?2:st%4==2?1:3)%n :
+  pattern==13 ? ix=(st%4==0?0:st%4==1?n-1:st%4==2?n-2:1)%n :
+  pattern==14 ? ix=(floor(st/2)+(st%2?2:0))%n :
+  pattern==15 ? ix=(st*3+floor(st/16))%n :
+  pattern==16 ? ix=(st%5==0?0:st%5==1?1:st%5==2?3:st%5==3?2:1)%n :
+  pattern==17 ? ix=(st%6==0?0:st%6==1?2:st%6==2?4:st%6==3?3:st%6==4?1:0)%n :
+  pattern==18 ? ix=(st*5+floor(st/32))%n :
+                ix=(st%4==0?0:st%4==1?1:st%4==2?n-1:2)%n;
+  M_APREV[e]=ix;clamp(ix,0,n-1);
+);
+function genre_gate(genre,role,step) local(pos,gate) (
+  pos=step%16;gate=1;
+  M_CFG[22]>.5 ? (
+    // Genre models assume 16th-note subdivisions. The timing tab can override them.
+    genre==1 ? (
+      role==1 ? gate=(pos==0||pos==3||pos==6||pos==7||pos==10||pos==14) :
+      role==6 ? gate=(pos==0||pos==6||pos==12) : 0;
+    );
+    genre==2 ? (
+      role==1 ? gate=(pos%4==2) : role==6 ? gate=(pos==0||pos==8) : 0;
+    );
+    genre==3 ? (
+      role==1 ? gate=(pos%4!=0) : role==2 ? gate=(pos%8!=7) : 0;
+    );
+    genre==4 ? (
+      role==1 ? gate=(pos%4!=0) : role==6 ? gate=(pos==0||pos==8) : 0;
+    );
+    genre==5 ? (
+      role==1 ? gate=(pos==0||pos==8) : role==2 ? gate=(pos%2==0) :
+      role==3 ? gate=(pos==0||pos==4||pos==9||pos==12) :
+      role==4 ? gate=(pos==0) : 0;
+    );
+    genre==6 ? (role==1 ? gate=(pos!=0&&pos!=8) : 0;);
+    genre==7 ? (role==1 ? gate=(pos==0||pos==8) :role==3 ? gate=(pos%2==0):0;);
+  );
+  gate;
+);
+function motif_pitch(e,st,degree,mode) local(len,idx,phase,m,prior,mut,reply,challenge) (
+  len=iround(clamp(M_CFG[15],2,32));idx=st%len;
+  phase=floor(st/len);
+  m=M_MOTIF[e*40+idx];
+  m< -100 ? (
+    prior=idx>0 ? M_MOTIF[e*40+idx-1] : 3;
+    prior< -100 ? prior=3;
+    m=clamp(prior+(rng()<.5?-1:1)*(rng()<.55?1:2),0,8);
+    idx%4==0 ? m=0;
+    idx%4==3 && rng()<.6 ? m=4;
+    M_MOTIF[e*40+idx]=m;
+  );
+  idx==0 && phase>0 && rng()*100<M_CFG[16]*(1.3-.006*M_CFG[14]) ? (
+    mut=floor(rng()*len);
+    M_MOTIF[e*40+mut]=clamp(M_MOTIF[e*40+mut]+(rng()<.5?-1:1),0,8);
+  );
+  reply=phase%2 && rng()*100<M_CFG[17] ? (idx%4==0?-1:idx%4==3?1:0) : 0;
+  challenge=rng()*100<M_CFG[18]*.12*(1.4-.009*M_CFG[14]) ? (rng()<.5?-1:1) : 0;
+  m+reply+challenge;
+);
+function music_emit(e,pitch,offs,event_t,ms,accent) local(vslot,old,victim,soonest,k,ch,lo,hi,vel,maxvoice,allowed,ratn,idx,rr,slot) (
+  pitch=clamp_key(pitch);
+  // Monophonic priorities for rhythmic lead/bass/arp lines only.
+  M_CFG[31]>.5 && e<3 ? (
+    k=0;loop(128,V_ON[k]>.5 && V_ENG[k]==e ? release_voice(k,offs);k+=1;);
+  );
+  allowed=(pitch-iround(pv(5)))%61;
+  rng()*100 <= pv(195+allowed) ? (
+    maxvoice=iround(clamp(pv(17),1,16));
+    slider21>.5 ? maxvoice=min(maxvoice,15);
+    voices>=maxvoice ? (
+      victim=-1;soonest=1000000000000;k=0;
+      loop(128,V_ON[k]>.5 && V_DUE[k]<soonest ? (victim=k;soonest=V_DUE[k];);k+=1;);
+      victim>=0 ? release_voice(victim,offs);
+    );
+    vslot=find_voice();V_ON[vslot]>.5 ? release_voice(vslot,offs);
+    ch=iround(pv(55+e*8))-1;
+    slider21>.5 ? (ch=find_mpe_channel();ch<0 ? ch=1;);
+    // Re-articulating same pitch on same bus/channel sends proper note-off first.
+    k=0;loop(128,V_ON[k]>.5 && V_PITCH[k]==pitch && V_CH[k]==ch && V_BUS[k]==iround(pv(18))-1 ? release_voice(k,offs);k+=1;);
+    lo=min(pv(15),pv(16));hi=max(pv(15),pv(16));
+    vel=cc7(lo+(hi-lo)*(.2+rng()*.8)+(rng()-.5)*pv(12)*.2);
+    vel=iround(clamp(vel*accent,1,127));
+    midi_bus=iround(pv(18))-1;
+    midisend(offs,$x90+ch,pitch,vel);
+    V_ON[vslot]=1;V_PITCH[vslot]=pitch;V_CH[vslot]=ch;V_BUS[vslot]=midi_bus;
+    V_ENG[vslot]=e;V_VEL[vslot]=vel;V_DUE[vslot]=event_t+max(20,ms)*srate/1000;
+    voices+=1;last_pitch=pitch;last_velocity=vel;
+    // Re-articulation of a *single* musical step; does not flood notes continuously.
+    M_EXT[12]>.5 && !canon_emitting && (e==1||e==2) && (current_mus_step%16==11||current_mus_step%16==15) && rng()*100<M_EXT[13] ? (
+      ratn=iround(clamp(M_EXT[14],2,4));
+      // Need a long enough original gate to schedule all retriggers.
+      V_DUE[vslot]=max(V_DUE[vslot],event_t+max(ms,ratn*35)*srate/1000);
+      rr=1;loop(ratn-1,
+        slot=(ratchet_next%64)+1;ratchet_next=slot;
+        RAT_ON[slot]=vslot;RAT_PITCH[slot]=pitch;
+        RAT_AT[slot]=event_t+max(ms,ratn*35)*srate/1000*rr/ratn;
+        ratchet_count=max(ratchet_count,slot);rr+=1;
+      );
+    );
+    M_EXT[15]>.5 && !canon_emitting && (e==1||e==2) ? schedule_canon(e,pitch,event_t,ms,accent);
+  );
+);
+function music_step(e,offs,event_t,st) local(base,hits,slots,eligible,role,genre,prob,beat,chordi,deg,mode,root,
+  key,spacing_ms,dur,pat,cnt,part,pitch,oct,voicing,inversion,quality,acc,i,walk,em,note_ix,groove,
+  anchor,mask,pattern_pitch,phlen,ramp,diff,prior,rate_acc,raw_pitch,cascade,mask_ok) (
+  current_mus_step=st;
+  base=51+e*8;hits=iround(clamp(pv(base+6),0,16));slots=max(1,iround(pv(base+7)));
+  eligible=hits<=0 || ((st*hits)%slots)<min(hits,slots);
+  // Anchor steps remain fixed, while fill notes use a lower probability.
+  anchor=locked_anchor(st);
+  M_CFG[47]>.5 && e<3 ? eligible=1;
+  pattern_pitch=M_CFG[44]>.5 && e<3 ? step_pitch(e,st) : 0;
+  mask_ok=pattern_pitch!=99;
+  role=iround(M_CFG[40+e]);role<=0 ? role=e+1;
+  genre=iround(M_CFG[1]);
+  groove=genre_gate(genre,role,st);
+  // Pads/drones are slow by design: no chord flood at 1/16 or 1/32.
+  role==4 && genre!=5 ? groove=(st%16==0);
+  role==5 ? groove=(st%16==0);
+  // Leads breathe between phrases; arps stay fast.
+  role==3 && genre==2 ? groove=(st%8!=7 && st%8!=5);
+  prob=clamp(pv(10)*pv(base+2)/100,0,100);
+  role==4 || role==5 ? prob=max(prob,72);
+  M_CFG[47]>.5 && e<3 ? prob=anchor ? 100 : min(prob,M_CFG[27]);
+  // Gate rhythm shifts against pitch via independent prime/odd step length.
+  mask=M_CFG[45]>.5 && e<3 ? gate_prob(e,st) : 100;
+  M_CFG[47]>.5 && anchor && e<3 ? mask=100;
+  M_CFG[45]>.5 && e<3 && M_CFG[24]>0 ? (
+    pattern_style(st,e)<.5 ? mask*=max(0,1-M_CFG[25]/100);
+  );
+  (eligible && groove>.5 && mask_ok && rng()*100<mask && rng()*100<prob) ? (
+    beat=harmonic_beat(event_t);
+    chordi=floor(max(0,beat)/(max(1,M_CFG[6])*4));
+    chordi=chordi%max(1,iround(M_CFG[7]));
+    deg=chord_root_degree(M_CFG[5],chordi,M_CFG[4]==0);
+    deg=modal_degree(chordi,deg);
+    mode=iround(M_CFG[4]);key=key_base();root=key+sc_int(deg,mode);
+    // Slow harmonic cascade transposes FAST pattern without changing its groove.
+    M_CFG[59]>.5 ? (
+      cascade=cascade_offset(event_t,mode,deg,root);
+      M_CFG[61]==0 ? root=note_in_key(root+cascade,mode,key) : root+=cascade;
+    );
+    // Polymetric pitch follows a separate 3-32-step cycle.
+    M_CFG[44]>.5 && e<3 ? root+=sc_int(deg+pattern_pitch,mode)-sc_int(deg,mode);
+    // Hypnotic gravity pulls the melody slowly toward its own tonal center.
+    M_CFG[0]>=2.5 && e==2 && rng()*100<M_CFG[28]*.42 ? root=key+sc_int(deg,mode);
+    quality=iround(M_CFG[8]);cnt=chord_n(quality);
+    // Open harmony disallows arbitrary major/minor substitutions.
+    M_EXT[0]>.5 ? (quality=0;cnt=open_count();) : (
+      quality==0 && rng()*100<M_CFG[21]*.22 ? quality=(rng()<.5?1:2);
+      cnt=chord_n(quality);
+    );
+    M_EXT[0]<.5 && quality==0 && rng()*100<M_CFG[23] ? cnt=5;
+    pat=morph_arp_mode(beat,iround(M_CFG[11]));
+    spacing_ms=music_spacing(e)*1000/srate;
+    dur=max(35,spacing_ms*clamp(pv(base+3)/100,.25,2.5)*.82);
+    // Motif breathing: 8- or 16-bar envelopes alter gate and dynamics but preserve pitch.
+    ramp=rhythmic_breath(event_t);
+    dur*=clamp(1+(ramp-.5)*M_CFG[30]/65,.20,1.85);
+    acc=clamp(1+(ramp-.5)*M_CFG[26]/90,.58,1.35);
+    M_CFG[45]>.5 && e<3 ? (
+      // Most gates are tiny; emphasized offbeats bloom to 80-100%.
+      dur*=anchor ? .85 : (st%8==2||st%8==5 ? 1 : .16);
+      acc*=clamp(.5+vel_contour(e,st)*.85,.4,1.35);
+    );
+    // Tension rises over the phrase, not as random out-of-key notes.
+    M_CFG[29]>0 && role==3 ? (
+      ramp=clamp((st%max(2,M_CFG[15]))/max(1,M_CFG[15]-1),0,1);
+      acc*=1+ramp*M_CFG[29]/330;
+    );
+    role==1 ? (
+      pitch=root;
+      M_EXT[2]>.5 ? (
+        // Always root on 1,5,9,13; uncommon b2 before/after anchors.
+        st%4==0 ? pitch=key :
+        (st%16==3||st%16==13) && rng()*100<M_EXT[3] ? pitch=key+1 : pitch=key;
+      );
+      M_EXT[4]>.5 ? (
+        st%2==0 ? (pitch=key;acc*=clamp(M_EXT[6]/100,.15,1.2);) : (
+          pitch=key+sc_int((floor(st/2)%5)+2,mode);
+          acc*=clamp(M_EXT[7]/100,.5,1.4);
+        );
+      );
+      M_EXT[19]>.5 && st%4!=0 && rng()*100<M_EXT[20] ? pitch+=6;
+      rng()*100<M_CFG[12]*.33 && M_EXT[2]<.5 && M_EXT[4]<.5 ? pitch+= (rng()<.65?7:12);
+      M_CFG[46]>.5 ? (st%16==3||st%16==9||st%16==14 ? pitch+=12; st%16==6 ? pitch+=24;);
+      genre==4 || genre==3 ? (dur*=.66;acc=st%4==3?1.24:1.02;);
+      genre==5 ? dur*=3;
+      music_emit(e,pitch,offs,event_t,dur,acc);
+    ) :
+    role==2 ? (
+      part=arp_ix(pat,st,cnt,e);
+      pitch=root+(M_EXT[0]>.5 ? open_interval(part) : chord_int(quality,part,deg,mode))+12;
+      M_CFG[46]>.5 ? (st%16==3||st%16==9||st%16==14 ? pitch+=12; st%16==6 ? pitch+=24;);
+      rng()*100<M_CFG[20] ? pitch+=12*(rng()<.5?-1:1);
+      role==2 && genre==3 ? pitch+=(st%8==7 ? 1:0);
+      dur*=genre==5?1.4:.7;
+      music_emit(e,pitch,offs,event_t,dur,1.04);
+    ) :
+    role==3 ? (
+      part=M_CFG[13]>.5 ? motif_pitch(e,st,deg,mode) : arp_ix(pat,st,7,e);
+      pitch=key+sc_int(deg+part,mode)+12;
+      M_CFG[13]>.5 && rng()*100<M_CFG[19]*.18 ? pitch=key+sc_int(deg+iround(M_MOTIF[e*40+((st+iround(M_CFG[15])-1)%iround(M_CFG[15]))]),mode)+12;
+      M_CFG[46]>.5 ? (st%16==3||st%16==9||st%16==14 ? pitch+=12; st%16==6 ? pitch+=24;);
+      rng()*100<M_CFG[20] ? pitch+=12*(rng()<.5?-1:1);
+      dur*= (st%iround(M_CFG[15])==iround(M_CFG[15])-1 ? 2.7:1.3);
+      music_emit(e,pitch,offs,event_t,dur,.97);
+    ) :
+    role==4 || role==6 ? (
+      // Pads and chords use up to five independent MIDI notes.
+      role==4 ? dur=max(dur,spacing_ms*3.4);
+      genre==5 && role==4 ? dur=max(dur,spacing_ms*4.5);
+      inversion=iround(clamp(M_CFG[10],0,4));voicing=iround(clamp(M_CFG[9],0,4));
+      i=0;loop(min(5,cnt),
+        pitch=root+(M_EXT[0]>.5 ? open_interval(i) : chord_int(quality,i,deg,mode))+12;
+        i<inversion ? pitch+=12;
+        // Move lowest voices upward after every N bars; avoid chord changes.
+        M_EXT[8]>.5 && i<(floor(max(0,beat)/(4*max(1,M_EXT[9])))%max(1,cnt)) ? pitch+=12;
+        voicing==1 && (i%2) ? pitch+=12;
+        voicing==2 && i==cnt-2 ? pitch-=12;
+        voicing==3 && i>=2 ? pitch+=12;
+        voicing==4 && i==1 ? pitch-=12;
+        // Smooth voice leading: closest octave to previous pad voice.
+        prior=M_PREVVOICE[e*6+i];
+        prior>0 && M_EXT[8]<.5 ? (
+          raw_pitch=pitch;
+          abs(raw_pitch-12-prior)<abs(pitch-prior) ? pitch=raw_pitch-12;
+          abs(raw_pitch+12-prior)<abs(pitch-prior) ? pitch=raw_pitch+12;
+        );
+        M_PREVVOICE[e*6+i]=pitch;
+        acc=role==4?.66:.87;
+        music_emit(e,pitch,offs,event_t,dur,acc);
+        i+=1;
+      );
+    ) : (
+      // Pedal drones stay rooted and can create slow fifths.
+      pitch=root-12+(st%4==3?7:0);
+      dur=max(dur,spacing_ms*5);
+      music_emit(e,pitch,offs,event_t,dur,.63);
+    );
+  );
+);
+
+// POLYTRANCE implementation. Every note is independent of the original four engines.
+// The 16/7/5 downbeats align every lcm(16,7,5)=560 sixteenth notes (35 bars).
+function poly_phase() (floor(P_STEP[0]/64)%8;);
+function poly_cc(l,slot,cc,value,offs) local(k,v,ch) (
+  cc=iround(clamp(cc,0,127));v=cc7(value);
+  k=l*5+slot;
+  abs(P_LASTCC[k]-v)>=1 ? (
+    midi_bus=iround(pv(18))-1;ch=iround(clamp(P_CTL[24+l],1,16))-1;
+    midisend(offs,$xB0+ch,cc,v);P_LASTCC[k]=v;
+  );
+);
+function poly_cc_tick(offs) local(p,frac,macA,macB,cut,reso,dec,space,dly,l,lev) (
+  P_CTL[0]>.5 && P_CTL[60]>.5 ? (
+    p=poly_phase();frac=(P_STEP[0]%64)/64;
+    macA=clamp(P_CTL[5]/100,0,1);macB=clamp(P_CTL[6]/100,0,1);
+    l=0;loop(3,
+      P_CTL[20+l]>.5 ? (
+        lev=P_ARR[p*9+l];
+        // Stage parameters smoothly approach the next phase, not a sudden filter jump.
+        cut=lev + (P_ARR[((p+1)%8)*9+l]-lev)*frac;
+        cut=clamp(cut*.5 + 45*macA + 12,0,100);
+        reso=clamp(18+P_ARR[p*9+6]*.3+macA*25,0,100);
+        dec=clamp(20+P_ARR[p*9+6]*.35+macA*37,0,100);
+        space=clamp(P_ARR[p*9+5]*(1-macB*.6)+20*macB,0,100);
+        dly=clamp(22+P_ARR[p*9+6]*.34+macB*35,0,100);
+        poly_cc(l,0,P_CTL[44],cut*1.27,offs);
+        poly_cc(l,1,P_CTL[45],reso*1.27,offs);
+        poly_cc(l,2,P_CTL[46],dec*1.27,offs);
+        poly_cc(l,3,P_CTL[47],space*1.27,offs);
+        poly_cc(l,4,P_CTL[48],dly*1.27,offs);
+      );l+=1;
+    );
+  );
+);
+function poly_step(l,offs,at) local(ph,st,alen,idx,note,gate,vel,prob,sample_step,dur,slot,j,victim,soonest,k,ch,
+    phaseprob,beat,localstep,offset,glide,mut,seedghost,quarter,anchor,mode,phase_slot,phase_speed) (
+  ph=poly_phase();
+  alen=iround(clamp(P_CTL[16+l],1,32));
+  // One arrangement section deliberately uses 12 bass steps; user may disable FLOW.
+  P_CTL[1]>.5 && l==0 ? alen=min(alen,iround(clamp(P_ARR[ph*9+7],1,32)));
+  st=P_STEP[l]%alen;
+  mode=iround(P_CTL[2]);
+  mode==1 ? st=(st+floor(P_STEP[0]/128))%alen; // phase drift of the read head
+  idx=l*32+st;
+  note=P_NOTE[idx];gate=P_GATE[idx];vel=P_VEL[idx];prob=P_PROB[idx];
+  // Follow the always-visible GLOBAL NOTE SPEED clock, including seconds mode.
+  sample_step=srate*(M_CFG[2]<.5 ? slider256 : gdivision(M_CFG[3])*60/max(20,tempo));
+  P_CTL[10]==1 ? sample_step*=2;
+  P_CTL[10]==2 ? sample_step*=.5;
+  // An explicit speed drift setting makes the cycle non-exact (opt-in).
+  P_CTL[8]>.5 && l>0 ? sample_step*=1+sin(P_STEP[0]*.09+l)*P_CTL[8]/1000;
+  P_NEXT[l]=at+max(srate*.003,sample_step*(P_STEP[l]%2 ? 1+P_CTL[40+l]/100 : 1-P_CTL[40+l]/100));
+  P_STEP[l]+=1;
+  P_CTL[1]>.5 ? (
+    phaseprob=l==0 ? 100 : l==1 ? P_ARR[ph*9+3] : P_ARR[ph*9+4];
+    prob*=phaseprob/100;
+    l==0 && st==11 && ph==0 ? prob=0;
+    l==0 && st==11 && ph>=2 ? prob=min(100,max(prob,45));
+    l==1 && note>=0 ? note+=P_ARR[ph*9+8];
+  );
+  // 0 reference; 1 offset reading; 2 octave spiral; 3 ghost shadow; 4 modal mutation.
+  mode==2 && l>0 && note>=0 && (floor(P_STEP[0]/128)%3)==1 ? note+=12;
+  mode==3 && l==2 ? (vel*=.66;prob*=.85;);
+  mode==5 ? ( // Goa additive accent cycle 3+3+2 without changing pulse.
+    ((P_STEP[l]-1)%8==0 || (P_STEP[l]-1)%8==3 || (P_STEP[l]-1)%8==6) ? vel*=1.13 : vel*=.83;
+  );
+  mode==6 ? ( // Ambient orbit: soft, longer, airier motifs, still clock-synchronous.
+    vel*=.7;gate=min(100,gate*1.65);l==2 ? prob*=.55;
+  );
+  mode==7 && note>=0 && l>0 && rng()*100<P_CTL[7] ? (
+    // E tonal gravity in the same octave; no conventional V-I cadence.
+    note=40+12*iround((note-40)/12);
+  );
+  mode==4 && note>=0 && st%4!=0 && rng()*100<P_CTL[54]*.28 ? note+=(rng()<.5?1:-1);
+  anchor=(l==0 && st%4==0 && note==40);
+  anchor ? prob=max(prob,P_CTL[53]);
+  P_CTL[50]>0 && note<0 && rng()*100<P_CTL[50]*.17 ? (
+    note= l==0 ? 40 : l==1 ? 64 : 76;
+    vel=45;gate=12;prob=60;
+  );
+  l==0 && st==11 && P_CTL[1]>.5 && ph>=2 && ph<6 ? prob=clamp(prob+P_CTL[52]*.3,0,100);
+  P_CTL[20+l]>.5 && note>=0 && gate>0 && prob>0 && rng()*100<prob ? (
+    note=iround(note+P_CTL[9]+P_CTL[36+l]);
+    P_CTL[13]>.5 ? note=note_in_key(note,3,40); // optional scale lock to E Phrygian
+    note=iround(clamp(note,0,127));
+    // 1 voice per channel for each POLY lane, preventing stuck overlapping note-ons.
+    k=0;loop(128,V_ON[k]>.5 && V_ENG[k]==4+l ? release_voice(k,offs);k+=1;);
+    // All POLY channels default unique. Match on bus/channel to prevent collisions.
+    ch=iround(clamp(P_CTL[24+l],1,16))-1;
+    k=0;loop(128,V_ON[k]>.5 && V_CH[k]==ch && V_PITCH[k]==note && V_BUS[k]==iround(pv(18))-1 ? release_voice(k,offs);k+=1;);
+    slot=find_voice();V_ON[slot]>.5 ? release_voice(slot,offs);
+    vel=iround(clamp(vel*P_CTL[28+l]/100,1,127));
+    // CC65/CC5 are *requests*, not an enforced portamento on third-party synths.
+    P_CTL[56]>.5 && l==0 ? (
+      midi_bus=iround(pv(18))-1;
+      glide=(st==14 || st==15);
+      midisend(offs,$xB0+ch,65,glide?127:0);
+      glide ? midisend(offs,$xB0+ch,5,cc7(P_CTL[57]));
+    );
+    midi_bus=iround(pv(18))-1;
+    midisend(offs,$x90+ch,note,vel);
+    V_ON[slot]=1;V_PITCH[slot]=note;V_CH[slot]=ch;V_BUS[slot]=midi_bus;
+    V_ENG[slot]=4+l;V_VEL[slot]=vel;
+    dur=max(srate*.008,sample_step*clamp(gate*P_CTL[32+l]/10000,.01,1.5));
+    V_DUE[slot]=at+dur;voices+=1;last_pitch=note;last_velocity=vel;
+  );
+  // Arrangement loops every 32 bars. Polymeter stays continuous by default.
+  P_CTL[1]>.5 && P_CTL[4]>.5 && l==0 && P_STEP[0]>0 && P_STEP[0]%512==0 ? (
+    P_STEP[0]=0;P_STEP[1]=0;P_STEP[2]=0;
+    P_NEXT[1]=P_NEXT[0];P_NEXT[2]=P_NEXT[0];
+  );
+);
+function poly_preset() local(l) (
+  P_CTL[0]=1;P_CTL[1]=1;P_CTL[2]=0;P_CTL[8]=0;P_CTL[4]=0;
+  P_CTL[16]=16;P_CTL[17]=7;P_CTL[18]=5;
+  P_CTL[20]=1;P_CTL[21]=1;P_CTL[22]=1;
+  P_CTL[24]=1;P_CTL[25]=2;P_CTL[26]=3;
+  P_CTL[9]=0;P_CTL[10]=0;P_CTL[5]=55;P_CTL[6]=35;
+  // The reference preset is restored on every explicit click, not only first migration.
+  P_NOTE[0]=40;P_GATE[0]=25;P_VEL[0]=70;P_PROB[0]=100;
+  P_NOTE[1]=53;P_GATE[1]=65;P_VEL[1]=105;P_PROB[1]=100;
+  P_NOTE[2]=40;P_GATE[2]=20;P_VEL[2]=55;P_PROB[2]=100;
+  P_NOTE[3]=40;P_GATE[3]=30;P_VEL[3]=80;P_PROB[3]=100;
+  P_NOTE[4]=-1;P_GATE[4]=0;P_VEL[4]=0;P_PROB[4]=0;
+  P_NOTE[5]=55;P_GATE[5]=45;P_VEL[5]=95;P_PROB[5]=100;
+  P_NOTE[6]=40;P_GATE[6]=20;P_VEL[6]=60;P_PROB[6]=100;
+  P_NOTE[7]=59;P_GATE[7]=85;P_VEL[7]=115;P_PROB[7]=100;
+  P_NOTE[8]=40;P_GATE[8]=25;P_VEL[8]=70;P_PROB[8]=100;
+  P_NOTE[9]=53;P_GATE[9]=30;P_VEL[9]=90;P_PROB[9]=100;
+  P_NOTE[10]=40;P_GATE[10]=20;P_VEL[10]=55;P_PROB[10]=100;
+  P_NOTE[11]=60;P_GATE[11]=75;P_VEL[11]=120;P_PROB[11]=40;
+  P_NOTE[12]=40;P_GATE[12]=25;P_VEL[12]=65;P_PROB[12]=100;
+  P_NOTE[13]=-1;P_GATE[13]=0;P_VEL[13]=0;P_PROB[13]=0;
+  P_NOTE[14]=41;P_GATE[14]=95;P_VEL[14]=100;P_PROB[14]=100;
+  P_NOTE[15]=40;P_GATE[15]=20;P_VEL[15]=50;P_PROB[15]=100;
+  P_NOTE[32]=59;P_GATE[32]=20;P_VEL[32]=85;P_PROB[32]=100;
+  P_NOTE[33]=-1;P_GATE[33]=0;P_VEL[33]=0;P_PROB[33]=0;
+  P_NOTE[34]=62;P_GATE[34]=55;P_VEL[34]=105;P_PROB[34]=100;
+  P_NOTE[35]=64;P_GATE[35]=25;P_VEL[35]=70;P_PROB[35]=100;
+  P_NOTE[36]=-1;P_GATE[36]=0;P_VEL[36]=0;P_PROB[36]=0;
+  P_NOTE[37]=65;P_GATE[37]=70;P_VEL[37]=115;P_PROB[37]=50;
+  P_NOTE[38]=57;P_GATE[38]=35;P_VEL[38]=80;P_PROB[38]=100;
+  P_NOTE[64]=76;P_GATE[64]=10;P_VEL[64]=95;P_PROB[64]=100;
+  P_NOTE[65]=-1;P_GATE[65]=0;P_VEL[65]=0;P_PROB[65]=0;
+  P_NOTE[66]=-1;P_GATE[66]=0;P_VEL[66]=0;P_PROB[66]=0;
+  P_NOTE[67]=77;P_GATE[67]=15;P_VEL[67]=115;P_PROB[67]=40;
+  P_NOTE[68]=71;P_GATE[68]=10;P_VEL[68]=70;P_PROB[68]=100;
+  P_ARR[0]=25;
+  P_ARR[1]=0;
+  P_ARR[2]=0;
+  P_ARR[3]=0;
+  P_ARR[4]=0;
+  P_ARR[5]=15;
+  P_ARR[6]=0;
+  P_ARR[7]=16;
+  P_ARR[8]=0;
+  P_ARR[9]=40;
+  P_ARR[10]=35;
+  P_ARR[11]=0;
+  P_ARR[12]=65;
+  P_ARR[13]=0;
+  P_ARR[14]=55;
+  P_ARR[15]=15;
+  P_ARR[16]=16;
+  P_ARR[17]=0;
+  P_ARR[18]=55;
+  P_ARR[19]=60;
+  P_ARR[20]=0;
+  P_ARR[21]=100;
+  P_ARR[22]=0;
+  P_ARR[23]=50;
+  P_ARR[24]=40;
+  P_ARR[25]=16;
+  P_ARR[26]=0;
+  P_ARR[27]=70;
+  P_ARR[28]=70;
+  P_ARR[29]=15;
+  P_ARR[30]=100;
+  P_ARR[31]=18;
+  P_ARR[32]=60;
+  P_ARR[33]=55;
+  P_ARR[34]=16;
+  P_ARR[35]=0;
+  P_ARR[36]=70;
+  P_ARR[37]=75;
+  P_ARR[38]=80;
+  P_ARR[39]=100;
+  P_ARR[40]=75;
+  P_ARR[41]=35;
+  P_ARR[42]=70;
+  P_ARR[43]=12;
+  P_ARR[44]=0;
+  P_ARR[45]=85;
+  P_ARR[46]=85;
+  P_ARR[47]=100;
+  P_ARR[48]=100;
+  P_ARR[49]=100;
+  P_ARR[50]=65;
+  P_ARR[51]=95;
+  P_ARR[52]=16;
+  P_ARR[53]=12;
+  P_ARR[54]=45;
+  P_ARR[55]=70;
+  P_ARR[56]=90;
+  P_ARR[57]=100;
+  P_ARR[58]=100;
+  P_ARR[59]=10;
+  P_ARR[60]=45;
+  P_ARR[61]=16;
+  P_ARR[62]=12;
+  P_ARR[63]=25;
+  P_ARR[64]=30;
+  P_ARR[65]=0;
+  P_ARR[66]=65;
+  P_ARR[67]=0;
+  P_ARR[68]=80;
+  P_ARR[69]=15;
+  P_ARR[70]=16;
+  P_ARR[71]=0;
+  // Prevent the legacy four engines from sounding over the three MIDI lanes.
+  l=0;loop(4,slider(51+l*8)=0;l+=1;);
+  // Avoid double-controlling the same CC74/CC71 via old default MOD lanes.
+  slider90=0;slider104=0;
+  slider17=16;slider10=100;slider1=1;sliderchange(-1);
+  panic_request=1;reset_request=1;
+);
+
+function genre_preset(preset) local(i) (
+  // Explicit user action only: preserving existing parameters until button is clicked.
+  preset=iround(clamp(preset,0,7));
+  M_CFG[1]=preset;M_CFG[0]=1;M_CFG[2]=1;M_CFG[3]=6;M_CFG[22]=1;
+  slider10=95;slider17=16;slider1=1;sliderchange(slider10);sliderchange(slider17);
+  // Genre gate and probability replace restrictive old Euclidean gates on preset load.
+  i=0;loop(4,
+    slider(57+i*8)=0;sliderchange(slider(57+i*8));
+    slider(53+i*8)=100;sliderchange(slider(53+i*8));
+    i+=1;
+  );
+  slider1=1;sliderchange(slider1);
+  i=0;loop(4,slider(51+i*8)=1;sliderchange(slider(51+i*8));i+=1;);
+  preset==1 ? (M_CFG[4]=1;M_CFG[5]=9;M_CFG[8]=4;M_CFG[11]=10;M_CFG[6]=2;) :
+  preset==2 ? (M_CFG[4]=1;M_CFG[5]=0;M_CFG[8]=9;M_CFG[11]=2;M_CFG[6]=1;) :
+  preset==3 ? (M_CFG[4]=7;M_CFG[5]=13;M_CFG[8]=0;M_CFG[11]=15;M_CFG[6]=2;) :
+  preset==4 ? (M_CFG[4]=3;M_CFG[5]=9;M_CFG[8]=12;M_CFG[11]=8;M_CFG[6]=4;) :
+  preset==5 ? (M_CFG[4]=2;M_CFG[5]=12;M_CFG[8]=10;M_CFG[11]=11;M_CFG[6]=4;M_CFG[3]=3;) :
+  preset==6 ? (M_CFG[4]=1;M_CFG[5]=9;M_CFG[8]=0;M_CFG[11]=16;M_CFG[6]=2;) :
+  preset==7 ? (M_CFG[4]=2;M_CFG[5]=12;M_CFG[8]=8;M_CFG[11]=15;M_CFG[6]=2;) :
+                (M_CFG[4]=1;M_CFG[5]=0;M_CFG[8]=0;M_CFG[11]=0;M_CFG[6]=2;);
+  // Bass, arp, melody, pad are assigned to MIDI channels 1..4 by existing defaults.
+  reset_request=1;
+);
+
+function trigger_note(e,offs,event_t) local(st,step,hits,slots,eligible,lo,hi,vel,idx,base,tries,pitch,vslot,ch,bc,burstboost,prob,scale,degree,pressure,dur,rat,rr,k,last,src,swing) (
+  base=51+e*8;
+  step=ENGINE_STEP[e];
+  ENGINE_STEP[e]=step+1;
+  (M_CFG[0]>.5 && (M_CFG[0]<1.5 || M_CFG[0]>2.5 || rng()*100>=clamp(pv(8)*.50,0,65))) ? (
+    music_step(e,offs,event_t,step);
+  ) : (
+  hits=iround(clamp(pv(base+6),0,16));
+  slots=max(1,iround(pv(base+7)));
+  eligible=hits>0 && ((step*hits)%slots)<min(hits,slots);
+  prob=clamp(pv(10)*pv(base+2)/100,0,100);
+  // Slow self-evolution without overwriting automatable host parameters.
+  slider32>.5 ? prob*=.83+.34*(.5+.5*sin(run_samples/max(1,srate)*.029+e));
+  audio_boost=slider30>.5 ? clamp(audio_env*pv(31)*2,0,40) : 0;
+  eligible && rng()*100 < clamp(prob+audio_boost,0,100) ? (
+    rng()*100 < pv(48)*.035 ? burst_events=8+floor(rng()*12);
+    burstboost=burst_events>0;
+    burst_events=max(0,burst_events-1);
+    src=source_random(e);
+    // Sequence memory, mutation and mutual attraction between the four engines.
+    idx=floor(src*61);
+    pv(2)>=3.5 && KEY_HIST[e*16+(step%16)]>=0 && rng()*100>pv(9) ? idx=KEY_HIST[e*16+(step%16)];
+    rng()*100<pv(46) ? idx=swarm_next(e);
+    slider22>.5 && incoming_note>=0 && clock_samples<feedback_until && rng()*100<pv(47) ? idx=clamp(incoming_note-iround(pv(5))+floor((rng()-.5)*8),0,60);
+    idx=iround(clamp(30+(idx-30)*max(.08,pv(base+5)/100),0,60));
+    scale=iround(pv(6));
+    rng()*100<pv(34) ? scale=iround(pv(35));
+    // Pitch limits and key probabilities. 61 tries guarantees bounded work.
+    tries=0;pitch=-1;
+    while(tries<61 && pitch<0) (
+      degree=(idx+tries*7)%61;
+      bc=iround(clamp(pv(5),0,67))+degree;
+      (burstboost || note_allowed(bc,scale)) && rng()*100 < pv(195+degree) ? (pitch=bc;idx=degree;);
+      tries+=1;
+    );
+    pitch>=0 ? (
+      KEY_HIST[e*16+(step%16)]=idx;
+      ENGINE_LAST[e]=idx;
+      maxvoice=iround(clamp(pv(17),1,16));
+      slider21>.5 ? maxvoice=min(maxvoice,15);
+      voices>=maxvoice ? (
+        victim=-1;soonest=1000000000000;k=0;
+        loop(128,
+          V_ON[k]>.5 && V_DUE[k]<soonest ? (victim=k;soonest=V_DUE[k];);
+          k+=1;
+        );
+        victim>=0 ? release_voice(victim,offs);
+      );
+      vslot=find_voice();
+      V_ON[vslot]>.5 ? release_voice(vslot,offs);
+      ch=iround(pv(base+4))-1;
+      slider21>.5 ? (ch=find_mpe_channel(); ch<0 ? ch=1;);
+      lo=min(pv(15),pv(16));hi=max(pv(15),pv(16));
+      vel=cc7(lo+rng()*(hi-lo));
+      vel=cc7(vel+(rng()-.5)*pv(12)*.25);
+      vel=cc7(vel*(.7+.3*(.5+.5*sin(run_samples/max(1,srate)*.25))*(pv(50)/100)));
+      vel=max(1,vel);
+      midi_bus=iround(pv(18))-1;
+      slider23>.5 && rng()*100 < pv(24) ? midisend(offs,$xC0+ch,(iround(pv(49))+floor(rng()*128))%128);
+      midisend(offs,$x90+ch,pitch,vel);
+      V_ON[vslot]=1;V_PITCH[vslot]=pitch;V_CH[vslot]=ch;V_BUS[vslot]=midi_bus;V_ENG[vslot]=e;V_VEL[vslot]=vel;
+      voices+=1;
+      dur=max(12,pv(13)*pv(base+3)/100*(1+(rng()-.5)*2*pv(14)/100));
+      V_DUE[vslot]=event_t+dur*srate/1000;
+      last_pitch=pitch;last_velocity=vel;
+      // Ratchets are real scheduled 2-4 retriggers instead of extra notes without offs.
+      rng()*100 < pv(33) && dur>70 ? (
+        rr=1+floor(rng()*3);rat=1;
+        loop(rr,
+          ratchet_next=(ratchet_next%64)+1;
+          ratchet_count=max(ratchet_count,ratchet_next);
+          RAT_ON[ratchet_next]=vslot;
+          RAT_PITCH[ratchet_next]=pitch;
+          RAT_AT[ratchet_next]=event_t+srate*dur/1000*rat/(rr+1);
+          rat+=1;
+        );
+      );
+    );
+  );
+  ); // end music/chaos branch
+);
+function mod_value(i,rate,shape,dt) local(p,w,phasev,newv) (
+  p=MOD_PHASE[i]+dt*max(.01,rate)*2*$pi;
+  p>=2*$pi ? (
+    p-=floor(p/(2*$pi))*2*$pi;
+    MOD_HOLD[i]=rng();
+    MOD_LFO[i]=max(.1,1+(rng()-.5)*pv(9)/50);
+  );
+  MOD_PHASE[i]=p;
+  shape==0 ? w=.5+.5*sin(p) :
+  shape==1 ? w=.5+asin(sin(p))/$pi :
+  shape==2 ? w=MOD_HOLD[i] :
+  shape==3 ? w=.5+.5*cos(p) :
+  shape==4 ? (MOD_WALK[i]=clamp(3.7+.295*pv(8)/100,3.6,3.999)*MOD_WALK[i]*(1-MOD_WALK[i]);w=MOD_WALK[i];) :
+  (MOD_WALK[i]=clamp(MOD_WALK[i]+(rng()-.5)*.17,0,1);w=MOD_WALK[i];);
+  clamp(w,0,1);
+);
+function send_mod(l,offs,dt) local(base,type,num,rawnum,a,b,val,n14,ch,busidx,j,k,n,found,pitch) (
+  base=83+l*7;
+  pv(base)>.5 ? (
+    type=iround(pv(base+1));
+    rawnum=iround(clamp(pv(base+2),0,16383));
+    num=min(127,rawnum);
+    a=pv(base+3); b=pv(base+4);
+    val=clamp((a+(b-a)*mod_value(l,pv(base+5)*max(.1,MOD_LFO[l]),iround(pv(base+6)),dt))/127,0,1);
+    MOD_PREV[l]=val;
+    ch=iround(pv(19))-1;
+    midi_bus=iround(pv(18))-1;
+    n=cc7(val*127); n14=iround(val*16383);
+    type==0 ? midisend(offs,$xB0+ch,num,n);
+    type==1 ? ( // 14-bit CC: MSB controller must be 0..31
+      num=min(31,num);
+      midisend(offs,$xB0+ch,num,floor(n14/128));
+      midisend(offs,$xB0+ch,num+32,n14%128);
+    );
+    type==2 || type==3 ? ( // member-channel expression when enabled
+      slider21>.5 && slider45>.5 ? (
+        k=0;
+        loop(128,
+          V_ON[k]>.5 ? (
+            type==2 ? midisend(offs,$xE0+V_CH[k],n14%128,floor(n14/128)) : midisend(offs,$xD0+V_CH[k],n);
+          );
+          k+=1;
+        );
+      ) : (
+        type==2 ? midisend(offs,$xE0+ch,n14%128,floor(n14/128)) : midisend(offs,$xD0+ch,n);
+      );
+    );
+    type==4 ? ( // polyphonic aftertouch, limited to one active note per tick
+      found=-1;k=0;
+      while(k<128 && found<0) (
+        V_ON[k]>.5 ? found=k;
+        k+=1;
+      );
+      found>=0 ? midisend(offs,$xA0+V_CH[found],V_PITCH[found],n);
+    );
+    (type==5 || type==6) && slider40>.5 && (clock_samples+offs-MOD_SENT[l])>srate*.10 ? (
+      MOD_SENT[l]=clock_samples+offs;
+      type==5 ? (midisend(offs,$xB0+ch,101,floor(rawnum/128));midisend(offs,$xB0+ch,100,rawnum%128);) :
+                 (midisend(offs,$xB0+ch,99,floor(rawnum/128));midisend(offs,$xB0+ch,98,rawnum%128););
+      midisend(offs,$xB0+ch,6,floor(n14/128));
+      midisend(offs,$xB0+ch,38,n14%128);
+      // Null selectors to prevent unrelated data-entry events changing target.
+      type==5 ? (midisend(offs,$xB0+ch,101,127);midisend(offs,$xB0+ch,100,127);) :
+                 (midisend(offs,$xB0+ch,99,127);midisend(offs,$xB0+ch,98,127););
+    );
+  );
+);
+function bridge_publish() local(group,j) (
+  group=iround(slider42)*1024;
+  gmem[group]=314159;
+  gmem[group+1]+=1;
+  j=0;
+  loop(16,
+    gmem[group+2+j]=MOD_PREV[j];
+    gmem[group+18+j]=pv(83+j*7)>.5 ? 1 : 0;
+    gmem[group+34+j]=iround(pv(84+j*7));
+    j+=1;
+  );
+  gmem[group+50]=engine_active;
+);
+function reset_engine() local(j) (
+  rng_state=max(1,iround(slider4));
+  run_samples=0;
+  j=0;
+  loop(4,
+    CHAOS_X[j]=.17+.13*j+.0000001*(rng()*1000);
+    LORENZ_X[j]=1+j*.13;LORENZ_Y[j]=.4+j*.05;LORENZ_Z[j]=8;
+    ENGINE_NEXT[j]=clock_samples;ENGINE_STEP[j]=0;ENGINE_LAST[j]=30;
+    j+=1;
+  );
+  j=0;
+  loop(16,AGENT_POS[j]=rng()*60;AGENT_VEL[j]=rng()*4-2;j+=1;);
+  j=0;
+  loop(16,
+    MOD_PHASE[j]=rng()*2*$pi;MOD_HOLD[j]=rng();MOD_LFO[j]=1;
+    MOD_WALK[j]=.3+rng()*.4;MOD_PREV[j]=.5; MOD_SENT[j]=-1000000000000;
+    j+=1;
+  );
+  burst_events=0;ratchet_count=0;ratchet_next=0;next_mod=clock_samples;last_bus=iround(slider18)-1;
+  j=1;loop(64,RAT_AT[j]=1000000000000;j+=1;);
+j=0;loop(24,M_PREVVOICE[j]=-999;j+=1;);
+j=0;loop(64,CAN_ON[j]=0;j+=1;);
+canon_cursor=0;canon_emitting=0;
+j=0;loop(3,P_NEXT[j]=clock_samples;P_STEP[j]=0;j+=1;);
+j=0;loop(15,P_LASTCC[j]=-999;j+=1;);
+poly_prev_enabled=P_CTL[0]>.5;
+
+);
+
+// Ratchets and memory buffers remain within allocated blocks.
+RAT_ON=6000;RAT_AT=6100;RAT_PITCH=6200;
+clock_samples=0;last_srate=srate;engine_active=0;voices=0;
+incoming_note=-1;incoming_vel=0;feedback_until=-1;audio_env=0;morph_phase=0;
+ui_poly_lane=0;ui_poly_step=0;ui_poly_bank=0;ui_poly_phase=0;ui_poly_drag=-1;
+ui_tab=0;ui_mod_page=0;ui_prev_down=0;ui_drag=0;ui_custom_drag=-1;ui_step_drag=-1;ui_array_drag=-1;ui_ext_drag=-1;ui_poly_drag=-1;ui_edit_engine=0;ui_edit_step=0;ui_scene_selected=0;ui_speed_drag=0;
+panic_request=0;sysex_request=0;reset_request=0;
+ui_version=1;
+reset_engine();
+i=0;loop(128,V_ON[i]=0;i+=1;);
+i=0;loop(64,KEY_HIST[i]=-1;i+=1;);
+i=0;loop(256,M_MOTIF[i]=-999;i+=1;);
+// Transport stop should release voices and restart the motif phase cleanly.
+
+@serialize
+// Snapshots & their validity are stored in the .RPP alongside JSFX sliders.
+file_mem(0,SCENE_BASE,2048);
+file_mem(0,SCENE_VALID,8);
+file_mem(0,M_CFG,64);
+file_mem(0,M_SCENE,512);
+// Sequencer patterns, individual scene snapshots and evolving melody memory.
+file_mem(0,M_SEQ,128);
+file_mem(0,M_GATE,128);
+file_mem(0,M_VEL,128);
+file_mem(0,M_CASCADE,8);
+file_mem(0,M_SEQSC,1024);
+file_mem(0,M_GATESC,1024);
+file_mem(0,M_VELSC,1024);
+file_mem(0,M_CASC_SC,64);
+file_mem(0,M_MOTIF,256);
+file_mem(0,M_MOTSC,2048);
+file_mem(0,M_EXT,32);
+file_mem(0,M_EXTSC,256);
+file_mem(0,P_CTL,64);
+file_mem(0,P_NOTE,96);file_mem(0,P_GATE,96);file_mem(0,P_VEL,96);file_mem(0,P_PROB,96);
+file_mem(0,P_ARR,72);
+file_mem(0,P_SCTL,512);file_mem(0,P_SNOTE,768);file_mem(0,P_SGATE,768);
+file_mem(0,P_SVEL,768);file_mem(0,P_SPROB,768);file_mem(0,P_SARR,576);
+
+@slider
+// All 255 controls are hidden from the default REAPER JSFX panel.
+// Values are still host parameters; the custom @gfx is the only editor.
+
+@sample
+// Optional sidechain/audio response. Audio itself is passed through unchanged.
+audio_env=max(abs(spl0),abs(spl1))*.0004+audio_env*.9996;
+
+@block
+// Buffer-based MIDI input: keeps SysEx intact when input forwarding enabled.
+midi_bus=0;
+while ((recvlen=midirecv_buf(recv_off,MIDI_TMP,1024))>0) (
+  rec_status=MIDI_TMP[0];
+  rec_type=rec_status&$xF0;
+  rec_type==$x90 && recvlen>=3 && MIDI_TMP[2]>0 ? (
+    incoming_note=MIDI_TMP[1];incoming_vel=MIDI_TMP[2];feedback_until=clock_samples+srate*2;
+    slider43>.5 ? ( // a live note can cause a note burst via the next engine event
+      e=0;
+      loop(4,ENGINE_NEXT[e]=min(ENGINE_NEXT[e],clock_samples+recv_off);e+=1;);
+    );
+  );
+  slider20>.5 ? midisend_buf(recv_off,MIDI_TMP,recvlen);
+);
+
+wanted=slider1>.5 && (slider3>.5 || (play_state&1));
+(!wanted || srate!=last_srate || panic_request>.5) ? (
+  engine_active>.5 || panic_request>.5 ? panic(0);
+  engine_active=0;
+  last_srate=srate;
+  panic_request=0;
+);
+reset_request>.5 ? (panic(0);reset_engine();engine_active=0;reset_request=0;);
+sysex_request>.5 ? (
+  slider41>.5 ? (
+    MIDI_TMP[0]=$xF0;MIDI_TMP[1]=$x7E;MIDI_TMP[2]=$x7F;MIDI_TMP[3]=$x09;
+    MIDI_TMP[4]=$x01;MIDI_TMP[5]=$xF7;
+    midi_bus=iround(slider18)-1;
+    midisend_buf(0,MIDI_TMP,6);
+  );
+  sysex_request=0;
+);
+wanted ? (
+  ((P_CTL[0]>.5) != (poly_prev_enabled>.5)) ? (
+    poly_prev_enabled=P_CTL[0]>.5;
+    e=0;loop(3,P_NEXT[e]=clock_samples;P_STEP[e]=0;e+=1;);
+  );
+  !engine_active ? (
+    reset_engine();engine_active=1;
+  );
+  // Scene A -> B morph, with slow automatic motion when autopilot is enabled.
+  slider32>.5 ? (
+    morph_phase=.5+.5*sin(run_samples/max(1,srate)*.05);
+  ) : (
+    morph_phase=clamp(slider44/100,0,1);
+  );
+  blockend=clock_samples+samplesblock;
+  iterations=0;again=1;
+  while(iterations<384 && again) (
+    evt=next_mod;event_kind=2;event_id=0;
+    e=0;
+    loop(4,
+      slider(51+e*8)>.5 && ENGINE_NEXT[e]<=evt ? (
+        evt=ENGINE_NEXT[e];event_kind=1;event_id=e;
+      );
+      e+=1;
+    );
+    j=0;
+    loop(3,
+      P_CTL[0]>.5 && P_CTL[20+j]>.5 && P_NEXT[j]<=evt ? (
+        evt=P_NEXT[j];event_kind=6;event_id=j;
+      );j+=1;
+    );
+    j=0;
+    loop(128,
+      V_ON[j]>.5 && V_DUE[j]<=evt ? (
+        evt=V_DUE[j];event_kind=3;event_id=j;
+      );
+      j+=1;
+    );
+    j=1;
+    while(j<=ratchet_count) (
+      RAT_AT[j]<=evt ? (evt=RAT_AT[j];event_kind=4;event_id=j;);
+      j+=1;
+    );
+    j=0;
+    loop(64,
+      CAN_ON[j]>.5 && CAN_AT[j]<=evt ? (evt=CAN_AT[j];event_kind=5;event_id=j;);
+      j+=1;
+    );
+    evt<blockend ? (
+      offs=iround(clamp(evt-clock_samples,0,samplesblock-1));
+      event_kind==3 ? release_voice(event_id,offs) :
+      event_kind==6 ? poly_step(event_id,offs,evt) :
+      event_kind==5 ? (
+        // Bounded canon echo from the source note; guard against endless re-echo.
+        CAN_ON[event_id]=0;
+        canon_emitting=1;
+        music_emit(CAN_ENG[event_id],CAN_PITCH[event_id],offs,evt,CAN_DUR[event_id],CAN_ACC[event_id]);
+        canon_emitting=0;
+      ) :
+      event_kind==4 ? (
+        vv=RAT_ON[event_id];
+        V_ON[vv]>.5 && V_PITCH[vv]==RAT_PITCH[event_id] && V_DUE[vv]>evt+srate*.012 ? (
+          midi_bus=V_BUS[vv];
+          midisend(offs,$x80+V_CH[vv],V_PITCH[vv],0);
+          midisend(offs,$x90+V_CH[vv],V_PITCH[vv],V_VEL[vv]);
+        );
+        RAT_AT[event_id]=1000000000000;
+      ) :
+      event_kind==1 ? (
+        e=event_id;
+        base=51+e*8;
+        bpm=max(25,tempo);
+        spacing=music_spacing(e);
+        swing=slider39>.5 ? 1 : (ENGINE_STEP[e]%2) ? (1+pv(11)/200) : (1-pv(11)/200);
+        spacing*=swing;
+        slider39<.5 ? spacing*=clamp(1+(rng()-.5)*pv(12)/130,.4,1.6);
+        ENGINE_NEXT[e]=evt+max(srate*.003,spacing);
+        slider(51+e*8)>.5 ? trigger_note(e,offs,evt);
+      ) : (
+        // Frequencies & shapes are independent for all 16 lanes.
+        dt=1/max(5,pv(25));
+        k=0;
+        loop(16,send_mod(k,offs,dt);k+=1;);
+        next_mod=evt+max(srate/60,srate/max(5,pv(25)));
+        slider26>.5 ? (
+          bend=iround(clamp(8192+(MOD_PREV[1]*2-1)*8191*pv(27)/100,0,16383));
+          midi_bus=iround(pv(18))-1;
+          midisend(offs,$xE0+iround(pv(19))-1,bend%128,floor(bend/128));
+        );
+        slider28>.5 ? (
+          midi_bus=iround(pv(18))-1;
+          midisend(offs,$xD0+iround(pv(19))-1,cc7(MOD_PREV[2]*127));
+        );
+        slider29>.5 && voices>0 ? (
+          victim=-1;k=0;
+          while(k<128 && victim<0) (V_ON[k]>.5 ? victim=k; k+=1;);
+          victim>=0 ? (
+            midi_bus=V_BUS[victim];
+            midisend(offs,$xA0+V_CH[victim],V_PITCH[victim],cc7(MOD_PREV[3]*127));
+          );
+        );
+        poly_cc_tick(offs);
+        bridge_publish();
+      );
+      iterations+=1;
+    ) : again=0;
+  );
+  run_samples+=samplesblock;
+);
+clock_samples+=samplesblock;
+
+
+@gfx 1120 840
+// LautFunk visuals match the FartSynth 61 palette. All host sliders are hidden.
+function ui_set_accent(active) (
+  active ? gfx_set(.18,.91,.77,1) : gfx_set(.50,.62,.71,1);
+);
+function ui_panel(x,y,w,h) (
+  gfx_set(.071,.101,.145,1);gfx_rect(x,y,w,h);
+  gfx_set(.12,.18,.235,1);gfx_rect(x,y,w,1);
+);
+function ui_text(x,y,t) (
+  gfx_x=x;gfx_y=y;gfx_drawstr(t);
+);
+function ui_button(x,y,w,h,t,selected) local(hit) (
+  hit=mouse_x>=x && mouse_x<x+w && mouse_y>=y && mouse_y<y+h;
+  selected ? gfx_set(.125,.40,.42,1) :
+  hit ? gfx_set(.13,.20,.27,1) : gfx_set(.078,.125,.17,1);
+  gfx_rect(x,y,w,h);
+  selected ? gfx_set(.18,.91,.77,1) : gfx_set(.52,.68,.77,1);
+  gfx_rect(x,y,3,h);
+  gfx_setfont(2,"Arial",12);
+  gfx_set(.89,.95,.96,1);ui_text(x+10,y+9,t);
+  hit && ui_click;
+);
+function ui_knob(idx,x,y,w,t) local(val,lo,hi,st,frac,nv,hit,lane,mode) (
+  lo=PMIN[idx]; hi=PMAX[idx];st=PSTEP[idx];
+  idx>=85 && idx<=190 && ((idx-85)%7)==0 ? (
+    lane=floor((idx-85)/7);
+    mode=slider(84+lane*7);
+    mode<4.5 || mode>6.5 ? hi=127;
+  );
+  val=slider(idx); frac=clamp((val-lo)/max(.001,hi-lo),0,1);
+  gfx_setfont(2,"Arial",12);gfx_set(.74,.82,.88,1);ui_text(x,y,t);
+  gfx_set(.18,.91,.77,1);
+  gfx_setfont(3,"Arial",11);
+  st<1 ? sprintf(#val,"%.2f",val) : sprintf(#val,"%d",iround(val));
+  gfx_x=x+w-56;gfx_y=y;gfx_drawstr(#val);
+  gfx_set(.11,.16,.21,1);gfx_rect(x,y+23,w,10);
+  gfx_set(.18,.77,.71,1);gfx_rect(x,y+23,max(1,w*frac),10);
+  gfx_set(.95,.98,.99,1);gfx_rect(x+frac*w-2,y+21,4,14);
+  hit=(mouse_x>=x && mouse_x<=x+w && mouse_y>=y+12 && mouse_y<=y+39);
+  ui_down && ((ui_click && hit) || ui_drag==idx) ? (
+    ui_drag=idx;
+    nv=lo+clamp((mouse_x-x)/max(1,w),0,1)*(hi-lo);
+    nv=clamp(floor(nv/st+.5)*st,lo,hi);
+    nv!=val ? (
+      slider(idx)=nv;
+      sliderchange(slider(idx));
+      slider_automate(slider(idx));
+    );
+  );
+);
+
+function ui_custom(idx,x,y,w,t,minimum,maximum,inc) local(val,frac,nv,hit) (
+  val=M_CFG[idx];frac=clamp((val-minimum)/max(.001,maximum-minimum),0,1);
+  gfx_setfont(2,"Arial",12);gfx_set(.75,.84,.90,1);ui_text(x,y,t);
+  gfx_setfont(3,"Arial",11);gfx_set(.20,.92,.77,1);
+  sprintf(#cv,"%d",iround(val));gfx_x=x+w-42;gfx_y=y;gfx_drawstr(#cv);
+  gfx_set(.11,.17,.23,1);gfx_rect(x,y+23,w,9);
+  gfx_set(.18,.76,.70,1);gfx_rect(x,y+23,max(1,w*frac),9);
+  gfx_set(.93,.98,.98,1);gfx_rect(x+frac*w-2,y+21,4,13);
+  hit=(mouse_x>=x&&mouse_x<=x+w&&mouse_y>=y+13&&mouse_y<=y+37);
+  ui_down && ((ui_click&&hit)||ui_custom_drag==idx) ? (
+    ui_custom_drag=idx;
+    nv=minimum+clamp((mouse_x-x)/max(1,w),0,1)*(maximum-minimum);
+    nv=clamp(floor(nv/inc+.5)*inc,minimum,maximum);
+    M_CFG[idx]=nv;
+  );
+);
+function ui_cbutton(x,y,w,h,t,idx,n) (
+  ui_button(x,y,w,h,t,M_CFG[idx]==n) ? M_CFG[idx]=n;
+);
+
+// PERSISTENT CLOCK WIDGET: visible on every editor tab, no standard JSFX controls.
+function ui_speed_rate_name(n) (
+  n=iround(clamp(n,0,14));
+  n==0 ? #speed_rate="4 BARS";
+  n==1 ? #speed_rate="2 BARS";
+  n==2 ? #speed_rate="1 BAR";
+  n==3 ? #speed_rate="1/2";
+  n==4 ? #speed_rate="1/4";
+  n==5 ? #speed_rate="1/8";
+  n==6 ? #speed_rate="1/16";
+  n==7 ? #speed_rate="1/32";
+  n==8 ? #speed_rate="1/64";
+  n==9 ? #speed_rate="1/8 T";
+  n==10 ? #speed_rate="1/16 T";
+  n==11 ? #speed_rate="1/32 T";
+  n==12 ? #speed_rate="1/8 D";
+  n==13 ? #speed_rate="1/16 D";
+  n==14 ? #speed_rate="1/32 D";
+);
+function ui_speed_nudge(direction) local(v) (
+  M_CFG[2]>.5 ? (
+    M_CFG[3]=clamp(iround(M_CFG[3])+direction,0,14);
+  ) : (
+    direction>0 ? v=slider256/1.25 : v=slider256*1.25;
+    v=clamp(floor(v/.005+.5)*.005,.05,8);
+    abs(v-slider256)>.00001 ? (
+      slider256=v;
+      sliderchange(slider256);
+      slider_automate(slider256);
+    );
+  );
+);
+function ui_speed_meter(x,y,w) local(v,f,hit,newv,sync) (
+  sync=M_CFG[2]>.5;
+  sync ? (
+    v=iround(clamp(M_CFG[3],0,14));
+    f=v/14;
+    ui_speed_rate_name(v);
+  ) : (
+    v=clamp(slider256,.05,8);
+    f=clamp(log(v/.05)/log(160),0,1);
+    sprintf(#speed_rate,"%.3f s",v);
+  );
+  gfx_set(.062,.12,.16,1);gfx_rect(x,y,w,29);
+  gfx_set(.18,.38,.39,1);gfx_rect(x,y,w,1);
+  gfx_setfont(3,"Arial",15);gfx_set(.30,.96,.81,1);
+  gfx_x=x+12;gfx_y=y+2;gfx_drawstr(#speed_rate);
+  gfx_set(.13,.24,.29,1);gfx_rect(x+5,y+24,w-10,3);
+  gfx_set(.18,.91,.77,1);gfx_rect(x+5,y+24,max(2,(w-10)*f),3);
+  hit=mouse_x>=x&&mouse_x<x+w&&mouse_y>=y&&mouse_y<y+29;
+  ui_down && ((ui_click&&hit)||ui_speed_drag>.5) ? (
+    ui_speed_drag=1;
+    newv=clamp((mouse_x-(x+5))/max(1,w-10),0,1);
+    sync ? (
+      M_CFG[3]=iround(14*newv);
+    ) : (
+      newv=clamp(floor((.05*exp(newv*log(160)))/.005+.5)*.005,.05,8);
+      abs(newv-slider256)>.00001 ? (
+        slider256=newv;
+        sliderchange(slider256);
+        slider_automate(slider256);
+      );
+    );
+  );
+);
+
+// Independent step editing using direct pixel-position sliders.
+function ui_step_control(x,y,w,t,typ,lo,hi,inc) local(idx,val,frac,hit,nv) (
+  idx=ui_edit_engine*32+ui_edit_step;
+  val=typ==0 ? M_SEQ[idx] : typ==1 ? M_GATE[idx] : M_VEL[idx];
+  gfx_setfont(2,"Arial",11);gfx_set(.75,.85,.90,1);ui_text(x,y,t);
+  sprintf(#stepv,"%d",iround(val));gfx_x=x+w-38;gfx_y=y;gfx_drawstr(#stepv);
+  frac=clamp((val-lo)/max(1,hi-lo),0,1);
+  gfx_set(.08,.16,.20,1);gfx_rect(x,y+22,w,9);
+  gfx_set(.16,.80,.71,1);gfx_rect(x,y+22,max(1,w*frac),9);
+  hit=mouse_x>=x&&mouse_x<=x+w&&mouse_y>=y+16&&mouse_y<=y+36;
+  ui_down && ((ui_click&&hit) || ui_step_drag==typ) ? (
+    ui_step_drag=typ;
+    nv=lo+floor(clamp((mouse_x-x)/max(1,w),0,1)*(hi-lo)/inc+.5)*inc;
+    nv=clamp(nv,lo,hi);
+    typ==0 ? M_SEQ[idx]=nv : typ==1 ? M_GATE[idx]=nv : M_VEL[idx]=nv;
+  );
+);
+function ui_array_knob(addr,idx,x,y,w,t,lo,hi,inc) local(v,frac,hit,nv) (
+  v=addr[idx];frac=clamp((v-lo)/max(1,hi-lo),0,1);
+  gfx_setfont(2,"Arial",12);gfx_set(.74,.84,.90,1);ui_text(x,y,t);
+  sprintf(#arrv,"%d",iround(v));gfx_x=x+w-40;gfx_y=y;gfx_drawstr(#arrv);
+  gfx_set(.09,.16,.21,1);gfx_rect(x,y+23,w,9);
+  gfx_set(.17,.8,.72,1);gfx_rect(x,y+23,max(1,frac*w),9);
+  hit=mouse_x>=x&&mouse_x<x+w&&mouse_y>=y+15&&mouse_y<y+37;
+  ui_down && ((ui_click&&hit)||ui_array_drag==idx) ? (
+    ui_array_drag=idx;
+    nv=lo+floor(clamp((mouse_x-x)/max(1,w),0,1)*(hi-lo)/inc+.5)*inc;
+    addr[idx]=clamp(nv,lo,hi);
+  );
+);
+function ui_ext(idx,x,y,w,t,lo,hi,inc) local(v,frac,hit,nv) (
+  v=M_EXT[idx];frac=clamp((v-lo)/max(1,hi-lo),0,1);
+  gfx_setfont(2,"Arial",12);gfx_set(.70,.85,.88,1);ui_text(x,y,t);
+  sprintf(#ev,"%d",iround(v));gfx_x=x+w-42;gfx_y=y;gfx_drawstr(#ev);
+  gfx_set(.10,.16,.22,1);gfx_rect(x,y+23,w,9);
+  gfx_set(.17,.81,.70,1);gfx_rect(x,y+23,max(1,w*frac),9);
+  hit=mouse_x>=x&&mouse_x<=x+w&&mouse_y>=y+15&&mouse_y<=y+36;
+  ui_down && ((ui_click&&hit)||ui_ext_drag==idx) ? (
+    ui_ext_drag=idx;
+    nv=lo+floor(clamp((mouse_x-x)/max(1,w),0,1)*(hi-lo)/inc+.5)*inc;
+    M_EXT[idx]=clamp(nv,lo,hi);
+  );
+);
+
+function ui_polyval(addr,idx,x,y,w,t,lo,hi,inc,identity) local(v,frac,hit,nv) (
+  v=addr[idx];frac=clamp((v-lo)/max(1,hi-lo),0,1);
+  gfx_setfont(2,"Arial",11);gfx_set(.69,.84,.89,1);ui_text(x,y,t);
+  gfx_set(.18,.90,.77,1);sprintf(#polyvalue,"%d",iround(v));gfx_x=x+w-35;gfx_y=y;gfx_drawstr(#polyvalue);
+  gfx_set(.09,.16,.22,1);gfx_rect(x,y+21,w,9);
+  gfx_set(.14,.75,.67,1);gfx_rect(x,y+21,max(1,w*frac),9);
+  hit=(mouse_x>=x&&mouse_x<x+w&&mouse_y>=y+13&&mouse_y<y+37);
+  ui_down && ((ui_click&&hit)||ui_poly_drag==identity) ? (
+    ui_poly_drag=identity;
+    nv=lo+floor(clamp((mouse_x-x)/max(1,w),0,1)*(hi-lo)/inc+.5)*inc;
+    addr[idx]=clamp(nv,lo,hi);
+  );
+);
+function ui_polybutton(x,y,w,h,t,idx,n) (
+  ui_button(x,y,w,h,t,P_CTL[idx]==n) ? P_CTL[idx]=n;
+);
+
+function open_preset(id) (
+  // Change only when the user clicks. Leaves global MIDI and host routing untouched.
+  M_CFG[0]=3; M_CFG[22]=0;M_CFG[44]=1;M_CFG[45]=1;
+  id==0 ? (
+    M_EXT[0]=4;M_EXT[1]=1;M_EXT[2]=0;M_EXT[4]=1;
+    M_EXT[8]=0;M_EXT[10]=1;M_EXT[12]=1;M_EXT[15]=0;
+    M_CFG[4]=3;M_CFG[5]=9;M_CFG[3]=6;M_CFG[13]=1;
+  ) : id==1 ? (
+    M_EXT[0]=5;M_EXT[1]=1;M_EXT[2]=1;M_EXT[3]=30;
+    M_EXT[4]=0;M_EXT[8]=0;M_EXT[10]=1;M_EXT[12]=1;M_EXT[15]=0;
+    M_CFG[4]=3;M_CFG[5]=9;M_CFG[3]=6;
+  ) : id==2 ? (
+    M_EXT[0]=3;M_EXT[1]=2;M_EXT[2]=0;M_EXT[4]=0;
+    M_EXT[8]=1;M_EXT[9]=8;M_EXT[10]=0;M_EXT[12]=0;M_EXT[15]=0;
+    M_CFG[4]=2;M_CFG[5]=9;M_CFG[3]=3;
+  ) : (
+    M_EXT[0]=1;M_EXT[1]=3;M_EXT[2]=0;M_EXT[4]=0;
+    M_EXT[8]=1;M_EXT[10]=1;M_EXT[12]=1;M_EXT[15]=1;
+    M_CFG[4]=1;M_CFG[5]=9;M_CFG[3]=6;
+  );
+  reset_request=1;
+);
+function draw_keys(x,y,w,white_h) local(n,pc,black,whites,ww,xx,active,j,idx) (
+  ww=w/36;
+  n=0;whites=0;
+  while(n<61) (
+    pc=(iround(slider5)+n)%12;
+    black=(pc==1||pc==3||pc==6||pc==8||pc==10);
+    !black ? (
+      xx=x+whites*ww;
+      active=0;j=0;
+      loop(128, V_ON[j]>.5 && V_PITCH[j]==iround(slider5)+n ? active=1;j+=1;);
+      active ? gfx_set(.18,.91,.77,1) : gfx_set(.84,.88,.9,1);
+      gfx_rect(xx,y,ww-1,white_h);
+      gfx_set(.12,.31,.36,1);gfx_rect(xx,y+white_h-5,ww-1,5);
+      whites+=1;
+    );
+    n+=1;
+  );
+  n=0;whites=0;
+  while(n<61) (
+    pc=(iround(slider5)+n)%12;
+    black=(pc==1||pc==3||pc==6||pc==8||pc==10);
+    black ? (
+      xx=x+(whites-.34)*ww;
+      active=0;j=0;
+      loop(128,V_ON[j]>.5 && V_PITCH[j]==iround(slider5)+n ? active=1;j+=1;);
+      active ? gfx_set(.94,.35,.63,1) : gfx_set(.027,.048,.078,1);
+      gfx_rect(xx,y,ww*.67,white_h*.62);
+      gfx_set(.13,.23,.29,1);gfx_rect(xx,y+white_h*.62-4,ww*.67,4);
+    ) : whites+=1;
+    n+=1;
+  );
+);
+
+ui_down=mouse_cap&1;
+ui_click=ui_down && !ui_prev_down;
+!ui_down && ui_drag>0 ? (slider_automate(slider(ui_drag),1);ui_drag=0;);
+!ui_down ? (
+   ui_speed_drag>.5 ? (M_CFG[2]<.5 ? slider_automate(slider256,1);ui_speed_drag=0;);
+   (ui_step_drag>=0 || ui_array_drag>=0 || ui_ext_drag>=0 || ui_poly_drag>=0) ? sliderchange(-1);
+   ui_custom_drag=-1;ui_step_drag=-1;ui_array_drag=-1;ui_ext_drag=-1;ui_poly_drag=-1;
+);
+gfx_set(.025,.034,.054,1);gfx_rect(0,0,gfx_w,gfx_h);
+// Header
+ui_set_accent(1);gfx_setfont(1,"Arial",23);
+ui_text(22,15,"LautFunk  /  MIDI CHAOS ENGINE 61");
+gfx_setfont(2,"Arial",11);gfx_set(.59,.71,.79,1);
+ui_text(24,48,"POLYTRANCE  /  4 ENGINES  /  3 POLY TRACKS");
+// Always-on global speed strip. SYNC/SEC, exact division, speed nudges and direct edit.
+speed_x=gfx_w-665;
+ui_panel(speed_x,7,385,60);
+gfx_set(.18,.91,.77,1);gfx_rect(speed_x,7,4,60);
+gfx_setfont(2,"Arial",12);gfx_set(.27,.96,.82,1);
+ui_text(speed_x+12,13,"GLOBAL NOTE SPEED");
+gfx_setfont(2,"Arial",11);gfx_set(.60,.75,.82,1);
+sprintf(#speed_bpm,"%.0f BPM",max(1,tempo));
+ui_text(speed_x+295,14,#speed_bpm);
+ui_button(speed_x+12,32,54,29,"SYNC",M_CFG[2]>.5) ? M_CFG[2]=1;
+ui_button(speed_x+70,32,48,29,"SEC",M_CFG[2]<.5) ? M_CFG[2]=0;
+ui_button(speed_x+122,32,26,29,"-",0) ? ui_speed_nudge(-1);
+ui_speed_meter(speed_x+152,32,140);
+ui_button(speed_x+296,32,26,29,"+",0) ? ui_speed_nudge(1);
+ui_button(speed_x+326,32,48,29,"EDIT",ui_tab==6) ? ui_tab=6;
+ui_button(gfx_w-274,15,91,31,slider1>.5?"RUNNING":"STOPPED",slider1>.5) ? (
+  slider1=1-slider1;sliderchange(slider1);slider_automate(slider1);
+);
+ui_button(gfx_w-174,15,73,31,"RESEED",0) ? reset_request=1;
+ui_button(gfx_w-93,15,74,31,"PANIC",0) ? (
+  panic_request=1;slider1=0;sliderchange(slider1);slider_automate(slider1);
+);
+
+// Navigation (14 compact buttons, same dark LautFunk editor; no standard sliders).
+nav_w=(gfx_w-48)/14;
+ui_button(24,78,nav_w-4,37,"HOME",ui_tab==0) ? ui_tab=0;
+ui_button(24+nav_w,78,nav_w-4,37,"ENGINES",ui_tab==1) ? ui_tab=1;
+ui_button(24+2*nav_w,78,nav_w-4,37,"MODS",ui_tab==2) ? ui_tab=2;
+ui_button(24+3*nav_w,78,nav_w-4,37,"KEYS",ui_tab==3) ? ui_tab=3;
+ui_button(24+4*nav_w,78,nav_w-4,37,"ROUTING",ui_tab==4) ? ui_tab=4;
+ui_button(24+5*nav_w,78,nav_w-4,37,"SCENES",ui_tab==5) ? ui_tab=5;
+ui_button(24+6*nav_w,78,nav_w-4,37,"SPEED",ui_tab==6) ? ui_tab=6;
+ui_button(24+7*nav_w,78,nav_w-4,37,"MUSIC",ui_tab==7) ? ui_tab=7;
+ui_button(24+8*nav_w,78,nav_w-4,37,"HYPNO",ui_tab==8) ? ui_tab=8;
+ui_button(24+9*nav_w,78,nav_w-4,37,"STEPS",ui_tab==9) ? ui_tab=9;
+ui_button(24+10*nav_w,78,nav_w-4,37,"CASCADE",ui_tab==10) ? ui_tab=10;
+ui_button(24+11*nav_w,78,nav_w-4,37,"SUSPENSE",ui_tab==11) ? ui_tab=11;
+ui_button(24+12*nav_w,78,nav_w-4,37,"POLY",ui_tab==12) ? ui_tab=12;
+ui_button(24+13*nav_w,78,nav_w-4,37,"FLOW",ui_tab==13) ? ui_tab=13;
+
+// OVERVIEW. Five columns of musical controls and live monitor.
+ui_tab==0 ? (
+  ui_panel(24,132,gfx_w-48,558);
+  gfx_setfont(1,"Arial",18);ui_set_accent(1);ui_text(42,148,"CHAOS AUTOPILOT");
+  gfx_setfont(2,"Arial",11);gfx_set(.63,.74,.8,1);
+  ui_text(42,177,"RANDOM / MATHEMATICS / MEMORY / SWARM / MUSICAL CONTROL");
+  colw=(gfx_w-92)/5;
+  i=0;
+  loop(25,
+    row=floor(i/5);col=i%5;
+    param=0;
+    i==0 ? param=2;i==1 ? param=4;i==2 ? param=8;i==3 ? param=9;i==4 ? param=10;
+    i==5 ? param=5;i==6 ? param=6;i==7 ? param=7;i==8 ? param=11;i==9 ? param=12;
+    i==10 ? param=13;i==11 ? param=14;i==12 ? param=15;i==13 ? param=16;i==14 ? param=17;
+    i==15 ? param=32;i==16 ? param=33;i==17 ? param=34;i==18 ? param=46;i==19 ? param=47;
+    i==20 ? param=48;i==21 ? param=50;i==22 ? param=22;i==23 ? param=30;i==24 ? param=31;
+    #lbl="";
+    param==2 ? #lbl="Mode";param==4 ? #lbl="Seed";
+    param==8 ? #lbl="Chaos";param==9 ? #lbl="Evolution";param==10 ? #lbl="Density";
+    param==5 ? #lbl="Lowest note";param==6 ? #lbl="Scale";param==7 ? #lbl="Root note";
+    param==11 ? #lbl="Swing";param==12 ? #lbl="Humanize";param==13 ? #lbl="Length (ms)";
+    param==14 ? #lbl="Length random";param==15 ? #lbl="Velocity low";param==16 ? #lbl="Velocity high";
+    param==17 ? #lbl="Max notes";param==32 ? #lbl="Autopilot";param==33 ? #lbl="Ratchet %";
+    param==34 ? #lbl="Scale morph";param==46 ? #lbl="Swarm";param==47 ? #lbl="Feedback %";
+    param==48 ? #lbl="Burst chance";param==50 ? #lbl="Vel. morph";param==22 ? #lbl="Input influence";
+    param==30 ? #lbl="Audio react";param==31 ? #lbl="Audio sense";
+    ui_knob(param,43+col*colw,204+row*93,colw-24,#lbl);
+    i+=1;
+  );
+);
+// ENGINES. Each engine runs its own rhythm & Euclidean pattern.
+ui_tab==1 ? (
+  i=0;
+  loop(4,
+    col=i%2;row=floor(i/2);
+    x=24+col*((gfx_w-48)/2+5);y=133+row*281;w=(gfx_w-58)/2;h=270;
+    ui_panel(x,y,w,h);
+    gfx_setfont(1,"Arial",17);ui_set_accent(1);
+    sprintf(#eng,"ENGINE %d   /   MIDI CHANNEL %d",i+1,iround(slider(55+i*8)));
+    ui_text(x+16,y+14,#eng);
+    k=0;
+    loop(8,
+      col2=k%2;row2=floor(k/2);
+      param=51+i*8+k;
+      #lbl="";
+      k==0 ? #lbl="Enable";k==1 ? #lbl="Steps / beat";k==2 ? #lbl="Probability";
+      k==3 ? #lbl="Note length %";k==4 ? #lbl="MIDI channel";k==5 ? #lbl="Pitch spread";
+      k==6 ? #lbl="Euclid hits";k==7 ? #lbl="Euclid steps";
+      ui_knob(param,x+16+col2*(w/2),y+55+row2*51,w/2-29,#lbl);
+      k+=1;
+    );
+    i+=1;
+  );
+);
+// MODULATION. All 16 lanes, two visible banks of 8.
+ui_tab==2 ? (
+  ui_panel(24,132,gfx_w-48,560);
+  gfx_setfont(1,"Arial",18);ui_set_accent(1);ui_text(42,148,"16 INDEPENDENT MODULATORS");
+  ui_button(gfx_w-300,146,118,31,"LANES 01-08",ui_mod_page==0) ? ui_mod_page=0;
+  ui_button(gfx_w-174,146,118,31,"LANES 09-16",ui_mod_page==1) ? ui_mod_page=1;
+  gfx_setfont(2,"Arial",11);gfx_set(.62,.75,.82,1);
+  ui_text(42,183,"TYPE 0=CC   1=CC14   2=PITCH   3=PRESS   4=POLY   5=RPN   6=NRPN   7=HOST (LUA)");
+  k=0;
+  loop(8,
+    lane=k+8*ui_mod_page;
+    base=83+lane*7;
+    y=215+k*56;
+    gfx_set(.1,.15,.2,1);gfx_rect(42,y+45,gfx_w-84,1);
+    gfx_setfont(2,"Arial",12);gfx_set(.17,.92,.78,1);
+    sprintf(#lane,"%02d",lane+1);ui_text(43,y+5,#lane);
+    colw=(gfx_w-145)/7;
+    p=0;
+    loop(7,
+      #lbl="";
+      p==0 ? #lbl="ON";p==1 ? #lbl="TYPE";p==2 ? #lbl="NUMBER";
+      p==3 ? #lbl="MIN";p==4 ? #lbl="MAX";p==5 ? #lbl="RATE Hz";
+      p==6 ? #lbl="SHAPE";
+      ui_knob(base+p,82+p*colw,y,colw-13,#lbl);
+      p+=1;
+    );
+    k+=1;
+  );
+);
+// MATRIX. Real probability per key; FartSynth-style 61-note keyboard.
+ui_tab==3 ? (
+  ui_panel(24,132,gfx_w-48,562);
+  gfx_setfont(1,"Arial",18);ui_set_accent(1);ui_text(42,148,"61-KEY PROBABILITY MATRIX");
+  gfx_setfont(2,"Arial",11);gfx_set(.63,.74,.8,1);
+  ui_text(42,180,"DRAG A BAR TO CHANGE THE PLAYING PROBABILITY OF THAT NOTE.  THE KEYBED SHOWS ACTIVE VOICES.");
+  x=44;w=gfx_w-88;barw=w/61;by=245;bh=270;
+  k=0;
+  loop(61,
+    idx=195+k;v=slider(idx);
+    bx=x+k*barw;
+    gfx_set(.12,.17,.24,1);gfx_rect(bx,by,barw-2,bh);
+    active=0;j=0;
+    loop(128,V_ON[j]>.5 && V_PITCH[j]==iround(slider5)+k ? active=1;j+=1;);
+    active ? gfx_set(.99,.35,.59,1) : gfx_set(.18,.78,.69,1);
+    gfx_rect(bx,by+bh*(1-v/100),barw-2,bh*v/100);
+    gfx_set(.07,.11,.15,1);gfx_rect(bx,by+bh-1,barw-2,1);
+    (ui_click && mouse_x>=bx && mouse_x<bx+barw && mouse_y>=by && mouse_y<=by+bh) ? ui_drag=idx;
+    ui_down && ui_drag==idx ? (
+      nv=iround(clamp(100*(1-(mouse_y-by)/bh),0,100));
+      slider(idx)!=nv ? (slider(idx)=nv;sliderchange(slider(idx));slider_automate(slider(idx)););
+    );
+    k+=1;
+  );
+  draw_keys(44,535,gfx_w-88,109);
+  gfx_setfont(2,"Arial",11);gfx_set(.63,.74,.8,1);
+  sprintf(#keyinfo,"BASE MIDI NOTE %d  -  %d  |  %d ACTIVE NOTES",iround(slider5),iround(slider5)+60,voices);
+  ui_text(44,658,#keyinfo);
+);
+// ROUTING. Safety-first: Program Change, RPN, SysEx all disabled by default.
+ui_tab==4 ? (
+  ui_panel(24,132,gfx_w-48,556);
+  gfx_setfont(1,"Arial",18);ui_set_accent(1);ui_text(42,148,"MIDI ROUTING & SAFETY");
+  cw=(gfx_w-95)/4;
+  i=0;
+  loop(24,
+    row=floor(i/4);col=i%4;param=0;
+    i==0 ? param=3;i==1 ? param=18;i==2 ? param=19;i==3 ? param=20;
+    i==4 ? param=21;i==5 ? param=23;i==6 ? param=24;i==7 ? param=25;
+    i==8 ? param=26;i==9 ? param=27;i==10 ? param=28;i==11 ? param=29;
+    i==12 ? param=40;i==13 ? param=41;i==14 ? param=42;i==15 ? param=43;
+    i==16 ? param=44;i==17 ? param=45;i==18 ? param=49;i==19 ? param=39;
+    i==20 ? param=30;i==21 ? param=31;i==22 ? param=36;i==23 ? param=34;
+    #lbl="";
+    param==3 ? #lbl="Clock mode";param==18 ? #lbl="MIDI bus";param==19 ? #lbl="Main channel";
+    param==20 ? #lbl="Pass input";param==21 ? #lbl="MPE channels";
+    param==23 ? #lbl="Program switch";param==24 ? #lbl="Program chance";
+    param==25 ? #lbl="MIDI update Hz";param==26 ? #lbl="Global bend";
+    param==27 ? #lbl="Bend depth";param==28 ? #lbl="Aftertouch";param==29 ? #lbl="Poly pressure";
+    param==40 ? #lbl="RPN / NRPN";param==41 ? #lbl="GM SysEx";param==42 ? #lbl="Lua bridge ID";
+    param==43 ? #lbl="Trigger input";param==44 ? #lbl="Morph position";
+    param==45 ? #lbl="MPE expression";param==49 ? #lbl="Program start";param==39 ? #lbl="Rigid rhythm";
+    param==30 ? #lbl="Audio analysis";param==31 ? #lbl="Input sens.";
+    param==36 ? #lbl="Scene morph";param==34 ? #lbl="Scale morph";
+    ui_knob(param,43+col*cw,197+row*65,cw-28,#lbl);
+    i+=1;
+  );
+  ui_button(45,613,189,34,"SEND GM SYSTEM ON",0) ? sysex_request=1;
+  gfx_setfont(2,"Arial",11);gfx_set(.7,.79,.84,1);
+  ui_text(250,620,"Requires GM SysEx permission. RPN/NRPN output also requires explicit permission.");
+);
+// SCENES. Save all 255 parameters to each of 8 slots. Morph is non-destructive.
+ui_tab==5 ? (
+  ui_panel(24,132,gfx_w-48,556);
+  gfx_setfont(1,"Arial",18);ui_set_accent(1);ui_text(42,148,"8 SCENE MEMORIES  /  LIVE MORPHING");
+  gfx_setfont(2,"Arial",12);gfx_set(.64,.75,.81,1);
+  ui_text(42,179,"STORE SAVES ALL CONTROLS. RECALL RESTORES THE SCENE. A/B MORPH USES SNAPSHOTS.");
+  colw=(gfx_w-102)/4;
+  i=0;
+  loop(8,
+    x=45+(i%4)*colw;y=229+floor(i/4)*95;
+    sprintf(#scene,"SCENE %d",i+1);
+    ui_button(x,y,colw-13,57,#scene,ui_scene_selected==i) ? ui_scene_selected=i;
+    gfx_setfont(2,"Arial",11);
+    SCENE_VALID[i]>.5 ? gfx_set(.18,.91,.77,1) : gfx_set(.58,.68,.74,1);
+    ui_text(x+9,y+63,SCENE_VALID[i]>.5 ? "SAVED" : "EMPTY");
+    i+=1;
+  );
+  ui_button(46,458,165,42,"STORE SELECTED",0) ? save_scene(ui_scene_selected);
+  ui_button(223,458,165,42,"RECALL SELECTED",0) ? load_scene(ui_scene_selected);
+  ui_button(400,458,165,42,"RESEED",0) ? reset_request=1;
+  ui_knob(36,48,536,170,"Morph active");
+  ui_knob(37,249,536,170,"Scene A");
+  ui_knob(38,450,536,170,"Scene B");
+  ui_knob(44,650,596,170,"Morph position");
+  ui_button(654,536,173,38,"MORPH A / B",slider36>.5) ? (
+    slider36=1-slider36;sliderchange(slider36);slider_automate(slider36);
+  );
+  gfx_setfont(2,"Arial",11);gfx_set(.64,.74,.8,1);
+  sprintf(#morph,"MORPH POSITION: %d%%   |   AUTOPILOT %s",iround(morph_phase*100),slider32>.5?"ON":"OFF");
+  ui_text(47,607,#morph);
+);
+
+// TIMING: seconds versus musical note length, with per-engine ratios preserved.
+ui_tab==6 ? (
+  ui_panel(24,132,gfx_w-48,576);
+  gfx_setfont(1,"Arial",19);ui_set_accent(1);ui_text(42,151,"GLOBAL NOTE SPEED  /  MUSICAL DIVISIONS");
+  gfx_setfont(2,"Arial",12);gfx_set(.65,.77,.83,1);
+  ui_text(42,181,"Each engine's Steps/beat value now acts as a speed multiplier. 4 = 1x; 8 = 2x; 2 = half speed.");
+  ui_cbutton(46,222,177,38,"SECONDS",2,0);
+  ui_cbutton(231,222,177,38,"SYNC TO TEMPO",2,1);
+  ui_knob(256,48,297,450,"NOTE INTERVAL (SECONDS)");
+  sprintf(#clock,"CURRENT BASE STEP %.3f seconds",M_CFG[2]<.5?slider256:gdivision(M_CFG[3])*60/max(20,tempo));
+  gfx_setfont(2,"Arial",13);gfx_set(.2,.93,.77,1);ui_text(48,354,#clock);
+  gfx_setfont(1,"Arial",15);gfx_set(.8,.89,.92,1);ui_text(48,413,"PROJECT TEMPO DIVISION");
+  i=0;loop(15,
+    col=i%5;row=floor(i/5);x=48+col*202;y=446+row*53;
+    #rate="";
+    i==0 ? #rate="4 BARS";i==1 ? #rate="2 BARS";i==2 ? #rate="1 BAR";
+    i==3 ? #rate="1/2";i==4 ? #rate="1/4";i==5 ? #rate="1/8";
+    i==6 ? #rate="1/16";i==7 ? #rate="1/32";i==8 ? #rate="1/64";
+    i==9 ? #rate="1/8 T";i==10 ? #rate="1/16 T";i==11 ? #rate="1/32 T";
+    i==12 ? #rate="1/8 D";i==13 ? #rate="1/16 D";i==14 ? #rate="1/32 D";
+    ui_cbutton(x,y,185,37,#rate,3,i);
+    i+=1;
+  );
+  gfx_setfont(2,"Arial",11);gfx_set(.58,.72,.78,1);
+  ui_text(50,642,"T = triplet, D = dotted. Rhythm and harmony follow REAPER tempo. Phrase positions use 4/4 bars.");
+);
+// MUSIC: harmonic progression, chord dictionary, genre presets.
+ui_tab==7 ? (
+  ui_panel(24,132,gfx_w-48,584);
+  gfx_setfont(1,"Arial",19);ui_set_accent(1);ui_text(42,151,"MUSICAL INTELLIGENCE  /  26 CHORD VOICINGS");
+  gfx_setfont(2,"Arial",12);gfx_set(.65,.77,.83,1);ui_text(42,183,"MUSIC keeps harmony; HYBRID introduces controlled Chaos. Genre presets are applied only on click.");
+  ui_cbutton(45,220,150,38,"CHAOS",0,0);
+  ui_cbutton(201,220,150,38,"MUSIC",0,1);
+  ui_cbutton(358,220,150,38,"HYBRID",0,2);
+  ui_cbutton(515,220,160,38,"HYPNOTIC",0,3);
+  gfx_setfont(1,"Arial",15);gfx_set(.82,.91,.92,1);ui_text(45,280,"GENRE / SOUND DESIGN");
+  i=0;loop(8,
+    #gen="";
+    i==0?#gen="FREE";i==1?#gen="TECHNO";i==2?#gen="TRANCE";i==3?#gen="GOA";
+    i==4?#gen="PSYTRANCE";i==5?#gen="AMBIENT";i==6?#gen="ACID 303";i==7?#gen="BERLIN";
+    x=45+(i%4)*252;y=313+floor(i/4)*47;
+    ui_button(x,y,239,36,#gen,iround(M_CFG[1])==i) ? M_CFG[1]=i;
+    i+=1;
+  );
+  ui_button(45,414,207,35,"APPLY GENRE + 4 LAYERS",0) ? genre_preset(M_CFG[1]);
+  gfx_setfont(2,"Arial",11);gfx_set(.6,.76,.82,1);ui_text(270,420,"Explicitly enables Bass / Arp / Lead / Pad engines (channels 1-4).");
+  ui_custom(4,45,483,187,"KEY MODE 0-13",0,13,1);
+  ui_custom(5,257,483,187,"PROGRESSION 0-15",0,15,1);
+  ui_custom(6,469,483,187,"BARS / CHORD",1,8,1);
+  ui_custom(7,681,483,187,"CHORD COUNT",1,8,1);
+  ui_custom(8,45,550,187,"CHORD QUALITY 0-25",0,25,1);
+  ui_custom(9,257,550,187,"VOICING 0-4",0,4,1);
+  ui_custom(10,469,550,187,"INVERSION",0,4,1);
+  ui_custom(12,681,550,187,"COMPLEXITY",0,100,1);
+  ui_custom(21,45,615,187,"HARMONIC SURPRISE",0,100,1);
+  ui_custom(22,257,615,187,"GENRE GROOVE ON/OFF",0,1,1);
+  ui_custom(20,469,615,187,"OCTAVE MOVES",0,100,1);
+  ui_custom(23,681,615,187,"ADD 9TH %",0,100,1);
+  gfx_setfont(2,"Arial",11);gfx_set(.59,.71,.77,1);
+  ui_text(45,676,"CHORD 0 = diatonic. STEP LAB edits patterns; CASCADE moves harmony. See HARMONY_GUIDE_DE.md");
+);
+// HYPNOSIS: motif mutation, call/response, arpeggiator and custom progression steps.
+ui_tab==8 ? (
+  ui_panel(24,132,gfx_w-48,586);
+  gfx_setfont(1,"Arial",19);ui_set_accent(1);ui_text(42,151,"HYPNOTIC MELODY LAB  /  EVOLVING MOTIFS");
+  gfx_setfont(2,"Arial",12);gfx_set(.65,.77,.83,1);
+  ui_text(42,182,"Use MUSIC mode HYPNOTIC; 7/9/11 step phasing, motif memory, breathing and slow progression.");
+  ui_custom(11,45,222,213,"ARP PATTERN 0-19",0,19,1);
+  ui_custom(15,297,222,213,"MOTIF STEPS",2,32,1);
+  ui_custom(16,549,222,213,"MUTATION %",0,100,1);
+  ui_custom(17,801,222,213,"CALL / RESPONSE %",0,100,1);
+  ui_custom(18,45,299,213,"TENSION %",0,100,1);
+  ui_custom(19,297,299,213,"ECHO / REPEAT %",0,100,1);
+  ui_custom(14,549,299,213,"TRANCE DEPTH",0,100,1);
+  ui_custom(13,801,299,213,"HYPNOSIS ON/OFF",0,1,1);
+  gfx_setfont(1,"Arial",15);gfx_set(.82,.91,.92,1);ui_text(45,391,"CUSTOM 8-CHORD PROGRESSION  /  DEGREE 0..6");
+  gfx_setfont(2,"Arial",12);gfx_set(.56,.70,.78,1);
+  ui_text(45,419,"Select progression 11 on the MUSIC page, then arrange your own sequence below.");
+  i=0;loop(8,
+    x=45+(i%4)*252;y=464+floor(i/4)*71;
+    sprintf(#degn,"CHORD %d",i+1);
+    ui_custom(32+i,x,y,207,#degn,0,6,1);
+    i+=1;
+  );
+  gfx_setfont(1,"Arial",15);gfx_set(.82,.91,.92,1);ui_text(45,626,"INDEPENDENT ENGINE ROLES");
+  gfx_setfont(2,"Arial",11);gfx_set(.60,.74,.80,1);ui_text(45,652,"0=AUTO; 1=BASS; 2=ARP; 3=MELODY; 4=CHORD PAD; 5=DRONE; 6=CHORD STAB");
+  i=0;loop(4,
+    x=45+i*252;
+    sprintf(#role,"ENGINE %d ROLE",i+1);
+    ui_custom(40+i,x,673,205,#role,0,6,1);
+    i+=1;
+  );
+);
+
+
+// STEP LAB: polymetric note pattern, independent rhythm/velocity pattern.
+ui_tab==9 ? (
+  ui_panel(24,132,gfx_w-48,584);
+  gfx_setfont(1,"Arial",19);ui_set_accent(1);ui_text(42,151,"POLYMETRIC STEP LAB  /  SEPARATE PITCH AND GATE LOOPS");
+  gfx_setfont(2,"Arial",12);gfx_set(.63,.78,.83,1);
+  ui_text(42,182,"Select an engine and edit every step. PITCH 99 = REST. Each engine can phase independently.");
+  i=0;loop(4,
+    sprintf(#enge,"ENGINE %d",i+1);
+    ui_button(45+i*252,217,228,37,#enge,ui_edit_engine==i) ? ui_edit_engine=i;
+    i+=1;
+  );
+  ui_custom(44,45,281,200,"PHASE ENGINE ON",0,1,1);
+  ui_custom(45,280,281,200,"ARP / GATE ON",0,1,1);
+  ui_custom(46,515,281,200,"OCTAVE MOTION",0,1,1);
+  ui_custom(47,750,281,200,"ANCHOR LOCK",0,1,1);
+  ui_custom(48+ui_edit_engine,45,346,200,"PITCH LENGTH 3-32",3,32,1);
+  ui_custom(52+ui_edit_engine,280,346,200,"GATE LENGTH 3-32",3,32,1);
+  ui_custom(27,515,346,200,"FILL CHANCE %",0,100,1);
+  ui_custom(31,750,346,200,"MONO PRIORITY",0,1,1);
+  gfx_setfont(2,"Arial",12);gfx_set(.80,.89,.93,1);
+  ui_text(45,426,"PITCH STEPS  (click a step, then edit its degree; 99=mute)");
+  i=0;loop(32,
+    x=45+i*31.5;y=454;
+    stepval=M_SEQ[ui_edit_engine*32+i];
+    selected=ui_edit_step==i;
+    gfx_set(selected?.17:.10,selected?.52:.19,selected?.49:.24,1);
+    gfx_rect(x,y,29,39);
+    gfx_set(.83,.92,.94,1);gfx_x=x+4;gfx_y=y+14;
+    stepval==99 ? gfx_drawstr("-") : (sprintf(#stepname,"%d",iround(stepval));gfx_drawstr(#stepname););
+    ui_click && mouse_x>=x && mouse_x<x+29 && mouse_y>=y && mouse_y<y+39 ? ui_edit_step=i;
+    i+=1;
+  );
+  gfx_setfont(2,"Arial",12);gfx_set(.80,.89,.93,1);
+  ui_text(45,507,"GATE / VELOCITY PATTERN  (independent cycle length)");
+  i=0;loop(32,
+    x=45+i*31.5;y=533;
+    stepval=M_GATE[ui_edit_engine*32+i];
+    gfx_set(.11,.17,.23,1);gfx_rect(x,y,29,40);
+    gfx_set(.18,.83,.75,1);gfx_rect(x,y+40-stepval*.34,29,stepval*.34);
+    ui_click && mouse_x>=x && mouse_x<x+29 && mouse_y>=y && mouse_y<y+40 ? ui_edit_step=i;
+    i+=1;
+  );
+  sprintf(#stepnow,"EDIT ENGINE %d / STEP %d",ui_edit_engine+1,ui_edit_step+1);
+  gfx_setfont(2,"Arial",12);gfx_set(.94,.84,.60,1);ui_text(45,593,#stepnow);
+  ui_step_control(45,623,190,"PITCH DEGREE (-7..7)",0,-7,99,1);
+  ui_step_control(290,623,190,"GATE CHANCE %",1,0,100,1);
+  ui_step_control(535,623,190,"VELOCITY 0..127",2,0,127,1);
+  ui_button(772,630,215,33,"TOGGLE STEP REST",0) ? (
+    k=ui_edit_engine*32+ui_edit_step;
+    M_SEQ[k]=M_SEQ[k]==99?0:99;
+  );
+  gfx_setfont(2,"Arial",11);gfx_set(.55,.67,.75,1);
+  ui_text(45,681,"Example: 7-note pitch cycle x 9-step gate = 63-step phase cycle. Custom settings saved in scenes.");
+);
+// CASCADE: slow transposition, rhythm masks, tempo-rate shifts, hypnotic gravity.
+ui_tab==10 ? (
+  ui_panel(24,132,gfx_w-48,584);
+  gfx_setfont(1,"Arial",19);ui_set_accent(1);ui_text(42,151,"HARMONIC CASCADE  /  HYPNOTIC MODULATION");
+  gfx_setfont(2,"Arial",12);gfx_set(.63,.78,.83,1);
+  ui_text(42,182,"Slow transposition of fast patterns, rhythmic rate shifts, anchor probabilities and melodic gravity.");
+  ui_custom(59,45,221,200,"CASCADE ON",0,1,1);
+  ui_custom(60,285,221,200,"BARS PER TRANSPOSE",1,16,1);
+  ui_custom(61,525,221,200,"MOVE 0=SEMI 1=SCALE 2=HARM",0,2,1);
+  ui_custom(56,765,221,200,"RATE SHIFTER ON",0,1,1);
+  ui_custom(57,45,297,200,"FAST RATE MULTIPLIER",2,8,1);
+  ui_custom(58,285,297,200,"SHIFT EVERY N BARS",1,16,1);
+  ui_custom(24,525,297,200,"GATE MASK TYPE 0-7",0,7,1);
+  ui_custom(25,765,297,200,"GATE MASK DEPTH %",0,100,1);
+  ui_custom(28,45,374,200,"HYPNOTIC GRAVITY %",0,100,1);
+  ui_custom(29,285,374,200,"TENSION RAMP %",0,100,1);
+  ui_custom(30,525,374,200,"MOTIF BREATH %",0,100,1);
+  ui_custom(26,765,374,200,"VELOCITY CONTOUR %",0,100,1);
+  gfx_setfont(1,"Arial",15);gfx_set(.8,.88,.92,1);ui_text(45,476,"TRANSPOSITION SEQUENCE: 8 SLOW STEPS, RANGE -12..+12");
+  i=0;loop(8,
+    sprintf(#cas,"MOVE %d",i+1);
+    ui_array_knob(M_CASCADE,i,45+(i%4)*253,516+floor(i/4)*68,207,#cas,-12,12,1);
+    i+=1;
+  );
+  gfx_setfont(2,"Arial",11);gfx_set(.53,.68,.76,1);
+  ui_text(45,682,"HARM = chord-related; SCALE = diatonic, SEMI = chromatic + quantized to musical mode.");
+);
+
+// SUSPENSE: avoid classical resolutions and morph minimalist material.
+ui_tab==11 ? (
+  ui_panel(24,132,gfx_w-48,584);
+  gfx_setfont(1,"Arial",18);ui_set_accent(1);ui_text(42,150,"OPEN HARMONY  /  SUSPENSE & HYPNOTIC TECHNIQUES");
+  gfx_setfont(2,"Arial",11);gfx_set(.60,.74,.81,1);
+  ui_text(42,180,"No forced V-I; choose thirdless, quartal or phrygian voicings and hypnotic motion.");
+  ui_button(45,217,239,36,"MINIMAL TECHNO",0) ? open_preset(0);
+  ui_button(296,217,239,36,"PHRYGIAN TUNNEL",0) ? open_preset(1);
+  ui_button(547,217,239,36,"OPEN AMBIENT",0) ? open_preset(2);
+  ui_button(798,217,239,36,"CANON TRANCE",0) ? open_preset(3);
+  ui_ext(0,45,285,230,"OPEN CHORD 0..5 (HELP)",0,5,1);
+  ui_ext(1,298,285,230,"ANTI-CADENCE 0..3",0,3,1);
+  ui_ext(2,551,285,230,"PHRYGIAN ROOT/b2 ON",0,1,1);
+  ui_ext(3,804,285,230,"b2 PROBABILITY %",0,100,1);
+  ui_ext(4,45,360,230,"PEDAL POINT ON",0,1,1);
+  ui_ext(6,298,360,230,"PEDAL VELOCITY %",10,100,1);
+  ui_ext(7,551,360,230,"MELODY VELOCITY %",10,127,1);
+  ui_ext(8,804,360,230,"VOICING DRIFT ON",0,1,1);
+  ui_ext(9,45,435,230,"DRIFT EVERY N BARS",1,32,1);
+  ui_ext(10,298,435,230,"PLAY ORDER MORPH",0,1,1);
+  ui_ext(11,551,435,230,"ORDER CHANGE N BARS",1,32,1);
+  ui_ext(12,804,435,230,"MUSICAL RATCHETS ON",0,1,1);
+  ui_ext(13,45,510,230,"RATCHET CHANCE %",0,100,1);
+  ui_ext(14,298,510,230,"RATCHET COUNT 2..4",2,4,1);
+  ui_ext(15,551,510,230,"SHIFTED CANON ON",0,1,1);
+  ui_ext(16,804,510,230,"CANON DELAY 1=16th 2=D8th",1,2,1);
+  ui_ext(17,45,585,230,"CANON INTERVAL 0=UNI 1=5TH 2=8VE",0,2,1);
+  ui_ext(18,298,585,230,"CANON LEVEL %",5,100,1);
+  ui_ext(19,551,585,230,"RARE TRITONE FILL ON",0,1,1);
+  ui_ext(20,804,585,230,"TRITONE CHANCE %",0,30,1);
+  gfx_setfont(2,"Arial",11);gfx_set(.56,.72,.77,1);
+  ui_text(45,664,"MUSIC/HYPNOTIC use these controls. Canon needs active ARP/MELODY voices; true portamento requires target synth.");
+);
+
+
+// POLYTRANCE: actual 16/7/5 note, gate, velocity, probability editor.
+ui_tab==12 ? (
+  ui_panel(24,132,gfx_w-48,584);
+  gfx_setfont(1,"Arial",18);ui_set_accent(1);
+  ui_text(42,149,"POLYTRANCE  /  3 INDEPENDENT MIDI LANES");
+  gfx_setfont(2,"Arial",11);gfx_set(.58,.73,.82,1);
+  ui_text(42,179,"E PHRYGIAN: E-F-G-A-B-C-D  /  16:7:5 = 560 sixteenth steps = 35 bars");
+  ui_button(43,215,204,37,"LOAD E-PHRYGIAN",0) ? poly_preset();
+  ui_button(258,215,155,37,P_CTL[0]>.5?"POLY RUN":"POLY OFF",P_CTL[0]>.5) ? (
+     P_CTL[0]=1-P_CTL[0];reset_request=1;
+  );
+  ui_polybutton(425,215,143,37,"REFERENCE",2,0);
+  ui_polybutton(578,215,138,37,"DRIFT",2,1);
+  ui_polybutton(726,215,138,37,"SPIRAL",2,2);
+  ui_polybutton(874,215,138,37,"SHADOW",2,3);
+  ui_button(1022,215,60,37,"Q",P_CTL[2]==4) ? P_CTL[2]=4;
+  ui_button(45,306,171,24,"GOA 3+3+2",P_CTL[2]==5) ? P_CTL[2]=5;
+  ui_button(228,306,171,24,"AMBIENT ORBIT",P_CTL[2]==6) ? P_CTL[2]=6;
+  ui_button(412,306,171,24,"E-GRAVITY",P_CTL[2]==7) ? P_CTL[2]=7;
+  ui_button(45,267,290,33,"TRACK 1 / ANCHOR",ui_poly_lane==0) ? ui_poly_lane=0;
+  ui_button(355,267,290,33,"TRACK 2 / 7-STEP",ui_poly_lane==1) ? ui_poly_lane=1;
+  ui_button(665,267,290,33,"TRACK 3 / 5-STEP",ui_poly_lane==2) ? ui_poly_lane=2;
+  ui_button(970,267,110,33,P_CTL[20+ui_poly_lane]>.5?"LANE ON":"LANE OFF",P_CTL[20+ui_poly_lane]>.5) ? (
+    P_CTL[20+ui_poly_lane]=1-P_CTL[20+ui_poly_lane];reset_request=1;
+  );
+  ui_button(970,306,110,24,ui_poly_bank==0?"STEPS 1-16":"STEPS 17-32",ui_poly_bank==1) ? (
+    ui_poly_bank=1-ui_poly_bank;ui_poly_step=ui_poly_bank*16;
+  );
+  i=0;loop(16,
+    lane_len=iround(P_CTL[16+ui_poly_lane]);
+    pn=ui_poly_bank*16+i;
+    xx=45+i*63;
+    pnote=P_NOTE[ui_poly_lane*32+pn];
+    playhi=(P_STEP[ui_poly_lane]%max(1,lane_len))==pn;
+    gfx_set(playhi?.09:.05,playhi?.32:.11,playhi?.30:.16,1);
+    gfx_rect(xx,333,58,58);
+    gfx_set(.12,.29,.33,1);gfx_rect(xx,333,58,2);
+    gfx_setfont(2,"Arial",11);gfx_set(.88,.94,.96,1);
+    sprintf(#polysid,"%d",pn+1);ui_text(xx+5,338,#polysid);
+    pn<lane_len ? (pnote<0 ? strcpy(#polysval,"---") : sprintf(#polysval,"%d",iround(pnote));) : strcpy(#polysval,"--");
+    ui_text(xx+10,360,#polysval);
+    ui_button(xx,399,58,22,"EDIT",ui_poly_step==pn) ? ui_poly_step=pn;
+    i+=1;
+  );
+  lane_pos=ui_poly_lane*32+ui_poly_step;
+  gfx_setfont(2,"Arial",12);gfx_set(.69,.84,.91,1);
+  sprintf(#polyedit,"TRACK %d  /  STEP %d  /  MIDI NOTE %d  /  CURRENT CLOCK %d",ui_poly_lane+1,ui_poly_step+1,iround(P_NOTE[lane_pos]),P_STEP[ui_poly_lane]);
+  ui_text(46,448,#polyedit);
+  ui_polyval(P_NOTE,lane_pos,45,476,224,"NOTE -1=REST / 0..127",-1,127,1,100);
+  ui_polyval(P_GATE,lane_pos,298,476,224,"GATE 0..100 %",0,100,1,101);
+  ui_polyval(P_VEL,lane_pos,550,476,224,"VELOCITY 0..127",0,127,1,102);
+  ui_polyval(P_PROB,lane_pos,803,476,224,"PROBABILITY %",0,100,1,103);
+  ui_polyval(P_CTL,16+ui_poly_lane,45,562,224,"TRACK STEPS",1,32,1,104);
+  ui_polyval(P_CTL,24+ui_poly_lane,298,562,224,"MIDI CHANNEL",1,16,1,105);
+  ui_polyval(P_CTL,32+ui_poly_lane,550,562,224,"GATE SCALE %",10,150,1,106);
+  ui_polyval(P_CTL,36+ui_poly_lane,803,562,224,"TRANSPOSE -24..24",-24,24,1,107);
+  ui_button(46,640,160,32,"REST / NOTE",0) ? (P_NOTE[lane_pos]<0 ? P_NOTE[lane_pos]=40 : P_NOTE[lane_pos]=-1;);
+  ui_button(225,640,160,32,"OCTAVE -",0) ? P_NOTE[lane_pos]=clamp(P_NOTE[lane_pos]-12,0,127);
+  ui_button(400,640,160,32,"OCTAVE +",0) ? P_NOTE[lane_pos]=clamp(P_NOTE[lane_pos]+12,0,127);
+  gfx_setfont(2,"Arial",11);gfx_set(.56,.69,.78,1);
+  ui_text(582,648,"MIDI note labels depend on REAPER octave settings.");
+  ui_polyval(P_CTL,44,45,677,188,"CC CUTOFF",0,127,1,130);
+  ui_polyval(P_CTL,45,250,677,188,"CC RESONANCE",0,127,1,131);
+  ui_polyval(P_CTL,46,455,677,188,"CC DECAY",0,127,1,132);
+  ui_polyval(P_CTL,47,660,677,188,"CC REVERB",0,127,1,133);
+  ui_polyval(P_CTL,48,865,677,188,"CC FX SEND",0,127,1,134);
+);
+
+// POLY FLOW: independent 32-bar arrangement, the 35-bar phase continues freely.
+ui_tab==13 ? (
+  ui_panel(24,132,gfx_w-48,584);
+  gfx_setfont(1,"Arial",18);ui_set_accent(1);
+  ui_text(42,149,"POLY FLOW  /  32-BAR EVOLUTION WITHOUT LOSING THE 35-BAR POLYMETER");
+  gfx_setfont(2,"Arial",11);gfx_set(.58,.73,.82,1);
+  ui_text(42,181,"8 sections x 4 bars. Each parameter can be edited. MIDI CC output requires a mapped synth.");
+  i=0;loop(8,
+    sprintf(#stage,"%d-%d",i*4+1,i*4+4);
+    ui_button(45+i*127,215,117,42,#stage,ui_poly_phase==i) ? ui_poly_phase=i;
+    i+=1;
+  );
+  ui_polybutton(45,275,144,33,"FLOW ON",1,1);
+  ui_polybutton(199,275,140,33,"FLOW OFF",1,0);
+  ui_polybutton(349,275,169,33,"560 FREE",4,0);
+  ui_polybutton(528,275,172,33,"32-BAR RESET",4,1);
+  ui_polybutton(710,275,150,33,"CC OUTPUT ON",60,1);
+  ui_polybutton(871,275,153,33,"CC OUTPUT OFF",60,0);
+  gfx_setfont(2,"Arial",12);gfx_set(.78,.9,.93,1);
+  sprintf(#polyph,"EDIT PHASE %d (BARS %d..%d)  /  NOW %d  /  POLY STEP %d / 560",
+         ui_poly_phase+1,ui_poly_phase*4+1,ui_poly_phase*4+4,poly_phase()+1,P_STEP[0]%560);
+  ui_text(45,332,#polyph);
+  stage_ix=ui_poly_phase*9;
+  ui_polyval(P_ARR,stage_ix+0,45,358,220,"TRACK 1 CUTOFF %",0,100,1,110);
+  ui_polyval(P_ARR,stage_ix+1,299,358,220,"TRACK 2 CUTOFF %",0,100,1,111);
+  ui_polyval(P_ARR,stage_ix+2,552,358,220,"TRACK 3 CUTOFF %",0,100,1,112);
+  ui_polyval(P_ARR,stage_ix+3,805,358,220,"TRACK 2 PRESENCE %",0,100,1,113);
+  ui_polyval(P_ARR,stage_ix+4,45,433,220,"TRACK 3 PRESENCE %",0,100,1,114);
+  ui_polyval(P_ARR,stage_ix+5,299,433,220,"SPACE / SEND %",0,100,1,115);
+  ui_polyval(P_ARR,stage_ix+6,552,433,220,"TENSION %",0,100,1,116);
+  ui_polyval(P_ARR,stage_ix+7,805,433,220,"TRACK 1 LENGTH",8,16,1,117);
+  ui_polyval(P_CTL,5,45,528,221,"MACRO A: PRESSURE",0,100,1,118);
+  ui_polyval(P_CTL,6,299,528,221,"MACRO B: SPACE",0,100,1,119);
+  ui_polyval(P_CTL,9,552,528,221,"GLOBAL TRANSPOSE",-12,12,1,120);
+  ui_polyval(P_ARR,stage_ix+8,805,528,221,"TRACK 2 TRANSPOSE",-24,24,1,121);
+  ui_polyval(P_CTL,8,45,613,221,"MICRO PHASE DRIFT",0,100,1,122);
+  ui_polyval(P_CTL,50,299,613,221,"GHOST STEP CHANCE",0,100,1,123);
+  ui_polyval(P_CTL,53,552,613,221,"ANCHOR LOCK %",0,100,1,124);
+  ui_polyval(P_CTL,54,805,613,221,"MUTATION DEPTH",0,100,1,125);
+  ui_button(45,680,188,27,"1/2 SPEED",P_CTL[10]==1) ? (P_CTL[10]=1;reset_request=1;);
+  ui_button(245,680,188,27,"1x SPEED",P_CTL[10]==0) ? (P_CTL[10]=0;reset_request=1;);
+  ui_button(446,680,188,27,"2x SPEED",P_CTL[10]==2) ? (P_CTL[10]=2;reset_request=1;);
+  ui_button(647,680,188,27,"PHRYGIAN LOCK",P_CTL[13]>.5) ? P_CTL[13]=1-P_CTL[13];
+  ui_button(848,680,187,27,"SLIDE CC65",P_CTL[56]>.5) ? P_CTL[56]=1-P_CTL[56];
+);
+
+// Status strip + soft meters
+footer_y=max(758,gfx_h-64);
+gfx_set(.07,.115,.15,1);gfx_rect(24,footer_y,gfx_w-48,45);
+gfx_setfont(2,"Arial",11);gfx_set(.79,.86,.9,1);
+sprintf(#footer,"STATUS %s    NOTES %d    LAST MIDI %d    BRIDGE ID %d    AUDIO %.2f",
+        engine_active>.5?"ACTIVE":"IDLE",voices,last_pitch,iround(slider42),clamp(audio_env*10,0,1));
+ui_text(38,footer_y+14,#footer);
+gfx_set(.10,.22,.26,1);gfx_rect(gfx_w-180,footer_y+18,148,7);
+gfx_set(.18,.92,.77,1);gfx_rect(gfx_w-180,footer_y+18,148*clamp(voices/max(1,slider17),0,1),7);
+ui_prev_down=ui_down;
